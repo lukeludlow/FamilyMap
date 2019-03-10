@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical" >
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="368dp"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_columnSpan="2"
+            android:layout_gravity="center_horizontal"
+            android:text="login i guess"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="server host"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/server_host_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="server port"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/server_port_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="username"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/username_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="password"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text"
+            android:password="true" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="firstname"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/firstname_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="lastname"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/lastname_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="email"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/email_edit_text"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="text" />
+
+    </GridLayout>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal" >
+
+        <RadioButton
+            android:id="@+id/button_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="male" />
+
+        <RadioButton
+            android:id="@+id/button_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="female" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_signin"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:drawablePadding="20dp"
+            android:minWidth="2dp"
+            android:minHeight="60dp"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_margin="30dp"
+            android:text="sign in"
+            app:cornerRadius="30dp"
+            <!--app:cornerRadius="@dimen/default_gap"-->
+            app:insetLeft="@dimen/default_gap"
+            app:insetRight="@dimen/default_gap"
+            />
+
+        <Button
+            android:id="@+id/button_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            app:cornerRadius="30dp"
+            android:minWidth="2dp"
+            android:minHeight="60dp"
+            android:padding="10dp"
+            style="?android:attr/buttonBarStyle"
+            android:layout_gravity="center_horizontal"
+            android:text="register" />
+    </LinearLayout>
+
+</LinearLayout>
