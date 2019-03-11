@@ -15,6 +15,7 @@ public class LoginRequest {
     private String gender;
     private boolean loginRequest;
     private boolean registerRequest;
+    private String requestType;
 
 
 

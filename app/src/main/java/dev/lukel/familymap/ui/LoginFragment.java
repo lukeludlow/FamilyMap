@@ -12,9 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.LoginRequest;
+import dev.lukel.familymap.model.RegisterRequest;
 
 public class LoginFragment extends Fragment {
 
@@ -94,6 +96,9 @@ public class LoginFragment extends Fragment {
                 loginRequest = true;
                 registerRequest = false;
                 Log.i(TAG, "loginRequest=true");
+                Log.i(TAG, "sending login request...");
+                Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
+                onSubmitRequest();
             }
         });
 
@@ -103,10 +108,27 @@ public class LoginFragment extends Fragment {
                 registerRequest = true;
                 loginRequest = false;
                 Log.i(TAG, "registerRequest=true");
+                Log.i(TAG, "sending register request...");
+                Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
+                onSubmitRequest();
             }
         });
 
         return v;
+    }
+
+    private void onSubmitRequest() {
+        LoginRequest request = getLoginRequest();
+        Log.i(TAG, request.toString());
+        if (loginRequest) {
+            if (!checkValidLogin(request)) {
+                Log.i(TAG, "invalid login request!");
+                Toast.makeText(getActivity(), "invalid login request!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.i(TAG, "valid login request!");
+            }
+        }
+        // register request
     }
 
     private final TextWatcher textWatcher = new TextWatcher() {
@@ -124,13 +146,14 @@ public class LoginFragment extends Fragment {
         }
     };
 
-    public LoginRequest getLoginRequest() {
+    private LoginRequest getLoginRequest() {
         LoginRequest request = new LoginRequest();
         request.setServerHost(serverHost.getText().toString());
         request.setServerPort(serverPort.getText().toString());
         request.setUsername(username.getText().toString());
         request.setPassword(password.getText().toString());
         request.setFirstname(firstname.getText().toString());
+        request.setLastname(lastname.getText().toString());
         request.setEmail(email.getText().toString());
         request.setGender(gender);
         if (loginRequest) {
@@ -141,6 +164,17 @@ public class LoginFragment extends Fragment {
             request.setLoginRequest(false);
         }
         return request;
+    }
+
+    private boolean checkValidLogin(LoginRequest request) {
+        return (loginRequest && !"".equals(request.getUsername()) && !"".equals(request.getPassword())
+                && !"".equals(request.getServerHost()) && !"".equals(request.getServerPort()));
+    }
+
+    private boolean checkValidRegister() {
+        return  (registerRequest && serverHost != null && serverPort != null && username != null
+                && password != null && firstname != null && lastname != null && email != null
+                && (gender.contains("m") || gender.contains("f")));
     }
 
 
