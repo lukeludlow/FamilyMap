@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.LoginRequest;
@@ -24,8 +26,10 @@ public class LoginFragment extends Fragment {
     private EditText firstname;
     private EditText lastname;
     private EditText email;
-    private RadioButton male;
-    private RadioButton female;
+    private RadioGroup genderSelection;
+    private String gender;
+    private Button loginButton;
+    private Button registerButton;
     private boolean loginRequest;
     private boolean registerRequest;
 
@@ -48,11 +52,54 @@ public class LoginFragment extends Fragment {
         firstname = (EditText) v.findViewById(R.id.firstname_edit_text);
         lastname = (EditText) v.findViewById(R.id.lastname_edit_text);
         email = (EditText) v.findViewById(R.id.email_edit_text);
-        male = (RadioButton) v.findViewById(R.id.button_male);
-        female = (RadioButton) v.findViewById(R.id.button_female);
+        genderSelection = (RadioGroup) v.findViewById(R.id.button_gender);
+        loginButton = (Button) v.findViewById(R.id.button_login);
+        registerButton = (Button) v.findViewById(R.id.button_register);
 
         serverHost.addTextChangedListener(textWatcher);
-
+        serverPort.addTextChangedListener(textWatcher);
+        username.addTextChangedListener(textWatcher);
+        password.addTextChangedListener(textWatcher);
+        firstname.addTextChangedListener(textWatcher);
+        lastname.addTextChangedListener(textWatcher);
+        email.addTextChangedListener(textWatcher);
+        genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                boolean isChecked = checkedRadioButton.isChecked();
+                switch (checkedId) {
+                    case R.id.button_male:
+                        if (isChecked) {
+                            gender = "m";
+                            Log.i(TAG, "male");
+                        }
+                        break;
+                    case R.id.button_female:
+                            if (isChecked) {
+                                gender = "m";
+                                Log.i(TAG, "female");
+                            }
+                        break;
+                    default:
+                        Log.i(TAG, "gender huh?");
+                }
+            }
+        });
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginRequest = true;
+                registerRequest = false;
+            }
+        });
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerRequest = true;
+                loginRequest = false;
+            }
+        });
 
         return v;
     }
@@ -64,8 +111,7 @@ public class LoginFragment extends Fragment {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.i(TAG, "onTextChanged");
-            Log.i(TAG, s.toString());
+            //
         }
         @Override
         public void afterTextChanged(Editable s) {
@@ -81,7 +127,7 @@ public class LoginFragment extends Fragment {
         request.setPassword(password.getText().toString());
         request.setFirstname(firstname.getText().toString());
         request.setEmail(email.getText().toString());
-        // male or female?
+        request.setGender(gender);
         // login or register?
         return request;
     }
