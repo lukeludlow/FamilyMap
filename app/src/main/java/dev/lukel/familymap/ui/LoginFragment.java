@@ -63,6 +63,7 @@ public class LoginFragment extends Fragment {
         firstname.addTextChangedListener(textWatcher);
         lastname.addTextChangedListener(textWatcher);
         email.addTextChangedListener(textWatcher);
+
         genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -86,18 +87,22 @@ public class LoginFragment extends Fragment {
                 }
             }
         });
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginRequest = true;
                 registerRequest = false;
+                Log.i(TAG, "loginRequest=true");
             }
         });
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 registerRequest = true;
                 loginRequest = false;
+                Log.i(TAG, "registerRequest=true");
             }
         });
 
@@ -128,7 +133,13 @@ public class LoginFragment extends Fragment {
         request.setFirstname(firstname.getText().toString());
         request.setEmail(email.getText().toString());
         request.setGender(gender);
-        // login or register?
+        if (loginRequest) {
+            request.setLoginRequest(true);
+            request.setRegisterRequest(false);
+        } else if (registerRequest) {
+            request.setRegisterRequest(true);
+            request.setLoginRequest(false);
+        }
         return request;
     }
 
