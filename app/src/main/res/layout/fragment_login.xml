@@ -10,15 +10,16 @@
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="368dp"
+        android:layout_height="451dp"
         android:columnCount="2">
 
         <TextView
             android:layout_columnSpan="2"
             android:layout_gravity="center_horizontal"
             android:text="login i guess"
+            android:layout_margin="15dp"
             android:textColor="@color/primaryTextColor"
-            android:textSize="32sp" />
+            android:textSize="32dp" />
 
         <TextView
             android:layout_gravity="left"
@@ -112,28 +113,35 @@
             android:ems="10"
             android:inputType="text" />
 
+        <TextView
+            android:layout_gravity="left"
+            android:text="gender"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/button_male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="male" />
+
+            <RadioButton
+                android:id="@+id/button_female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="female" />
+        </RadioGroup>
     </GridLayout>
-
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal" >
-
-        <RadioButton
-            android:id="@+id/button_male"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="male" />
-
-        <RadioButton
-            android:id="@+id/button_female"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="female" />
-    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -142,39 +150,18 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_signin"
-            style="?android:attr/buttonBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:drawablePadding="20dp"
-            android:minWidth="2dp"
-            android:minHeight="60dp"
-            android:padding="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_margin="30dp"
+            android:id="@+id/button_login"
+            style="@style/LoginButton"
+            android:background="@drawable/buttonshape"
             android:text="sign in"
-            app:cornerRadius="30dp"
-            <!--app:cornerRadius="@dimen/default_gap"-->
-            app:insetLeft="@dimen/default_gap"
-            app:insetRight="@dimen/default_gap"
             />
 
         <Button
             android:id="@+id/button_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="30dp"
-            app:cornerRadius="30dp"
-            android:minWidth="2dp"
-            android:minHeight="60dp"
-            android:padding="10dp"
-            style="?android:attr/buttonBarStyle"
-            android:layout_gravity="center_horizontal"
-            android:text="register" />
+            style="@style/LoginButton"
+            android:text="register"
+            android:background="@drawable/buttonshape"
+            />
     </LinearLayout>
 
 </LinearLayout>
