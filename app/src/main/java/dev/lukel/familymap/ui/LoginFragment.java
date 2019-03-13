@@ -15,8 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
-import dev.lukel.familymap.model.LoginRequest;
-import dev.lukel.familymap.model.RegisterRequest;
+import dev.lukel.familymap.net.request.ClientLoginRequest;
 
 public class LoginFragment extends Fragment {
 
@@ -118,7 +117,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void onSubmitRequest() {
-        LoginRequest request = getLoginRequest();
+        ClientLoginRequest request = getClientLoginRequest();
         Log.i(TAG, request.toString());
         if (loginRequest) {
             if (!checkValidLogin(request)) {
@@ -146,8 +145,8 @@ public class LoginFragment extends Fragment {
         }
     };
 
-    private LoginRequest getLoginRequest() {
-        LoginRequest request = new LoginRequest();
+    private ClientLoginRequest getClientLoginRequest() {
+        ClientLoginRequest request = new ClientLoginRequest();
         request.setServerHost(serverHost.getText().toString());
         request.setServerPort(serverPort.getText().toString());
         request.setUsername(username.getText().toString());
@@ -156,17 +155,13 @@ public class LoginFragment extends Fragment {
         request.setLastname(lastname.getText().toString());
         request.setEmail(email.getText().toString());
         request.setGender(gender);
-        if (loginRequest) {
-            request.setLoginRequest(true);
-            request.setRegisterRequest(false);
-        } else if (registerRequest) {
-            request.setRegisterRequest(true);
-            request.setLoginRequest(false);
+        if (registerRequest) {
+            // TODO
         }
         return request;
     }
 
-    private boolean checkValidLogin(LoginRequest request) {
+    private boolean checkValidLogin(ClientLoginRequest request) {
         return (loginRequest && !"".equals(request.getUsername()) && !"".equals(request.getPassword())
                 && !"".equals(request.getServerHost()) && !"".equals(request.getServerPort()));
     }

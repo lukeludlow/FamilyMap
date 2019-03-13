@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ErrorResponse {
     private String message;
-    public ErrorResponse(message.response.ResponseException exception) {
+    public ErrorResponse(ResponseException exception) {
         this.message = exception.getMessage();
     }
 }

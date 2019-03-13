@@ -9,8 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import dev.lukel.familymap.net.request.LoginRequest;
+import dev.lukel.familymap.net.request.RegisterRequest;
 import dev.lukel.familymap.net.response.LoginResponse;
+import dev.lukel.familymap.net.response.RegisterResponse;
+import lombok.Data;
 
+@Data
 public class ServerProxy {
 
     private String host;
@@ -19,6 +23,10 @@ public class ServerProxy {
     public ServerProxy(String host, String port) {
         this.host = host;
         this.port = port;
+    }
+
+    public URL buildURL(String methodName) throws Exception {
+        return new URL("http://" + host + ":" + port + methodName);
     }
 
     // TODO handle exceptions properly
@@ -45,6 +53,29 @@ public class ServerProxy {
         return null;
     }
 
+    public RegisterResponse register(RegisterRequest request) throws Exception {
+
+        URL url = new URL("http://" + host + ":" + port + "/user/register");
+        HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
+        httpConnection.setRequestMethod("POST");
+        httpConnection.setDoOutput(true); // there is a request body
+        httpConnection.connect();
+        String loginInfo = Encoder.serialize(request);
+        OutputStream requestBody = httpConnection.getOutputStream();
+        requestBody.write(loginInfo.getBytes());
+        requestBody.close();
+
+        RegisterResponse response;
+        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            response = Encoder.deserialize(readResponseBody(httpConnection), RegisterResponse.class);
+            System.out.println("response:");
+            System.out.println(response.toString());
+            return response;
+        }
+
+        return null;
+
+    }
 
     private static String readResponseBody(HttpURLConnection httpConnection) throws IOException {
         InputStream inputStream = httpConnection.getInputStream();
