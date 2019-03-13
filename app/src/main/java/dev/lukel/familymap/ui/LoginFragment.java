@@ -15,7 +15,10 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
+import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
+import dev.lukel.familymap.net.request.LoginRequest;
+import dev.lukel.familymap.net.response.LoginResponse;
 
 public class LoginFragment extends Fragment {
 
@@ -97,7 +100,18 @@ public class LoginFragment extends Fragment {
                 Log.i(TAG, "loginRequest=true");
                 Log.i(TAG, "sending login request...");
                 Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
-                onSubmitRequest();
+                // 10.0.2.2 is how to access localhost within the android vm
+                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
+                LoginRequest request = getClientLoginRequest().convertToLoginRequest();
+                LoginResponse response = null;
+                try {
+                    response = proxy.login(request);
+                } catch (Exception e) {
+                    Log.e(TAG, ("error: " + e.getMessage()));
+                    return;
+                }
+                Log.i(TAG, "response:\n" + response.toString());
+                Toast.makeText(getActivity(), "response: " + response.toString(), Toast.LENGTH_LONG).show();
             }
         });
 

@@ -27,4 +27,11 @@ public class ClientLoginRequest {
         return request;
     }
 
+    public LoginRequest convertToLoginRequest() {
+        LoginRequest request = new LoginRequest();
+        request.setUserName(this.username);
+        request.setPassword(this.password);
+        return request;
+    }
+
 }
