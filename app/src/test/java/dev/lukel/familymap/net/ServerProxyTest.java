@@ -3,9 +3,11 @@ package dev.lukel.familymap.net;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import dev.lukel.familymap.net.request.EventsRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
+import dev.lukel.familymap.net.response.EventsResponse;
 import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
@@ -82,6 +84,22 @@ class ServerProxyTest {
         PeopleResponse expected;
         PeopleResponse actual;
         actual = proxy.getPeople(request);
+        assertNotNull(actual);
+        System.out.println(actual);
+    }
+
+    @Test
+    void testGetEvents() throws Exception {
+        // TODO use the fill service to set up this test
+        RegisterRequest registerRequest = new RegisterRequest("lukeludlow", "hunter2",
+                "ll@live.com", "luke",
+                "ludlow", "m");
+        ServerProxy proxy = new ServerProxy("localhost", "8080");
+        RegisterResponse registerResponse = proxy.register(registerRequest);
+        EventsRequest request = new EventsRequest(registerResponse.getAuthToken());
+        EventsResponse expected;
+        EventsResponse actual;
+        actual = proxy.getEvents(request);
         assertNotNull(actual);
         System.out.println(actual);
     }

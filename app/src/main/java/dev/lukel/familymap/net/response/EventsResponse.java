@@ -16,5 +16,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventsResponse extends AbstractResponse {
+
     private Event[] data;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Event e : data) {
+            sb.append(e.toString());
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
 }

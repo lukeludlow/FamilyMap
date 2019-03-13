@@ -8,9 +8,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import dev.lukel.familymap.net.request.EventsRequest;
 import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
+import dev.lukel.familymap.net.response.EventsResponse;
 import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
@@ -91,8 +93,24 @@ public class ServerProxy {
         PeopleResponse response;
         if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             response = Encoder.deserialize(readResponseBody(httpConnection), PeopleResponse.class);
-            System.out.println("response:");
-            System.out.println(response.toString());
+            return response;
+        }
+
+        return null;
+    }
+
+    public EventsResponse getEvents(EventsRequest request) throws Exception {
+
+        URL url = new URL("http://" + host + ":" + port + "/event");
+        HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
+        httpConnection.setRequestMethod("GET");
+        httpConnection.setDoOutput(false);
+        httpConnection.addRequestProperty("Authorization", request.getAuthToken());
+        httpConnection.connect();
+
+        EventsResponse response;
+        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            response = Encoder.deserialize(readResponseBody(httpConnection), EventsResponse.class);
             return response;
         }
 

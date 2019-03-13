@@ -15,5 +15,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PeopleResponse extends AbstractResponse {
+
     private Person[] data;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Person p : data) {
+            sb.append(p.toString());
+            sb.append('\n');
+        }
+        return sb.toString();
+    }
+
 }
