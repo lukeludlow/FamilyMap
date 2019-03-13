@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
+import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
 import lombok.Data;
@@ -75,6 +77,26 @@ public class ServerProxy {
 
         return null;
 
+    }
+
+    public PeopleResponse getPeople(PeopleRequest request) throws Exception {
+
+        URL url = new URL("http://" + host + ":" + port + "/person");
+        HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
+        httpConnection.setRequestMethod("GET");
+        httpConnection.setDoOutput(false);
+        httpConnection.addRequestProperty("Authorization", request.getAuthToken());
+        httpConnection.connect();
+
+        PeopleResponse response;
+        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            response = Encoder.deserialize(readResponseBody(httpConnection), PeopleResponse.class);
+            System.out.println("response:");
+            System.out.println(response.toString());
+            return response;
+        }
+
+        return null;
     }
 
     private static String readResponseBody(HttpURLConnection httpConnection) throws IOException {

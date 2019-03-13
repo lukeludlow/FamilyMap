@@ -6,9 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Person Request Body:
+ * Family Request Body:
  * {
- * "personID": "xxxxxxxx"
  * "authToken": "xxxxxxxx"
  * }
  */
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PersonRequest extends AbstractRequest {
-    private String personID;
+public class PeopleRequest extends AbstractRequest {
     private String authToken;
 }

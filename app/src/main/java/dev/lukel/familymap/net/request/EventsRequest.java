@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Family Request Body:
+ * History Request Body:
  * {
  * "authToken": "xxxxxxxx"
  * }
@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class FamilyRequest extends AbstractRequest {
+public class EventsRequest extends AbstractRequest {
     private String authToken;
 }

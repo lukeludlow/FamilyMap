@@ -4,10 +4,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dev.lukel.familymap.net.request.LoginRequest;
+import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
 import dev.lukel.familymap.net.response.LoginResponse;
+import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -67,7 +70,21 @@ class ServerProxyTest {
         assertEquals(expected, actual);
     }
 
-
+    @Test
+    void testGetPeople() throws Exception {
+        // TODO use the fill service to set up this test
+        RegisterRequest registerRequest = new RegisterRequest("lukeludlow", "hunter2",
+                "ll@live.com", "luke",
+                "ludlow", "m");
+        ServerProxy proxy = new ServerProxy("localhost", "8080");
+        RegisterResponse registerResponse = proxy.register(registerRequest);
+        PeopleRequest request = new PeopleRequest(registerResponse.getAuthToken());
+        PeopleResponse expected;
+        PeopleResponse actual;
+        actual = proxy.getPeople(request);
+        assertNotNull(actual);
+        System.out.println(actual);
+    }
 
 
 

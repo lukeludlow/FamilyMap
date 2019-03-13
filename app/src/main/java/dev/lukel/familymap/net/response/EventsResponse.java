@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoryResponse extends AbstractResponse {
+public class EventsResponse extends AbstractResponse {
     private Event[] data;
 }
