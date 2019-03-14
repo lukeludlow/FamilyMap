@@ -76,28 +76,28 @@ public class ServerProxy {
         }
     }
 
-    public RegisterResponse register(RegisterRequest request) throws Exception {
-
-        URL url = new URL("http://" + host + ":" + port + "/user/register");
-        HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
-        httpConnection.setRequestMethod("POST");
-        httpConnection.setDoOutput(true); // there is a request body
-        httpConnection.connect();
-        String loginInfo = Encoder.serialize(request);
-        OutputStream requestBody = httpConnection.getOutputStream();
-        requestBody.write(loginInfo.getBytes());
-        requestBody.close();
-
-        RegisterResponse response;
-        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+    public RegisterResponse register(RegisterRequest request) throws NetException {
+        try {
+            URL url = new URL("http://" + host + ":" + port + "/user/register");
+            HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
+            httpConnection.setRequestMethod("POST");
+            httpConnection.setDoOutput(true); // there is a request body
+            httpConnection.connect();
+            String loginInfo = Encoder.serialize(request);
+            OutputStream requestBody = httpConnection.getOutputStream();
+            requestBody.write(loginInfo.getBytes());
+            requestBody.close();
+            if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new NetException("login failed: http response code not ok");
+            }
+            RegisterResponse response;
             response = Encoder.deserialize(readResponseBody(httpConnection), RegisterResponse.class);
             System.out.println("response:");
             System.out.println(response.toString());
             return response;
+        } catch (IOException e) {
+            throw new NetException("register failed. " + e.getMessage());
         }
-
-        return null;
-
     }
 
     public PeopleResponse getPeople(PeopleRequest request) throws NetException {

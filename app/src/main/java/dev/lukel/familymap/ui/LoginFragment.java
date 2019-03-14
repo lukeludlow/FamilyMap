@@ -26,8 +26,10 @@ import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.PeopleRequest;
+import dev.lukel.familymap.net.request.RegisterRequest;
 import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.PeopleResponse;
+import dev.lukel.familymap.net.response.RegisterResponse;
 
 public class LoginFragment extends Fragment {
 
@@ -49,6 +51,7 @@ public class LoginFragment extends Fragment {
 
     // TODO put this in a singleton the way it should be
     LoginResponse loginResponse;
+    RegisterResponse registerResponse;
     Person[] people;
 
     public LoginFragment() {
@@ -127,10 +130,11 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 registerRequest = true;
                 loginRequest = false;
-                Log.i(TAG, "registerRequest=true");
-                Log.i(TAG, "sending register request...");
                 Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
-                onSubmitRequest();
+                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
+                RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
+                RegisterResponse response = null;
+                new RegisterTask(getActivity()).execute(request);
             }
         });
 
@@ -162,13 +166,42 @@ public class LoginFragment extends Fragment {
                 return;
             }
             loginResponse = response;
-            // TODO display person's first and last names
             PeopleRequest peopleRequest = new PeopleRequest(loginResponse.getAuthToken());
             new GetPeopleTask(getActivity()).execute(peopleRequest);
             loginResultText.setText("login response: " + response.toString());
         }
     }
 
+    private class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterResponse> {
+        Activity context;
+        public RegisterTask(Activity context) {
+            this.context = context;
+        }
+        @Override
+        protected RegisterResponse doInBackground(RegisterRequest... params) {
+            RegisterRequest request = params[0];
+            RegisterResponse response = null;
+            try {
+                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
+                response = proxy.register(request);
+            } catch (NetException e) {
+                response = null;
+            }
+            return response;
+        }
+        @Override
+        protected void onPostExecute(RegisterResponse response) {
+            if (response == null) {
+                loginResultText.setText("error: unable to register. make sure you've filled in all required fields.");
+                return;
+            }
+            registerResponse = response;
+            PeopleRequest peopleRequest = new PeopleRequest(registerResponse.getAuthToken());
+            new GetPeopleTask(getActivity()).execute(peopleRequest);
+            loginResultText.setText("register response: " + response.toString());
+        }
+    } 
+    
     private class GetPeopleTask extends AsyncTask<PeopleRequest, Void, PeopleResponse> {
         Activity context;
         public GetPeopleTask(Activity context) {
@@ -191,13 +224,18 @@ public class LoginFragment extends Fragment {
             if (response == null) {
                 return;
             }
-            Log.i(TAG, "get people activity on post execute");
             people = response.getData();
+            Log.i(TAG, "searching for first and last name...");
+            String id = "";
+            if (loginRequest) {
+                id = loginResponse.getPersonID();
+            } else if (registerRequest) {
+                id = registerResponse.getPersonID();
+            }
             String personFirstname = "";
             String personLastname = "";
-            Log.i(TAG, "searching for first and last name...");
             for (Person p : people) {
-                if (p.getPersonID().equals(loginResponse.getPersonID())) {
+                if (p.getPersonID().equals(id)) {
                     personFirstname = p.getFirstName();
                     personLastname = p.getLastName();
                 }
@@ -206,20 +244,6 @@ public class LoginFragment extends Fragment {
         }
     }
 
-
-    private void onSubmitRequest() {
-        ClientLoginRequest request = getClientLoginRequest();
-        Log.i(TAG, request.toString());
-        if (loginRequest) {
-            if (!checkValidLogin(request)) {
-                Log.i(TAG, "invalid login request!");
-                Toast.makeText(getActivity(), "invalid login request!", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.i(TAG, "valid login request!");
-            }
-        }
-        // register request
-    }
 
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override
