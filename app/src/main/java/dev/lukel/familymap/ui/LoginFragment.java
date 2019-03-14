@@ -3,9 +3,9 @@ package dev.lukel.familymap.ui;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Contacts;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.Person;
-import dev.lukel.familymap.net.Encoder;
 import dev.lukel.familymap.net.NetException;
 import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
@@ -264,10 +263,17 @@ public class LoginFragment extends Fragment {
     };
 
     private void checkEnableLoginButton() {
-        if (!username.toString().equals("") && !password.toString().equals("")) {
-            loginButton.setEnabled(true);
-        } else {
+        if (TextUtils.isEmpty(username.getText().toString()) || TextUtils.isEmpty(password.getText().toString())) {
             loginButton.setEnabled(false);
+            Log.d(TAG, "login button disabled");
+            return;
+        }
+        if ("".equals(username.toString()) || "".equals(password.toString())) {
+            loginButton.setEnabled(false);
+            Log.d(TAG, "login button disabled");
+        } else {
+            loginButton.setEnabled(true);
+            Log.d(TAG, "login button enabled");
         }
     }
 
