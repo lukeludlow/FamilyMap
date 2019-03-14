@@ -1,5 +1,7 @@
 package dev.lukel.familymap.ui;
 
+import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -12,9 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
+import dev.lukel.familymap.net.NetException;
 import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
@@ -36,6 +40,7 @@ public class LoginFragment extends Fragment {
     private Button registerButton;
     private boolean loginRequest;
     private boolean registerRequest;
+    TextView loginResultText;
 
     public LoginFragment() {
         //
@@ -59,6 +64,7 @@ public class LoginFragment extends Fragment {
         genderSelection = (RadioGroup) v.findViewById(R.id.button_gender);
         loginButton = (Button) v.findViewById(R.id.button_login);
         registerButton = (Button) v.findViewById(R.id.button_register);
+        loginResultText = (TextView) v.findViewById(R.id.login_result_text);
 
         serverHost.addTextChangedListener(textWatcher);
         serverPort.addTextChangedListener(textWatcher);
@@ -67,6 +73,8 @@ public class LoginFragment extends Fragment {
         firstname.addTextChangedListener(textWatcher);
         lastname.addTextChangedListener(textWatcher);
         email.addTextChangedListener(textWatcher);
+        String s = "login result: ";
+        loginResultText.setText(s);
 
         genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -104,14 +112,21 @@ public class LoginFragment extends Fragment {
                 ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 LoginRequest request = getClientLoginRequest().convertToLoginRequest();
                 LoginResponse response = null;
-                try {
-                    response = proxy.login(request);
-                } catch (Exception e) {
-                    Log.e(TAG, ("error: " + e.getMessage()));
-                    return;
-                }
-                Log.i(TAG, "response:\n" + response.toString());
-                Toast.makeText(getActivity(), "response: " + response.toString(), Toast.LENGTH_LONG).show();
+
+                new LoginTask(getActivity()).execute(request);
+//                new LoginTask(getActivity(), getActivity().findViewById(R.id.login_result_text)).execute(request);
+
+
+
+//                try {
+//                    response = proxy.login(request);
+//                } catch (Exception e) {
+//                    Log.e(TAG, ("error: " + e.getMessage()));
+//                    return;
+//                }
+//                Log.i(TAG, "response:\n" + response.toString());
+//                Toast.makeText(getActivity(), "response: " + response.toString(), Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -129,6 +144,30 @@ public class LoginFragment extends Fragment {
 
         return v;
     }
+
+
+    private class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
+        Activity context;
+        public LoginTask(Activity context) {
+            this.context = context;
+        }
+        @Override
+        protected LoginResponse doInBackground(LoginRequest... params) {
+            LoginRequest request = params[0];
+            try {
+                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
+                return proxy._login(request);
+            } catch (NetException e) {
+                return null;
+            }
+        }
+        @Override
+        protected void onPostExecute(LoginResponse response) {
+            Log.i(TAG, "on post execute." + "\n" + response.toString());
+            loginResultText.setText("login response: " + response.toString());
+        }
+    }
+
 
     private void onSubmitRequest() {
         ClientLoginRequest request = getClientLoginRequest();
@@ -185,6 +224,8 @@ public class LoginFragment extends Fragment {
                 && password != null && firstname != null && lastname != null && email != null
                 && (gender.contains("m") || gender.contains("f")));
     }
+
+
 
 
 }

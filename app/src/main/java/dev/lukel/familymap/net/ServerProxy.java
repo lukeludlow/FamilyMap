@@ -41,41 +41,18 @@ public class ServerProxy {
         this.port = port;
     }
 
-    public LoginResponse login(LoginRequest request) throws NetException {
-        LoginTask loginTask = new LoginTask();
-        try {
-            LoginResponse res = loginTask.execute(request).get();
-            if (error != null) {
-                throw error;
-            }
-            return res;
-        } catch (ExecutionException | InterruptedException e) {
-            throw new NetException(e);
-        }
-    }
+//    public LoginResponse login(LoginRequest request) throws NetException {
+//        try {
+//            new LoginTask().execute(request);
+//        } catch (NullPointerException e) {
+//            throw new NetException("login failed. " + e.getMessage() + ". " + e.getClass());
+//        }
+//        return null;
+//    }
 
-    private class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
-        private NetException error;
-        @Override
-        protected LoginResponse doInBackground(LoginRequest... params) {
-            LoginRequest request = params[0];
-            try {
-                return _login(request);
-            } catch (NetException e) {
-                error = e;
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(LoginResponse response) {
-            if (error != null) {
-                setError(error);
-            }
-        }
-    }
 
     // TODO handle exceptions properly
-    private LoginResponse _login(LoginRequest request) throws NetException {
+    public LoginResponse _login(LoginRequest request) throws NetException {
         try {
             URL url = new URL("http://" + host + ":" + port + "/user/login");
             HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();

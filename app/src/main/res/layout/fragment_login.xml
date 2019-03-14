@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="650dp"
     android:layout_margin="16dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="451dp"
+        android:layout_height="wrap_content"
         android:columnCount="2">
 
         <TextView
             android:layout_columnSpan="2"
             android:layout_gravity="center_horizontal"
-            android:text="login i guess"
             android:layout_margin="15dp"
+            android:text="login i guess"
             android:textColor="@color/primaryTextColor"
             android:textSize="32dp" />
 
@@ -146,7 +145,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="70dp"
         android:layout_margin="20dp"
         android:orientation="horizontal">
 
@@ -154,15 +153,24 @@
             android:id="@+id/button_login"
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
-            android:text="sign in"
-            />
+            android:text="sign in" />
 
         <Button
             android:id="@+id/button_register"
             style="@style/LoginButton"
-            android:text="register"
             android:background="@drawable/buttonshape"
-            />
+            android:text="register" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/login_result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_gravity="left"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:text="login result: "
+        android:textSize="15sp"
+        android:typeface="monospace" />
 
 </LinearLayout>

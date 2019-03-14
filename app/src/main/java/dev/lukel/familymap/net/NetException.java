@@ -12,7 +12,7 @@ public class NetException extends Exception {
     public NetException(Exception e) {
         super(e);
     }
-    public NetException(String message, Exception cause) {
+    public NetException(String message, Throwable cause) {
         super(message, cause);
     }
 }

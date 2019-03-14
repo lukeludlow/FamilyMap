@@ -27,10 +27,19 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/LICENSE-notice.md'
+        exclude 'META-INF/plexus/components.xml'
+        exclude 'licenses/javolution.license.TXT'
+        exclude 'licenses/thoughtworks.TXT'
+        exclude 'org/cyberneko/html/res/HTMLspecial.properties'
+        exclude 'org/apache/maven/project/pom-4.0.0.xml'
+        exclude 'org/cyberneko/html/res/HTMLlat1.properties'
     }
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -47,6 +56,4 @@ dependencies {
     implementation 'com.android.support:gridlayout-v7:28.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
-    implementation 'org.robolectric:robolectric:4.2'
-    testImplementation 'org.robolectric:robolectric:4.2'
 }
