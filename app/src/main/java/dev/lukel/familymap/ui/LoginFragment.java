@@ -98,12 +98,14 @@ public class LoginFragment extends Fragment {
                             gender = "m";
                             Log.i(TAG, "male");
                         }
+                        checkEnableRegisterButton();
                         break;
                     case R.id.button_female:
                             if (isChecked) {
                                 gender = "m";
                                 Log.i(TAG, "female");
                             }
+                        checkEnableRegisterButton();
                         break;
                     default:
                         Log.i(TAG, "gender huh?");
@@ -256,9 +258,36 @@ public class LoginFragment extends Fragment {
         }
         @Override
         public void afterTextChanged(Editable s) {
-            //
+            checkEnableLoginButton();
+            checkEnableRegisterButton();
         }
     };
+
+    private void checkEnableLoginButton() {
+        if (!username.toString().equals("") && !password.toString().equals("")) {
+            loginButton.setEnabled(true);
+        } else {
+            loginButton.setEnabled(false);
+        }
+    }
+
+    private void checkEnableRegisterButton() {
+        if (username == null || password == null || firstname == null || lastname == null || email == null || gender == null) {
+            registerButton.setEnabled(false);
+            Log.d(TAG, "register button disabled. because null.");
+            return;
+        }
+        if (!"".equals(username.toString()) && !"".equals(password.toString())
+            && !"".equals(firstname.toString()) && !"".equals(lastname.toString())
+                && !"".equals(email.toString()) && (gender.equals("f") || gender.equals("m"))) {
+            registerButton.setEnabled(true);
+            Log.d(TAG, "register button disabled. because empty string.");
+        } else {
+            registerButton.setEnabled(false);
+            Log.d(TAG, "register button enabled.");
+        }
+    }
+
 
     private ClientLoginRequest getClientLoginRequest() {
         ClientLoginRequest request = new ClientLoginRequest();

@@ -153,12 +153,14 @@
             android:id="@+id/button_login"
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
+            android:enabled="false"
             android:text="sign in" />
 
         <Button
             android:id="@+id/button_register"
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
+            android:enabled="false"
             android:text="register" />
     </LinearLayout>
 
