@@ -9,7 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import dev.lukel.familymap.BuildConfig;
 import dev.lukel.familymap.net.request.EventsRequest;
@@ -31,26 +34,48 @@ public class ServerProxy {
     private String host;
     private String port;
     private LoginResponse loginResponse; // used by async task on post execute
+    private NetException error;
 
     public ServerProxy(String host, String port) {
         this.host = host;
         this.port = port;
     }
 
-    public LoginResponse login(LoginRequest request) throws Exception {
-        Log.i(TAG, "begin login service");
-        Log.i(TAG, "this.loginResponse == " + loginResponse);
+    public LoginResponse login(LoginRequest request) throws NetException {
         LoginTask loginTask = new LoginTask();
-        LoginResponse res = loginTask.execute(request).get();
-        Log.i(TAG, "after login task execute");
-        Log.i(TAG, "this.loginResponse == " + loginResponse);
-        Log.i(TAG, "loginTask.getStatus() == " + loginTask.getStatus());
-        return res;
+        try {
+            LoginResponse res = loginTask.execute(request).get();
+            if (error != null) {
+                throw error;
+            }
+            return res;
+        } catch (ExecutionException | InterruptedException e) {
+            throw new NetException(e);
+        }
     }
 
+    private class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
+        private NetException error;
+        @Override
+        protected LoginResponse doInBackground(LoginRequest... params) {
+            LoginRequest request = params[0];
+            try {
+                return _login(request);
+            } catch (NetException e) {
+                error = e;
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(LoginResponse response) {
+            if (error != null) {
+                setError(error);
+            }
+        }
+    }
 
     // TODO handle exceptions properly
-    private LoginResponse _login(LoginRequest request) {
+    private LoginResponse _login(LoginRequest request) throws NetException {
         try {
             URL url = new URL("http://" + host + ":" + port + "/user/login");
             HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
@@ -61,29 +86,16 @@ public class ServerProxy {
             OutputStream requestBody = httpConnection.getOutputStream();
             requestBody.write(loginInfo.getBytes());
             requestBody.close();
-
             LoginResponse response;
-            if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                response = Encoder.deserialize(readResponseBody(httpConnection), LoginResponse.class);
-                System.out.println("response:");
-                System.out.println(response.toString());
-                return response;
+            if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new NetException("login failed: http response code not ok");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-        return null;
-    }
-
-    public class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
-        @Override
-        protected LoginResponse doInBackground(LoginRequest... params) {
-            LoginRequest request = params[0];
-            return _login(request);
-        }
-        @Override
-        protected void onPostExecute(LoginResponse response) {
-            setLoginResponse(response);
+            response = Encoder.deserialize(readResponseBody(httpConnection), LoginResponse.class);
+            System.out.println("response:");
+            System.out.println(response.toString());
+            return response;
+        } catch (IOException e) {
+            throw new NetException("error: login failed.", e);
         }
     }
 
@@ -157,10 +169,5 @@ public class ServerProxy {
         }
         return sb.toString();
     }
-
-    public URL buildURL(String methodName) throws Exception {
-        return new URL("http://" + host + ":" + port + methodName);
-    }
-
 
 }
