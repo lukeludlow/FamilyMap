@@ -3,6 +3,7 @@ package dev.lukel.familymap.ui;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,11 +19,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
+import dev.lukel.familymap.model.Person;
+import dev.lukel.familymap.net.Encoder;
 import dev.lukel.familymap.net.NetException;
 import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
+import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.response.LoginResponse;
+import dev.lukel.familymap.net.response.PeopleResponse;
 
 public class LoginFragment extends Fragment {
 
@@ -41,6 +46,10 @@ public class LoginFragment extends Fragment {
     private boolean loginRequest;
     private boolean registerRequest;
     TextView loginResultText;
+
+    // TODO put this in a singleton the way it should be
+    LoginResponse loginResponse;
+    Person[] people;
 
     public LoginFragment() {
         //
@@ -73,8 +82,7 @@ public class LoginFragment extends Fragment {
         firstname.addTextChangedListener(textWatcher);
         lastname.addTextChangedListener(textWatcher);
         email.addTextChangedListener(textWatcher);
-        String s = "login result: ";
-        loginResultText.setText(s);
+        loginResultText.setText("login result: ");
 
         genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -105,28 +113,12 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 loginRequest = true;
                 registerRequest = false;
-                Log.i(TAG, "loginRequest=true");
-                Log.i(TAG, "sending login request...");
                 Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
                 // 10.0.2.2 is how to access localhost within the android vm
                 ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 LoginRequest request = getClientLoginRequest().convertToLoginRequest();
                 LoginResponse response = null;
-
                 new LoginTask(getActivity()).execute(request);
-//                new LoginTask(getActivity(), getActivity().findViewById(R.id.login_result_text)).execute(request);
-
-
-
-//                try {
-//                    response = proxy.login(request);
-//                } catch (Exception e) {
-//                    Log.e(TAG, ("error: " + e.getMessage()));
-//                    return;
-//                }
-//                Log.i(TAG, "response:\n" + response.toString());
-//                Toast.makeText(getActivity(), "response: " + response.toString(), Toast.LENGTH_LONG).show();
-
             }
         });
 
@@ -154,17 +146,63 @@ public class LoginFragment extends Fragment {
         @Override
         protected LoginResponse doInBackground(LoginRequest... params) {
             LoginRequest request = params[0];
+            LoginResponse response = null;
             try {
                 ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
-                return proxy._login(request);
+                response = proxy._login(request);
             } catch (NetException e) {
-                return null;
+                response = null;
             }
+            return response;
         }
         @Override
         protected void onPostExecute(LoginResponse response) {
-            Log.i(TAG, "on post execute." + "\n" + response.toString());
+            if (response == null) {
+                loginResultText.setText("error: unable to log in.");
+                return;
+            }
+            loginResponse = response;
+            // TODO display person's first and last names
+            PeopleRequest peopleRequest = new PeopleRequest(loginResponse.getAuthToken());
+            new GetPeopleTask(getActivity()).execute(peopleRequest);
             loginResultText.setText("login response: " + response.toString());
+        }
+    }
+
+    private class GetPeopleTask extends AsyncTask<PeopleRequest, Void, PeopleResponse> {
+        Activity context;
+        public GetPeopleTask(Activity context) {
+            this.context = context;
+        }
+        @Override
+        protected PeopleResponse doInBackground(PeopleRequest... params) {
+            PeopleRequest request = params[0];
+            PeopleResponse response = null;
+            try {
+                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
+                response = proxy.getPeople(request);
+            } catch (NetException e) {
+                response = null;
+            }
+            return response;
+        }
+        @Override
+        protected void onPostExecute(PeopleResponse response) {
+            if (response == null) {
+                return;
+            }
+            Log.i(TAG, "get people activity on post execute");
+            people = response.getData();
+            String personFirstname = "";
+            String personLastname = "";
+            Log.i(TAG, "searching for first and last name...");
+            for (Person p : people) {
+                if (p.getPersonID().equals(loginResponse.getPersonID())) {
+                    personFirstname = p.getFirstName();
+                    personLastname = p.getLastName();
+                }
+            }
+            Toast.makeText(getActivity(), "hello, " + personFirstname + " " + personLastname, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -72,7 +72,7 @@ public class ServerProxy {
             System.out.println(response.toString());
             return response;
         } catch (IOException e) {
-            throw new NetException("error: login failed.", e);
+            throw new NetException("login failed. " + e.getMessage());
         }
     }
 
@@ -100,22 +100,23 @@ public class ServerProxy {
 
     }
 
-    public PeopleResponse getPeople(PeopleRequest request) throws Exception {
-
-        URL url = new URL("http://" + host + ":" + port + "/person");
-        HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
-        httpConnection.setRequestMethod("GET");
-        httpConnection.setDoOutput(false);
-        httpConnection.addRequestProperty("Authorization", request.getAuthToken());
-        httpConnection.connect();
-
-        PeopleResponse response;
-        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+    public PeopleResponse getPeople(PeopleRequest request) throws NetException {
+        try {
+            URL url = new URL("http://" + host + ":" + port + "/person");
+            HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
+            httpConnection.setRequestMethod("GET");
+            httpConnection.setDoOutput(false);
+            httpConnection.addRequestProperty("Authorization", request.getAuthToken());
+            httpConnection.connect();
+            if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new NetException("get people failed: http response code not ok");
+            }
+            PeopleResponse response;
             response = Encoder.deserialize(readResponseBody(httpConnection), PeopleResponse.class);
             return response;
+        } catch (IOException e) {
+            throw new NetException("get people failed. " + e.getMessage());
         }
-
-        return null;
     }
 
     public EventsResponse getEvents(EventsRequest request) throws Exception {
