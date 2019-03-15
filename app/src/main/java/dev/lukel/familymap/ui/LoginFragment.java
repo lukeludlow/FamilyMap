@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
+import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.net.NetException;
 import dev.lukel.familymap.net.ServerProxy;
@@ -46,12 +47,7 @@ public class LoginFragment extends Fragment {
     private Button registerButton;
     private boolean loginRequest;
     private boolean registerRequest;
-    TextView loginResultText;
-
-    // TODO put this in a singleton the way it should be
-    LoginResponse loginResponse;
-    RegisterResponse registerResponse;
-    Person[] people;
+    private TextView loginResultText;
 
     public LoginFragment() {
         //
@@ -76,6 +72,8 @@ public class LoginFragment extends Fragment {
         loginButton = (Button) v.findViewById(R.id.button_login);
         registerButton = (Button) v.findViewById(R.id.button_register);
         loginResultText = (TextView) v.findViewById(R.id.login_result_text);
+        checkEnableLoginButton();
+        checkEnableRegisterButton();
 
         serverHost.addTextChangedListener(textWatcher);
         serverPort.addTextChangedListener(textWatcher);
@@ -166,8 +164,8 @@ public class LoginFragment extends Fragment {
                 loginResultText.setText("error: unable to log in.");
                 return;
             }
-            loginResponse = response;
-            PeopleRequest peopleRequest = new PeopleRequest(loginResponse.getAuthToken());
+            DataSingleton.setLoginResponse(response);
+            PeopleRequest peopleRequest = new PeopleRequest(DataSingleton.getLoginResponse().getAuthToken());
             new GetPeopleTask(getActivity()).execute(peopleRequest);
             loginResultText.setText("login response: " + response.toString());
         }
@@ -196,8 +194,8 @@ public class LoginFragment extends Fragment {
                 loginResultText.setText("error: unable to register. make sure you've filled in all required fields.");
                 return;
             }
-            registerResponse = response;
-            PeopleRequest peopleRequest = new PeopleRequest(registerResponse.getAuthToken());
+            DataSingleton.setRegisterResponse(response);
+            PeopleRequest peopleRequest = new PeopleRequest(DataSingleton.getRegisterResponse().getAuthToken());
             new GetPeopleTask(getActivity()).execute(peopleRequest);
             loginResultText.setText("register response: " + response.toString());
         }
@@ -225,17 +223,17 @@ public class LoginFragment extends Fragment {
             if (response == null) {
                 return;
             }
-            people = response.getData();
+            DataSingleton.setPeople(response.getData());
             Log.i(TAG, "searching for first and last name...");
             String id = "";
             if (loginRequest) {
-                id = loginResponse.getPersonID();
+                id = DataSingleton.getLoginResponse().getPersonID();
             } else if (registerRequest) {
-                id = registerResponse.getPersonID();
+                id = DataSingleton.getRegisterResponse().getPersonID();
             }
             String personFirstname = "";
             String personLastname = "";
-            for (Person p : people) {
+            for (Person p : DataSingleton.getPeople()) {
                 if (p.getPersonID().equals(id)) {
                     personFirstname = p.getFirstName();
                     personLastname = p.getLastName();
@@ -265,32 +263,22 @@ public class LoginFragment extends Fragment {
     private void checkEnableLoginButton() {
         if (TextUtils.isEmpty(username.getText().toString()) || TextUtils.isEmpty(password.getText().toString())) {
             loginButton.setEnabled(false);
-            Log.d(TAG, "login button disabled");
-            return;
-        }
-        if ("".equals(username.toString()) || "".equals(password.toString())) {
-            loginButton.setEnabled(false);
-            Log.d(TAG, "login button disabled");
+            loginButton.setAlpha(0.5f);
         } else {
             loginButton.setEnabled(true);
-            Log.d(TAG, "login button enabled");
+            loginButton.setAlpha(1.0f);
         }
     }
 
     private void checkEnableRegisterButton() {
-        if (username == null || password == null || firstname == null || lastname == null || email == null || gender == null) {
+        if (TextUtils.isEmpty(username.getText().toString()) || TextUtils.isEmpty(password.getText().toString())
+            || TextUtils.isEmpty(firstname.getText().toString()) || TextUtils.isEmpty(lastname.getText().toString())
+            || TextUtils.isEmpty(email.getText().toString()) || (genderSelection.getCheckedRadioButtonId() == -1)) {
             registerButton.setEnabled(false);
-            Log.d(TAG, "register button disabled. because null.");
-            return;
-        }
-        if (!"".equals(username.toString()) && !"".equals(password.toString())
-            && !"".equals(firstname.toString()) && !"".equals(lastname.toString())
-                && !"".equals(email.toString()) && (gender.equals("f") || gender.equals("m"))) {
-            registerButton.setEnabled(true);
-            Log.d(TAG, "register button disabled. because empty string.");
+            registerButton.setAlpha(0.5f);
         } else {
-            registerButton.setEnabled(false);
-            Log.d(TAG, "register button enabled.");
+            registerButton.setEnabled(true);
+            registerButton.setAlpha(1.0f);
         }
     }
 
@@ -310,19 +298,5 @@ public class LoginFragment extends Fragment {
         }
         return request;
     }
-
-    private boolean checkValidLogin(ClientLoginRequest request) {
-        return (loginRequest && !"".equals(request.getUsername()) && !"".equals(request.getPassword())
-                && !"".equals(request.getServerHost()) && !"".equals(request.getServerPort()));
-    }
-
-    private boolean checkValidRegister() {
-        return  (registerRequest && serverHost != null && serverPort != null && username != null
-                && password != null && firstname != null && lastname != null && email != null
-                && (gender.contains("m") || gender.contains("f")));
-    }
-
-
-
 
 }
