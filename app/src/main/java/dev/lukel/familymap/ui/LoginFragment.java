@@ -61,17 +61,17 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-        serverHost = (EditText) v.findViewById(R.id.server_host_edit_text);
-        serverPort = (EditText) v.findViewById(R.id.server_port_edit_text);
-        username = (EditText) v.findViewById(R.id.username_edit_text);
-        password = (EditText) v.findViewById(R.id.password_edit_text);
-        firstname = (EditText) v.findViewById(R.id.firstname_edit_text);
-        lastname = (EditText) v.findViewById(R.id.lastname_edit_text);
-        email = (EditText) v.findViewById(R.id.email_edit_text);
-        genderSelection = (RadioGroup) v.findViewById(R.id.button_gender);
-        loginButton = (Button) v.findViewById(R.id.button_login);
-        registerButton = (Button) v.findViewById(R.id.button_register);
-        loginResultText = (TextView) v.findViewById(R.id.login_result_text);
+        serverHost = v.findViewById(R.id.server_host_edit_text);
+        serverPort = v.findViewById(R.id.server_port_edit_text);
+        username = v.findViewById(R.id.username_edit_text);
+        password = v.findViewById(R.id.password_edit_text);
+        firstname = v.findViewById(R.id.firstname_edit_text);
+        lastname = v.findViewById(R.id.lastname_edit_text);
+        email = v.findViewById(R.id.email_edit_text);
+        genderSelection = v.findViewById(R.id.button_gender);
+        loginButton = v.findViewById(R.id.button_login);
+        registerButton = v.findViewById(R.id.button_register);
+        loginResultText = v.findViewById(R.id.login_result_text);
         checkEnableLoginButton();
         checkEnableRegisterButton();
 
@@ -87,7 +87,7 @@ public class LoginFragment extends Fragment {
         genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                RadioButton checkedRadioButton = group.findViewById(checkedId);
                 boolean isChecked = checkedRadioButton.isChecked();
                 switch (checkedId) {
                     case R.id.button_male:
@@ -116,7 +116,7 @@ public class LoginFragment extends Fragment {
                 loginRequest = true;
                 registerRequest = false;
                 Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
-                // 10.0.2.2 is how to access localhost within the android vm
+                // 10.0.2.2 accesses localhost within the android vm
                 ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 LoginRequest request = getClientLoginRequest().convertToLoginRequest();
                 LoginResponse response = null;
@@ -243,6 +243,8 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    // TODO find user's person object method
+
 
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -282,7 +284,6 @@ public class LoginFragment extends Fragment {
         }
     }
 
-
     private ClientLoginRequest getClientLoginRequest() {
         ClientLoginRequest request = new ClientLoginRequest();
         request.setServerHost(serverHost.getText().toString());
@@ -293,9 +294,6 @@ public class LoginFragment extends Fragment {
         request.setLastname(lastname.getText().toString());
         request.setEmail(email.getText().toString());
         request.setGender(gender);
-        if (registerRequest) {
-            // TODO
-        }
         return request;
     }
 

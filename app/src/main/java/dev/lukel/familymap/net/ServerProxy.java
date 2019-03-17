@@ -33,23 +33,13 @@ public class ServerProxy {
 
     private String host;
     private String port;
-    private LoginResponse loginResponse; // used by async task on post execute
+//    private LoginResponse loginResponse; // used by async task on post execute
     private NetException error;
 
     public ServerProxy(String host, String port) {
         this.host = host;
         this.port = port;
     }
-
-//    public LoginResponse login(LoginRequest request) throws NetException {
-//        try {
-//            new LoginTask().execute(request);
-//        } catch (NullPointerException e) {
-//            throw new NetException("login failed. " + e.getMessage() + ". " + e.getClass());
-//        }
-//        return null;
-//    }
-
 
     // TODO handle exceptions properly
     public LoginResponse _login(LoginRequest request) throws NetException {
@@ -119,22 +109,23 @@ public class ServerProxy {
         }
     }
 
-    public EventsResponse getEvents(EventsRequest request) throws Exception {
-
-        URL url = new URL("http://" + host + ":" + port + "/event");
-        HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
-        httpConnection.setRequestMethod("GET");
-        httpConnection.setDoOutput(false);
-        httpConnection.addRequestProperty("Authorization", request.getAuthToken());
-        httpConnection.connect();
-
-        EventsResponse response;
-        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+    public EventsResponse getEvents(EventsRequest request) throws NetException {
+        try {
+            URL url = new URL("http://" + host + ":" + port + "/event");
+            HttpURLConnection httpConnection = (HttpURLConnection)url.openConnection();
+            httpConnection.setRequestMethod("GET");
+            httpConnection.setDoOutput(false);
+            httpConnection.addRequestProperty("Authorization", request.getAuthToken());
+            httpConnection.connect();
+            if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new NetException("get events failed: http response code not ok");
+            }
+            EventsResponse response;
             response = Encoder.deserialize(readResponseBody(httpConnection), EventsResponse.class);
             return response;
+        } catch (IOException e) {
+            throw new NetException("get events failed. " + e.getMessage());
         }
-
-        return null;
     }
 
     private static String readResponseBody(HttpURLConnection httpConnection) throws IOException {

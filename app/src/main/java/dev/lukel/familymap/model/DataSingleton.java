@@ -1,9 +1,9 @@
 package dev.lukel.familymap.model;
 
+import android.content.res.Resources;
+
 import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
-import lombok.Data;
-import lombok.Singular;
 
 public final class DataSingleton {
 
@@ -23,6 +23,43 @@ public final class DataSingleton {
     private Person[] people;
     private Event[] events;
     private Person user;
+    private String authtoken;
+
+    public static String findAuthtoken() {
+        String foundToken = null;
+        if (DataSingleton.getLoginResponse() != null) {
+            foundToken = DataSingleton.getLoginResponse().getAuthToken();
+        } else if (DataSingleton.getRegisterResponse() != null) {
+            foundToken = DataSingleton.getRegisterResponse().getAuthToken();
+        }
+        return foundToken;
+    }
+
+    public static Person findPerson(String id) {
+        for (Person p : instance.people) {
+            if (p.getPersonID().equals(id)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+
+    public static Person findUser() throws {
+        String userID = "";
+        if (instance.loginResponse != null) {
+            userID = instance.loginResponse.getPersonID();
+        } else if (instance.registerResponse != null) {
+            userID = instance.registerResponse.getPersonID();
+        }
+        for (Person p : instance.people) {
+            if (p.getPersonID().equals(userID)) {
+                return p;
+            }
+        }
+//        throw new NoSuchFieldException("user not found");
+    }
+
 
     public static void setLoginResponse(LoginResponse response) {
         instance.loginResponse = response;

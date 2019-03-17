@@ -1,4 +1,4 @@
 package dev.lukel.familymap.net;
 
-public class Login {
+public class LoginService {
 }
