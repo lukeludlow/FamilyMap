@@ -158,7 +158,7 @@
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
             android:enabled="false"
-            android:text="sign in" />
+            android:text="login" />
 
         <Button
             android:id="@+id/button_register"

@@ -10,4 +10,6 @@
     <color name="primaryDarkColor">#81b9bf</color>
     <color name="primaryTextColor">#000000</color>
 
+    <color name="white">#FFFFFF</color>
+
 </resources>
