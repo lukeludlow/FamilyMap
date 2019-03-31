@@ -1,4 +1,4 @@
 package dev.lukel.familymap.net;
 
-public class Sync {
+public class RegisterTask {
 }

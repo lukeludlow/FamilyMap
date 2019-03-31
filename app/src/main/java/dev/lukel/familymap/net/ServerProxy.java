@@ -1,25 +1,17 @@
 package dev.lukel.familymap.net;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
-import dev.lukel.familymap.BuildConfig;
 import dev.lukel.familymap.net.request.EventsRequest;
 import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
-import dev.lukel.familymap.net.response.AsyncLoginResponse;
 import dev.lukel.familymap.net.response.EventsResponse;
 import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.LoginResponse;
@@ -42,7 +34,7 @@ public class ServerProxy {
     }
 
     // TODO handle exceptions properly
-    public LoginResponse _login(LoginRequest request) throws NetException {
+    public LoginResponse login(LoginRequest request) throws NetException {
         try {
             URL url = new URL("http://" + host + ":" + port + "/user/login");
             HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();

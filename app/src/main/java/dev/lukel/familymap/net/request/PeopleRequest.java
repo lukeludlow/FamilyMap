@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PeopleRequest extends AbstractRequest {
+public class PeopleRequest {
     private String authToken;
 }

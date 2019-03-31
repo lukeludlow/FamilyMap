@@ -1,7 +1,6 @@
 package dev.lukel.familymap.net.response;
 
 import dev.lukel.familymap.model.Event;
-import dev.lukel.familymap.net.response.AbstractResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventsResponse extends AbstractResponse {
+public class EventsResponse {
 
     private Event[] data;
 

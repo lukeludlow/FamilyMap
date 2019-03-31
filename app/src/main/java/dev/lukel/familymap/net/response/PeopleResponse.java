@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PeopleResponse extends AbstractResponse {
+public class PeopleResponse {
 
     private Person[] data;
 

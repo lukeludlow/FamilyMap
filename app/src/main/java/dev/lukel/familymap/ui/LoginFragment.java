@@ -21,8 +21,11 @@ import android.widget.Toast;
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Person;
+import dev.lukel.familymap.net.LoginTask;
 import dev.lukel.familymap.net.NetException;
+import dev.lukel.familymap.net.RegisterTask;
 import dev.lukel.familymap.net.ServerProxy;
+import dev.lukel.familymap.net.SyncDataTask;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.PeopleRequest;
@@ -31,7 +34,7 @@ import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements SyncDataTask.SyncDataResponse, LoginTask.LoginAsyncResponse {
 
     private final String TAG = "LOGIN_FRAGMENT";
     private EditText serverHost;
@@ -117,10 +120,8 @@ public class LoginFragment extends Fragment {
                 registerRequest = false;
                 Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
                 // 10.0.2.2 accesses localhost within the android vm
-                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 LoginRequest request = getClientLoginRequest().convertToLoginRequest();
-                LoginResponse response = null;
-                new LoginTask(getActivity()).execute(request);
+                startLoginTask(request);
             }
         });
 
@@ -133,117 +134,38 @@ public class LoginFragment extends Fragment {
                 ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
                 RegisterResponse response = null;
-                new RegisterTask(getActivity()).execute(request);
+//                new RegisterTask(getActivity()).execute(request);
             }
         });
 
         return v;
     }
 
-
-    private class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
-        Activity context;
-        public LoginTask(Activity context) {
-            this.context = context;
-        }
-        @Override
-        protected LoginResponse doInBackground(LoginRequest... params) {
-            LoginRequest request = params[0];
-            LoginResponse response = null;
-            try {
-                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
-                response = proxy._login(request);
-            } catch (NetException e) {
-                response = null;
-            }
-            return response;
-        }
-        @Override
-        protected void onPostExecute(LoginResponse response) {
-            if (response == null) {
-                loginResultText.setText("error: unable to log in.");
-                return;
-            }
-            DataSingleton.setLoginResponse(response);
-            PeopleRequest peopleRequest = new PeopleRequest(DataSingleton.getLoginResponse().getAuthToken());
-            new GetPeopleTask(getActivity()).execute(peopleRequest);
-            loginResultText.setText("login response: " + response.toString());
-        }
+    private void startLoginTask(LoginRequest request) {
+        new LoginTask(this).execute(request);
     }
 
-    private class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterResponse> {
-        Activity context;
-        public RegisterTask(Activity context) {
-            this.context = context;
-        }
-        @Override
-        protected RegisterResponse doInBackground(RegisterRequest... params) {
-            RegisterRequest request = params[0];
-            RegisterResponse response = null;
-            try {
-                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
-                response = proxy.register(request);
-            } catch (NetException e) {
-                response = null;
-            }
-            return response;
-        }
-        @Override
-        protected void onPostExecute(RegisterResponse response) {
-            if (response == null) {
-                loginResultText.setText("error: unable to register. make sure you've filled in all required fields.");
-                return;
-            }
-            DataSingleton.setRegisterResponse(response);
-            PeopleRequest peopleRequest = new PeopleRequest(DataSingleton.getRegisterResponse().getAuthToken());
-            new GetPeopleTask(getActivity()).execute(peopleRequest);
-            loginResultText.setText("register response: " + response.toString());
-        }
-    } 
-    
-    private class GetPeopleTask extends AsyncTask<PeopleRequest, Void, PeopleResponse> {
-        Activity context;
-        public GetPeopleTask(Activity context) {
-            this.context = context;
-        }
-        @Override
-        protected PeopleResponse doInBackground(PeopleRequest... params) {
-            PeopleRequest request = params[0];
-            PeopleResponse response = null;
-            try {
-                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
-                response = proxy.getPeople(request);
-            } catch (NetException e) {
-                response = null;
-            }
-            return response;
-        }
-        @Override
-        protected void onPostExecute(PeopleResponse response) {
-            if (response == null) {
-                return;
-            }
-            DataSingleton.setPeople(response.getData());
-            Log.i(TAG, "searching for first and last name...");
-            String id = "";
-            if (loginRequest) {
-                id = DataSingleton.getLoginResponse().getPersonID();
-            } else if (registerRequest) {
-                id = DataSingleton.getRegisterResponse().getPersonID();
-            }
-            String personFirstname = "";
-            String personLastname = "";
-            for (Person p : DataSingleton.getPeople()) {
-                if (p.getPersonID().equals(id)) {
-                    personFirstname = p.getFirstName();
-                    personLastname = p.getLastName();
-                }
-            }
-            Toast.makeText(getActivity(), "hello, " + personFirstname + " " + personLastname, Toast.LENGTH_LONG).show();
-        }
+    private void startSyncDataTask(String authtoken) {
+        new SyncDataTask(this).execute(authtoken);
     }
 
-    // TODO find user's person object method
+    @Override
+    public void syncDataComplete(String result) {
+        Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void loginComplete(LoginResponse response) {
+        if (response == null) {
+            Toast.makeText(getActivity(), "login failed", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        DataSingleton.setUsername(response.getUserName());
+        DataSingleton.setUserPersonID(response.getPersonID());
+        DataSingleton.setAuthtoken(response.getAuthToken());
+        Toast.makeText(getActivity(), "login complete!", Toast.LENGTH_SHORT).show();
+        startSyncDataTask(response.getAuthToken());
+    }
 
 
     private final TextWatcher textWatcher = new TextWatcher() {

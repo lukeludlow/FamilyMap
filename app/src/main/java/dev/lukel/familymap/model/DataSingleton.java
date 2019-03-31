@@ -18,21 +18,37 @@ public final class DataSingleton {
         return instance;
     }
 
-    private LoginResponse loginResponse;
-    private RegisterResponse registerResponse;
     private Person[] people;
     private Event[] events;
     private Person user;
+    private FamilyTree familyTree;
+    private String username;
+    private String userPersonID;
     private String authtoken;
 
-    public static String findAuthtoken() {
-        String foundToken = null;
-        if (DataSingleton.getLoginResponse() != null) {
-            foundToken = DataSingleton.getLoginResponse().getAuthToken();
-        } else if (DataSingleton.getRegisterResponse() != null) {
-            foundToken = DataSingleton.getRegisterResponse().getAuthToken();
-        }
-        return foundToken;
+
+    public static void setUsername(String s) {
+        instance.username = s;
+    }
+
+    public static String getUsername() {
+        return instance.username;
+    }
+
+    public static void setUserPersonID(String id) {
+        instance.userPersonID = id;
+    }
+
+    public static String getUserPersonID() {
+        return instance.userPersonID;
+    }
+
+    public static void setAuthtoken(String s) {
+        instance.authtoken = s;
+    }
+
+    public static String getAuthtoken() {
+        return instance.authtoken;
     }
 
     public static Person findPerson(String id) {
@@ -44,38 +60,25 @@ public final class DataSingleton {
         return null;
     }
 
+    public static void setUser(String username) {
 
-    public static Person findUser() throws {
-        String userID = "";
-        if (instance.loginResponse != null) {
-            userID = instance.loginResponse.getPersonID();
-        } else if (instance.registerResponse != null) {
-            userID = instance.registerResponse.getPersonID();
-        }
-        for (Person p : instance.people) {
-            if (p.getPersonID().equals(userID)) {
-                return p;
-            }
-        }
-//        throw new NoSuchFieldException("user not found");
     }
 
-
-    public static void setLoginResponse(LoginResponse response) {
-        instance.loginResponse = response;
-    }
-
-    public static LoginResponse getLoginResponse() {
-        return instance.loginResponse;
-    }
-
-    public static void setRegisterResponse(RegisterResponse response) {
-        instance.registerResponse = response;
-    }
-
-    public static RegisterResponse getRegisterResponse() {
-        return instance.registerResponse;
-    }
+//    public static Person findUser() {
+//        String userID = "";
+//        if (instance.loginResponse != null) {
+//            userID = instance.loginResponse.getPersonID();
+//        } else if (instance.registerResponse != null) {
+//            userID = instance.registerResponse.getPersonID();
+//        }
+//        for (Person p : instance.people) {
+//            if (p.getPersonID().equals(userID)) {
+//                return p;
+//            }
+//        }
+//        return null;
+////        throw new IllegalArgumentException("user not found");
+//    }
 
     public static void setPeople(Person[] people) {
         instance.people = people;

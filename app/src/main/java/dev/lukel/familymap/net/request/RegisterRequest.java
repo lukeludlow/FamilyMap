@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class RegisterRequest extends AbstractRequest {
+public class RegisterRequest {
     private String userName;
     private String password;
     private String email;
