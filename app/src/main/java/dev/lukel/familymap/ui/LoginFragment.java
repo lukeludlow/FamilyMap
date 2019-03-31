@@ -2,6 +2,7 @@ package dev.lukel.familymap.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -149,6 +150,14 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
     @Override
     public void syncDataComplete(String result) {
         Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+        swapMapFragment();
+    }
+
+    public void swapMapFragment() {
+        FamilyMapFragment familyMapFragment = new FamilyMapFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container_login, familyMapFragment);
+        transaction.commit();
     }
 
     @Override
