@@ -11,13 +11,13 @@ import dev.lukel.familymap.net.response.PeopleResponse;
 
 public class SyncDataTask extends AsyncTask<String, Integer, String> {
 
-    public interface SyncDataResponse {
+    public interface SyncDataAsyncListener {
         void syncDataComplete(String result);
     }
 
-    private SyncDataResponse delegate;
+    private SyncDataAsyncListener delegate;
 
-    public SyncDataTask(SyncDataResponse delegate) {
+    public SyncDataTask(SyncDataAsyncListener delegate) {
         this.delegate = delegate;
     }
 

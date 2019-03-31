@@ -1,7 +1,5 @@
 package dev.lukel.familymap.ui;
 
-import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -20,21 +18,17 @@ import android.widget.Toast;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
-import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.net.LoginTask;
-import dev.lukel.familymap.net.NetException;
 import dev.lukel.familymap.net.RegisterTask;
 import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.SyncDataTask;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
 import dev.lukel.familymap.net.request.LoginRequest;
-import dev.lukel.familymap.net.request.PeopleRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
 import dev.lukel.familymap.net.response.LoginResponse;
-import dev.lukel.familymap.net.response.PeopleResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
 
-public class LoginFragment extends Fragment implements SyncDataTask.SyncDataResponse, LoginTask.LoginAsyncResponse {
+public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyncListener, LoginTask.LoginAsyncListener, RegisterTask.RegisterAsyncListener {
 
     private final String TAG = "LOGIN_FRAGMENT";
     private EditText serverHost;
@@ -133,20 +127,23 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataResp
                 Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
                 ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
-                RegisterResponse response = null;
-//                new RegisterTask(getActivity()).execute(request);
+                startRegisterTask(request);
             }
         });
 
         return v;
     }
 
+    private void startSyncDataTask(String authtoken) {
+        new SyncDataTask(this).execute(authtoken);
+    }
+
     private void startLoginTask(LoginRequest request) {
         new LoginTask(this).execute(request);
     }
 
-    private void startSyncDataTask(String authtoken) {
-        new SyncDataTask(this).execute(authtoken);
+    private void startRegisterTask(RegisterRequest request) {
+        new RegisterTask(this).execute(request);
     }
 
     @Override
@@ -163,10 +160,15 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataResp
         DataSingleton.setUsername(response.getUserName());
         DataSingleton.setUserPersonID(response.getPersonID());
         DataSingleton.setAuthtoken(response.getAuthToken());
-        Toast.makeText(getActivity(), "login complete!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "login success", Toast.LENGTH_SHORT).show();
         startSyncDataTask(response.getAuthToken());
     }
 
+    @Override
+    public void registerComplete(RegisterResponse r) {
+        Toast.makeText(getActivity(), "register complete!", Toast.LENGTH_SHORT).show();
+        loginComplete(new LoginResponse(r.getAuthToken(), r.getUserName(), r.getPersonID()));
+    }
 
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override

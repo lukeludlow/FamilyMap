@@ -64,22 +64,6 @@ public final class DataSingleton {
 
     }
 
-//    public static Person findUser() {
-//        String userID = "";
-//        if (instance.loginResponse != null) {
-//            userID = instance.loginResponse.getPersonID();
-//        } else if (instance.registerResponse != null) {
-//            userID = instance.registerResponse.getPersonID();
-//        }
-//        for (Person p : instance.people) {
-//            if (p.getPersonID().equals(userID)) {
-//                return p;
-//            }
-//        }
-//        return null;
-////        throw new IllegalArgumentException("user not found");
-//    }
-
     public static void setPeople(Person[] people) {
         instance.people = people;
     }

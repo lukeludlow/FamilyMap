@@ -2,26 +2,23 @@ package dev.lukel.familymap.net;
 
 import android.os.AsyncTask;
 
-import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.response.LoginResponse;
-import lombok.Builder;
 
 public class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
 
-   public interface LoginAsyncResponse {
+   public interface LoginAsyncListener {
        void loginComplete(LoginResponse response);
    }
 
-   private LoginAsyncResponse delegate;
+   private LoginAsyncListener delegate;
 
-   public LoginTask(LoginAsyncResponse delegate) {
+   public LoginTask(LoginAsyncListener delegate) {
        this.delegate = delegate;
    }
 
    @Override
     protected LoginResponse doInBackground(LoginRequest... params) {
-
        LoginRequest request = params[0];
        LoginResponse response;
        ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
