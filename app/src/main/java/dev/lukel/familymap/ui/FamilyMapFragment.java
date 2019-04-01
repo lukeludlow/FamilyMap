@@ -16,9 +16,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
@@ -34,7 +39,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private GoogleMap map;
     private MapView mapView;
     private TextView eventDetailsView;
-
+    private EventMarkerColors eventMarkerColors;
 
     public static FamilyMapFragment newInstance() {
         return new FamilyMapFragment();
@@ -67,6 +72,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        eventMarkerColors = new EventMarkerColors();
         // add a marker, move camera
         double TMCB_LAT = 40.249678;
         double TMCB_LON = -111.650749;
@@ -111,14 +117,16 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         }
     }
 
-    public void addMarker(Event e) {
+    public Marker addMarker(Event e) {
         LatLng pos = getEventLatLng(e);
         MarkerOptions options = new MarkerOptions().position(pos).title("").icon(defaultMarker(HUE_CYAN));
         Marker marker = map.addMarker(options);
+        marker.setIcon(eventMarkerColors.getEventTypeColor(e.getEventType()));
         Person person = findEventPerson(e);
         marker.setTitle(person.getFirstName() + " " + person.getLastName() + "'s " + e.getEventType());
         marker.setSnippet(e.getCity() + ", " + e.getCountry() + ". " + e.getYear() + ".");
         marker.setTag(e.getEventID());
+        return marker;
     }
 
     public Person findEventPerson(Event e) {
@@ -135,7 +143,6 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                // textview set whatever
                 String text = marker.getTitle() + "\n" + marker.getSnippet();
                 eventDetailsView.setText(text);
                 return false;
