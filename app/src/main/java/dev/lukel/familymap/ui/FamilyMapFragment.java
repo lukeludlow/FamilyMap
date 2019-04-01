@@ -1,6 +1,5 @@
 package dev.lukel.familymap.ui;
 
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,10 +16,10 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +35,15 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultM
 public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
     private static final String TAG = "FamilyMapFragment";
+    private static final float SMALL_WIDTH = 2f;
+    private static final float NORMAL_WIDTH = 10f;
+    private static final float BIG_WIDTH = 20f;
     private GoogleMap map;
     private MapView mapView;
     private TextView eventDetailsView;
     private EventMarkerColors eventMarkerColors;
+    private Map<Event, Marker> eventsToMarkers;
+    private Map<Marker, Event> markersToEvents;
 
     public static FamilyMapFragment newInstance() {
         return new FamilyMapFragment();
@@ -73,6 +77,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         eventMarkerColors = new EventMarkerColors();
+        eventsToMarkers = new HashMap<>();
+        markersToEvents = new HashMap<>();
         // add a marker, move camera
         double TMCB_LAT = 40.249678;
         double TMCB_LON = -111.650749;
@@ -82,6 +88,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(tmcb, ZOOM_LEVEL));
         addAllEventMarkers();
         setMarkerListener();
+        drawLifeStories();
     }
 
     @Override
@@ -125,12 +132,24 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         Person person = findEventPerson(e);
         marker.setTitle(person.getFirstName() + " " + person.getLastName() + "'s " + e.getEventType());
         marker.setSnippet(e.getCity() + ", " + e.getCountry() + ". " + e.getYear() + ".");
-        marker.setTag(e.getEventID());
+        marker.setTag(e.getPersonID());
+        eventsToMarkers.put(e, marker);
+        markersToEvents.put(marker, e);
         return marker;
     }
 
     public Person findEventPerson(Event e) {
         String personID = e.getPersonID();
+        for (Person p : DataSingleton.getPeople()) {
+            if (p.getPersonID().equals(personID)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public Person findMarkerPerson(Marker m) {
+        String personID = m.getTag().toString();
         for (Person p : DataSingleton.getPeople()) {
             if (p.getPersonID().equals(personID)) {
                 return p;
@@ -149,6 +168,26 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
             }
         });
     }
+
+    void drawLifeStories() {
+        for (Marker m1 : markersToEvents.keySet()) {
+            for (Marker m2 : markersToEvents.keySet()) {
+                if (m1 != m2 && m1.getTag().toString().equals(m2.getTag().toString())) {
+                    int eventColor = eventMarkerColors.getEventTypeColorInt(markersToEvents.get(m1).getEventType());
+                    drawLine(m1.getPosition(), m2.getPosition(), eventColor, SMALL_WIDTH);
+                }
+            }
+        }
+    }
+
+    void drawLine(LatLng point1, LatLng point2, int color, float width) {
+        PolylineOptions options = new PolylineOptions();
+        options.add(point1, point2);
+        options.color(color);
+        options.width(width);
+        map.addPolyline(options);
+    }
+
 
 
 }
