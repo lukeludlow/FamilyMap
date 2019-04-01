@@ -14,14 +14,26 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="5"
+        android:layout_margin="20dp"
         />
 
     <TextView
         android:id="@+id/event_details"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0px"
-        android:text="Hello World!"
+        android:layout_gravity="center_horizontal|left"
+        android:layout_margin="10dp"
         android:layout_weight="1"
+        android:padding="10dp"
+        android:text="Hello World!"
+        android:textSize="24sp"
+        android:maxLines="2"
+        android:scrollHorizontally="false"
+        android:ellipsize="none"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="14dp"
+        android:autoSizeMaxTextSize="24dp"
+        android:autoSizeStepGranularity="2dp"
         />
 
 </LinearLayout>
