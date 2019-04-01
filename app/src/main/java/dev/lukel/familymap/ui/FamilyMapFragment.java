@@ -25,7 +25,6 @@ import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
 
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_BLUE;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker;
 
@@ -71,10 +70,12 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         // add a marker, move camera
         double TMCB_LAT = 40.249678;
         double TMCB_LON = -111.650749;
-        float ZOOM_LEVEL = 18.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
+        float ZOOM_LEVEL = 3.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
         LatLng tmcb = new LatLng(TMCB_LAT, TMCB_LON);
-        map.addMarker(new MarkerOptions().position(tmcb).title("current location: TMCB"));
+        map.addMarker(new MarkerOptions().position(tmcb).title("TMCB").snippet("current location. 2019."));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(tmcb, ZOOM_LEVEL));
+        addAllEventMarkers();
+        setMarkerListener();
     }
 
     @Override
@@ -115,12 +116,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         MarkerOptions options = new MarkerOptions().position(pos).title("").icon(defaultMarker(HUE_CYAN));
         Marker marker = map.addMarker(options);
         Person person = findEventPerson(e);
-        marker.setTitle(person.getFirstName() + ", " + person.getLastName() + "'s " + e.getEventType());
-        marker.setSnippet(
-                person.getFirstName() + " " + person.getLastName() +
-                        "\n" + e.getEventType() +
-                        "\n" + e.getCity() + ", " + e.getCountry() + ". " + e.getYear()
-        );
+        marker.setTitle(person.getFirstName() + " " + person.getLastName() + "'s " + e.getEventType());
+        marker.setSnippet(e.getCity() + ", " + e.getCountry() + ". " + e.getYear() + ".");
         marker.setTag(e.getEventID());
     }
 
@@ -139,7 +136,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
             @Override
             public boolean onMarkerClick(Marker marker) {
                 // textview set whatever
-                String description = marker.
+                String text = marker.getTitle() + "\n" + marker.getSnippet();
+                eventDetailsView.setText(text);
                 return false;
             }
         });
