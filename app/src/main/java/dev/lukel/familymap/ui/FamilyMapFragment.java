@@ -1,5 +1,6 @@
 package dev.lukel.familymap.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -102,6 +103,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         switch (item.getItemId()) {
             case R.id.search:
                 Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.filter:
                 Toast.makeText(getActivity(), "filter", Toast.LENGTH_SHORT).show();

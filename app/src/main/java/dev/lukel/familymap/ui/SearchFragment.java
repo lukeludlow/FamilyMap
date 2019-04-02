@@ -9,15 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Arrays;
 import java.util.List;
 
 import dev.lukel.familymap.R;
+import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
 
 public class SearchFragment extends Fragment {
 
     private RecyclerView searchRecyclerView;
+    private SearchAdapter adapter;
 
     public SearchFragment() {}
 
@@ -41,27 +44,29 @@ public class SearchFragment extends Fragment {
 
     private class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
         List<Person> people;
-        List<Event> events;
-        public SearchAdapter(List<Person> p, List<Event> e) {
+        public SearchAdapter(List<Person> p) {
             people = p;
-            events = e;
         }
-
         @Override
-        public SearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        @NonNull
+        public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             return new SearchViewHolder(inflater, parent);
         }
-
         @Override
         public void onBindViewHolder(@NonNull SearchViewHolder searchViewHolder, int i) {
 
         }
-
         @Override
         public int getItemCount() {
-            return people.size() + events.size();
+            return people.size();
         }
+    }
+
+    private void updateUI() {
+        List<Person> people = Arrays.asList(DataSingleton.getPeople());
+        adapter = new SearchAdapter(people);
+        searchRecyclerView.setAdapter(adapter);
     }
 
 }

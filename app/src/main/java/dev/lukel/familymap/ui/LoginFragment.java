@@ -126,7 +126,6 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
                 registerRequest = true;
                 loginRequest = false;
                 Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
-                ServerProxy proxy = new ServerProxy("10.0.2.2", "8080");
                 RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
                 startRegisterTask(request);
             }
