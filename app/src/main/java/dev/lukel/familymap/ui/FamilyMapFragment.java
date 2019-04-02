@@ -102,7 +102,6 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search:
-                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 startActivity(intent);
                 return true;

@@ -2,7 +2,9 @@ package dev.lukel.familymap.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -134,5 +136,21 @@ public class SearchFragment extends Fragment {
             updateUI();
         }
     };
+
+
+    // i don't really need these, it's not working anyways
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("searchText", searchText.getText().toString());
+    }
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.containsKey("searchText")) {
+            searchText.setText(savedInstanceState.getString("searchText"));
+        }
+    }
+
 
 }
