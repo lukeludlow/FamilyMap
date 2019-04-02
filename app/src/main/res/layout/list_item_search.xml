@@ -3,13 +3,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="50dp">
 
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/list_item_search_image"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         app:srcCompat="@android:drawable/ic_input_delete" />
 
@@ -20,16 +20,16 @@
        android:layout_weight="5" >
 
        <TextView
-           android:id="@+id/textView"
+           android:id="@+id/list_item_search_title"
            android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:text="TextView" />
+           android:layout_height="match_parent"
+           android:text="none" />
 
        <TextView
-           android:id="@+id/textView2"
+           android:id="@+id/list_item_search_details"
            android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:text="TextView" />
+           android:layout_height="match_parent"
+           android:text="none" />
 
    </LinearLayout>
 
