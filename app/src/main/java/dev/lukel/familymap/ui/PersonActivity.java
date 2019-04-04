@@ -89,8 +89,7 @@ public class PersonActivity extends AppCompatActivity {
         public PersonAdapter(List<Person> p) {
             people = p;
         }
-        @NonNull
-        @Override
+        @Override @NonNull
         public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = getLayoutInflater();
             return new PersonViewHolder(inflater, parent);
@@ -160,8 +159,7 @@ public class PersonActivity extends AppCompatActivity {
                 return i;
             }
         }
-        @NonNull
-        @Override
+        @Override @NonNull
         public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = getLayoutInflater();
             return new EventViewHolder(inflater, parent);
