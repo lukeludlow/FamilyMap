@@ -1,10 +1,10 @@
 package dev.lukel.familymap.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -18,16 +18,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
-import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
+import dev.lukel.familymap.net.Encoder;
 
 public class SearchFragment extends Fragment {
 
@@ -46,9 +44,9 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "init search fragment");
         View v = inflater.inflate(R.layout.fragment_search, container, false);
-        searchRecyclerView = (RecyclerView) v.findViewById(R.id.search_recycler_view);
+        searchRecyclerView = v.findViewById(R.id.search_recycler_view);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        searchText = (EditText) v.findViewById(R.id.search_edit_text);
+        searchText = v.findViewById(R.id.search_edit_text);
         searchText.addTextChangedListener(textWatcher);
         updateUI();
         return v;
@@ -61,8 +59,8 @@ public class SearchFragment extends Fragment {
         public SearchViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_search, parent, false));
             itemView.setOnClickListener(this);
-            titleText = (TextView) itemView.findViewById(R.id.list_item_search_title);
-            descriptionText = (TextView) itemView.findViewById(R.id.list_item_search_details);
+            titleText = itemView.findViewById(R.id.list_item_search_title);
+            descriptionText = itemView.findViewById(R.id.list_item_search_details);
         }
         public void bind(Person p) {
             person = p;
@@ -71,6 +69,9 @@ public class SearchFragment extends Fragment {
         }
         @Override
         public void onClick(View view) {
+            Intent intent = new Intent(getActivity(), PersonActivity.class);
+            intent.putExtra("person", Encoder.serialize(person));
+            startActivity(intent);
             Toast.makeText(getActivity(), person.getFirstName() + " clicked!", Toast.LENGTH_SHORT).show();
         }
     }
