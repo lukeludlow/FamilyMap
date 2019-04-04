@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.PersonNode;
+import dev.lukel.familymap.model.RelativeUtils;
 import dev.lukel.familymap.net.Encoder;
 
 public class PersonActivity extends AppCompatActivity {
@@ -41,13 +43,12 @@ public class PersonActivity extends AppCompatActivity {
         genderText = findViewById(R.id.person_text_gender);
         familyRecyclerView = findViewById(R.id.person_family_recycler_view);
         familyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        familyRecyclerView.setAdapter(new PersonAdapter(DataSingleton.getFamilyTree().getAllPeople()));
         String bundlePerson = getIntent().getExtras().get("person").toString();
         root = Encoder.deserialize(bundlePerson, Person.class);
         firstnameText.setText(root.getFirstName());
         lastnameText.setText(root.getLastName());
         genderText.setText(root.getGender());
-        updatePersonRecycler(root);
+        updateFamilyRecycler(root);
     }
 
     private class PersonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -65,7 +66,7 @@ public class PersonActivity extends AppCompatActivity {
         public void bind(Person p) {
             person = p;
             name.setText(p.getFirstName() + " " + p.getLastName());
-            details.setText("relationship?");
+            details.setText(RelativeUtils.getRelationshipType(root, p));
         }
         @Override
         public void onClick(View v) {
@@ -95,12 +96,12 @@ public class PersonActivity extends AppCompatActivity {
         }
     }
 
-    private void updatePersonRecycler(Person root) {
+    private void updateFamilyRecycler(Person root) {
         PersonNode rootNode = DataSingleton.getFamilyTree().getPersonToNodeMap().get(root);
-        Log.i(TAG, "updatePersonRecycler");
+        Log.i(TAG, "updateFamilyRecycler");
         Log.i(TAG, "rootNode.getRelatives().size(): " + rootNode.getRelatives().size());
-        Log.i(TAG, "rootNode.getMom().getPerson().getFirstName(): " + rootNode.getMom().getPerson().getFirstName());
-        personAdapter = new PersonAdapter(rootNode.getRelatives());
+        Log.i(TAG, "rootNode.getMom().getFirstName(): " + rootNode.getMom().getFirstName());
+        personAdapter = new PersonAdapter(new ArrayList<>(rootNode.getRelatives()));
         familyRecyclerView.setAdapter(personAdapter);
     }
 

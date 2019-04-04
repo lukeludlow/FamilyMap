@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,21 +45,21 @@ public class FamilyTree {
 
     public PersonNode buildPersonNode(Person p) {
         PersonNode node = new PersonNode(p);
-        node.setRelatives(new ArrayList<Person>());
-        for (Person person : allPeople) {
-            if (!personToNodeMap.containsKey(person)) {
-                continue;
-            }
-            if (person.getPersonID().equals(p.getMother())) {
-                node.setMom(personToNodeMap.get(person));
-                node.getRelatives().add(person);
-            } else if (person.getPersonID().equals(p.getFather())) {
-                node.setDad(personToNodeMap.get(person));
-                node.getRelatives().add(person);
-            } else if (!TextUtils.isEmpty(person.getFather()) && !TextUtils.isEmpty(person.getMother())) {
-                if (person.getFather().equals(p.getPersonID()) || person.getMother().equals(p.getPersonID())) {
-                    node.setChild(personToNodeMap.get(person));
-                    node.getRelatives().add(person);
+        node.setRelatives(new HashSet<>());
+        for (Person familyMember : allPeople) {
+            if (familyMember.getPersonID().equals(p.getMother())) {
+                node.setMom(familyMember);
+                node.getRelatives().add(familyMember);
+            } else if (familyMember.getPersonID().equals(p.getFather())) {
+                node.setDad(familyMember);
+                node.getRelatives().add(familyMember);
+            } else if (familyMember.getPersonID().equals(p.getSpouse())) {
+                node.setSpouse(familyMember);
+                node.getRelatives().add(familyMember);
+            } else if (!TextUtils.isEmpty(familyMember.getFather()) && !TextUtils.isEmpty(familyMember.getMother())) {
+                if (familyMember.getFather().equals(p.getPersonID()) || familyMember.getMother().equals(p.getPersonID())) {
+                    node.setChild(familyMember);
+                    node.getRelatives().add(familyMember);
                 }
             }
         }
@@ -74,7 +75,6 @@ public class FamilyTree {
         personToNodeMap = new HashMap<>();
         for (Person p : allPeople) {
             PersonNode node = buildPersonNode(p);
-            node = buildPersonNode(p);
             allNodes.add(node);
             personToNodeMap.put(p, node);
         }
