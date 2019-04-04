@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.PersonActivity">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:text="person info"
+        android:textSize="32dp" />
+
+
+    <TextView
+        android:id="@+id/person_text_firstname"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="firstname" />
+
+    <TextView
+        android:id="@+id/person_text_lastname"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="lastname" />
+
+    <TextView
+        android:id="@+id/person_text_gender"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="gender" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_margin="10dp"
+        android:text="family members" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/person_family_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_margin="10dp"
+        android:text="life events" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/person_life_events_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+
+
+
+</LinearLayout>
