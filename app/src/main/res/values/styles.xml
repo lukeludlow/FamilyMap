@@ -21,7 +21,7 @@
 
     <style name="LoginButton">
         <item name="android:background">@color/primaryDarkColor</item>
-        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_gravity">center_horizontal|bottom</item>
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:layout_weight">1</item>

@@ -31,8 +31,6 @@ import dev.lukel.familymap.net.response.RegisterResponse;
 public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyncListener, LoginTask.LoginAsyncListener, RegisterTask.RegisterAsyncListener {
 
     private final String TAG = "LOGIN_FRAGMENT";
-    private EditText serverHost;
-    private EditText serverPort;
     private EditText username;
     private EditText password;
     private EditText firstname;
@@ -42,13 +40,8 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
     private String gender;
     private Button loginButton;
     private Button registerButton;
-    private boolean loginRequest;
-    private boolean registerRequest;
-    private TextView loginResultText;
 
-    public LoginFragment() {
-        //
-    }
+    public LoginFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +51,6 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-        serverHost = v.findViewById(R.id.server_host_edit_text);
-        serverPort = v.findViewById(R.id.server_port_edit_text);
         username = v.findViewById(R.id.username_edit_text);
         password = v.findViewById(R.id.password_edit_text);
         firstname = v.findViewById(R.id.firstname_edit_text);
@@ -68,18 +59,14 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
         genderSelection = v.findViewById(R.id.button_gender);
         loginButton = v.findViewById(R.id.button_login);
         registerButton = v.findViewById(R.id.button_register);
-        loginResultText = v.findViewById(R.id.login_result_text);
         checkEnableLoginButton();
         checkEnableRegisterButton();
 
-        serverHost.addTextChangedListener(textWatcher);
-        serverPort.addTextChangedListener(textWatcher);
         username.addTextChangedListener(textWatcher);
         password.addTextChangedListener(textWatcher);
         firstname.addTextChangedListener(textWatcher);
         lastname.addTextChangedListener(textWatcher);
         email.addTextChangedListener(textWatcher);
-        loginResultText.setText("login result: ");
 
         genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -110,8 +97,6 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginRequest = true;
-                registerRequest = false;
                 Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
                 // 10.0.2.2 accesses localhost within the android vm
                 LoginRequest request = getClientLoginRequest().convertToLoginRequest();
@@ -122,8 +107,6 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerRequest = true;
-                loginRequest = false;
                 Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
                 RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
                 startRegisterTask(request);
@@ -217,8 +200,6 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
 
     private ClientLoginRequest getClientLoginRequest() {
         ClientLoginRequest request = new ClientLoginRequest();
-        request.setServerHost(serverHost.getText().toString());
-        request.setServerPort(serverPort.getText().toString());
         request.setUsername(username.getText().toString());
         request.setPassword(password.getText().toString());
         request.setFirstname(firstname.getText().toString());
