@@ -21,7 +21,6 @@ import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.net.LoginTask;
 import dev.lukel.familymap.net.RegisterTask;
-import dev.lukel.familymap.net.ServerProxy;
 import dev.lukel.familymap.net.SyncDataTask;
 import dev.lukel.familymap.net.request.ClientLoginRequest;
 import dev.lukel.familymap.net.request.LoginRequest;

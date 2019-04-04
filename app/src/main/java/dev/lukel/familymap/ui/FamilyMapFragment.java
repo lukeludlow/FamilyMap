@@ -16,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -64,7 +63,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         mapView = v.findViewById(R.id.mapview);
         mapView.onCreate(bundle);
         mapView.getMapAsync(this);
-        eventDetailsView = (TextView) v.findViewById(R.id.event_details);
+        eventDetailsView = v.findViewById(R.id.event_details);
         return v;
     }
 

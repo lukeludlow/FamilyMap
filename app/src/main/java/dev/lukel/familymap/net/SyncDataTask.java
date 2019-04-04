@@ -3,6 +3,7 @@ package dev.lukel.familymap.net;
 import android.os.AsyncTask;
 
 import dev.lukel.familymap.model.DataSingleton;
+import dev.lukel.familymap.model.FamilyTree;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.net.request.EventsRequest;
 import dev.lukel.familymap.net.request.PeopleRequest;
@@ -32,6 +33,7 @@ public class SyncDataTask extends AsyncTask<String, Integer, String> {
             DataSingleton.setPeople(peopleResponse.getData());
             DataSingleton.setEvents(eventsResponse.getData());
             findUser();
+            DataSingleton.setFamilyTree(new FamilyTree());
             message = "hello, " + DataSingleton.getUser().getFirstName() + " " + DataSingleton.getUser().getLastName();
         } catch (NetException e) {
             message = "error! sync data task failed";

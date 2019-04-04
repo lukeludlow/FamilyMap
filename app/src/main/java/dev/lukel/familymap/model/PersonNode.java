@@ -1,6 +1,7 @@
 package dev.lukel.familymap.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ public class PersonNode{
     private PersonNode mom;
     private PersonNode dad;
     private PersonNode spouse;
+    private PersonNode child;
+    private List<Person> relatives;
     private HashMap<String, Event> events; // key val is the event's type name
 
     public PersonNode(Person p) {
@@ -29,17 +32,20 @@ public class PersonNode{
 
     public void setMom(PersonNode mom) {
         this.mom = mom;
-        this.person.setMother(mom.getPersonID());
+        this.setMom(mom);
+        this.relatives.add(mom.getPerson());
     }
 
     public void setDad(PersonNode dad) {
         this.dad = dad;
-        this.person.setFather(dad.getPersonID());
+        this.setDad(dad);
+        this.relatives.add(dad.getPerson());
     }
 
     public void setSpouse(PersonNode spouse) {
-        this.spouse = spouse;
-        this.person.setSpouse(spouse.getPersonID());
+        spouse = spouse;
+        person.setSpouse(spouse.getPersonID());
+        relatives.add(spouse.getPerson());
     }
 
     public String getPersonID() {

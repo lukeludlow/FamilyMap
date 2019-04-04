@@ -26,6 +26,13 @@ public final class DataSingleton {
     private String userPersonID;
     private String authtoken;
 
+    public static void setFamilyTree(FamilyTree tree) {
+        instance.familyTree = tree;
+    }
+
+    public static FamilyTree getFamilyTree() {
+        return instance.familyTree;
+    }
 
     public static void setUsername(String s) {
         instance.username = s;
