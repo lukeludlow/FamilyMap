@@ -72,7 +72,6 @@ public class SearchFragment extends Fragment {
             Intent intent = new Intent(getActivity(), PersonActivity.class);
             intent.putExtra("person", Encoder.serialize(person));
             startActivity(intent);
-            Toast.makeText(getActivity(), person.getFirstName() + " clicked!", Toast.LENGTH_SHORT).show();
         }
     }
 
