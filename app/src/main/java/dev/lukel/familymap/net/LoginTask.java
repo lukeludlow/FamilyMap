@@ -11,10 +11,10 @@ public class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
        void loginComplete(LoginResponse response);
    }
 
-   private LoginAsyncListener delegate;
+   private LoginAsyncListener listener;
 
-   public LoginTask(LoginAsyncListener delegate) {
-       this.delegate = delegate;
+   public LoginTask(LoginAsyncListener listener) {
+       this.listener = listener;
    }
 
    @Override
@@ -32,7 +32,7 @@ public class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
 
    @Override
     protected void onPostExecute(LoginResponse response) {
-       delegate.loginComplete(response);
+       listener.loginComplete(response);
    }
 
 }

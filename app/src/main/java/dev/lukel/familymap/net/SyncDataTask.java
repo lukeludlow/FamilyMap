@@ -16,10 +16,10 @@ public class SyncDataTask extends AsyncTask<String, Integer, String> {
         void syncDataComplete(String result);
     }
 
-    private SyncDataAsyncListener delegate;
+    private SyncDataAsyncListener listener;
 
-    public SyncDataTask(SyncDataAsyncListener delegate) {
-        this.delegate = delegate;
+    public SyncDataTask(SyncDataAsyncListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SyncDataTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        delegate.syncDataComplete(result);
+        listener.syncDataComplete(result);
     }
 
     private void findUser() {

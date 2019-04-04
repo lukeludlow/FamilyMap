@@ -2,9 +2,7 @@ package dev.lukel.familymap.net;
 
 import android.os.AsyncTask;
 
-import dev.lukel.familymap.net.request.LoginRequest;
 import dev.lukel.familymap.net.request.RegisterRequest;
-import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
 
 public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterResponse> {
@@ -13,10 +11,10 @@ public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterRespo
         void registerComplete(RegisterResponse response);
     }
 
-    private RegisterAsyncListener delegate;
+    private RegisterAsyncListener listener;
 
-    public RegisterTask(RegisterAsyncListener delegate) {
-        this.delegate = delegate;
+    public RegisterTask(RegisterAsyncListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -34,7 +32,7 @@ public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterRespo
 
     @Override
     protected void onPostExecute(RegisterResponse response) {
-        delegate.registerComplete(response);
+        listener.registerComplete(response);
     }
 
 
