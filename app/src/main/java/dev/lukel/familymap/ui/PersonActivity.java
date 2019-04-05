@@ -131,9 +131,9 @@ public class PersonActivity extends AppCompatActivity {
         }
         @Override
         public void onClick(View v) {
-//            Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-//            intent.putExtra("person", Encoder.serialize(person));
-//            startActivity(intent);
+            Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+            intent.putExtra("event", Encoder.serialize(event));
+            startActivity(intent);
         }
     }
 

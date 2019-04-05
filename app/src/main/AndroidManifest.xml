@@ -20,12 +20,12 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-
+        <activity
+            android:name=".ui.EventActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.PersonActivity"
-            android:parentActivityName=".ui.MainActivity">
-        </activity>
-
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.SearchActivity"
             android:parentActivityName=".ui.MainActivity"
@@ -42,10 +42,12 @@
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" >
-            <!--android:launchMode="singleInstance" >-->
+            android:launchMode="singleTask">
+
+            <!-- android:launchMode="singleInstance" > -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

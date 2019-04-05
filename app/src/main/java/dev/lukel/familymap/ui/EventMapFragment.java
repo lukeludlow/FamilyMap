@@ -33,9 +33,9 @@ import dev.lukel.familymap.model.Person;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker;
 
-public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyCallback {
+public class EventMapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
-    private static final String TAG = "FamilyMapFragment";
+    private static final String TAG = "EVENT_MAP_FRAGMENT";
     private static final float SMALL_WIDTH = 2f;
     private static final float NORMAL_WIDTH = 10f;
     private static final float BIG_WIDTH = 20f;
@@ -46,14 +46,14 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private Map<Event, Marker> eventsToMarkers;
     private Map<Marker, Event> markersToEvents;
 
-    public static FamilyMapFragment newInstance() {
-        return new FamilyMapFragment();
+    public static EventMapFragment newInstance() {
+        return new EventMapFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
         getMapAsync(this);
         Log.i(TAG, "called getMapAsync inside onCreate");
     }
@@ -61,11 +61,12 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         super.onCreateView(layoutInflater, viewGroup, bundle);
-        View v = layoutInflater.inflate(R.layout.fragment_family_map, viewGroup, false);
-        mapView = v.findViewById(R.id.mapview);
+        View v = layoutInflater.inflate(R.layout.fragment_event_map, viewGroup, false);
+        mapView = v.findViewById(R.id.event_mapview);
         mapView.onCreate(bundle);
         mapView.getMapAsync(this);
-        eventDetailsView = v.findViewById(R.id.event_details);
+        eventDetailsView = v.findViewById(R.id.event_map_details);
+        Log.i(TAG, "finish onCreateView");
         return v;
     }
 
@@ -97,30 +98,6 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         float ZOOM_LEVEL = 3.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
         Marker marker = eventsToMarkers.get(e);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM_LEVEL));
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_family_map, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.search:
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.filter:
-                Toast.makeText(getActivity(), "filter", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.settings:
-                Toast.makeText(getActivity(), "settings", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     public LatLng getEventLatLng(Event e) {
@@ -186,6 +163,13 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         options.color(color);
         options.width(width);
         map.addPolyline(options);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Event e = ((EventActivity)getActivity()).getCurrentEvent();
+        moveToCurrentEvent(e);
     }
 
 

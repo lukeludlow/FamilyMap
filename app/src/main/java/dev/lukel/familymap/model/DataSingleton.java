@@ -2,8 +2,13 @@ package dev.lukel.familymap.model;
 
 import android.content.res.Resources;
 
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.Map;
+
 import dev.lukel.familymap.net.response.LoginResponse;
 import dev.lukel.familymap.net.response.RegisterResponse;
+import dev.lukel.familymap.ui.EventMarkerColors;
 
 public final class DataSingleton {
 
@@ -23,6 +28,28 @@ public final class DataSingleton {
     private String username;
     private String userPersonID;
     private String authtoken;
+    private EventMarkerColors eventMarkerColors;
+    private Map<Event, Marker> eventsToMarkers;
+    private Map<Marker, Event> markersToEvents;
+
+    public static void setEventMarkerColors(EventMarkerColors colors) {
+        instance.eventMarkerColors = colors;
+    }
+    public static void setEventsToMarkers(Map<Event, Marker> map) {
+        instance.eventsToMarkers = map;
+    }
+    public static void setMarkersToEvents(Map<Marker, Event> map) {
+        instance.markersToEvents = map;
+    }
+    public static EventMarkerColors getEventMarkerColors() {
+        return instance.eventMarkerColors;
+    }
+    public static Map<Event, Marker> getEventsToMarkers() {
+        return instance.eventsToMarkers;
+    }
+    public static Map<Marker, Event> getMarkersToEvents() {
+        return instance.markersToEvents;
+    }
 
     public static void setFamilyTree(FamilyTree tree) {
         instance.familyTree = tree;
