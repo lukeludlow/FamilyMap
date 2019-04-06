@@ -11,7 +11,7 @@ import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.net.Encoder;
 
-public class EventActivity extends FragmentActivity {
+public class EventActivity extends AppCompatActivity {
 
     private final String TAG = "EVENT_ACTIVITY";
     private Event currentEvent;
@@ -20,7 +20,7 @@ public class EventActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "creating new event activity...");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_event_map);
+        setContentView(R.layout.activity_event);
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("event")) {
             Log.i(TAG, "found event in bundle");
             String bundleEvent = getIntent().getExtras().get("event").toString();

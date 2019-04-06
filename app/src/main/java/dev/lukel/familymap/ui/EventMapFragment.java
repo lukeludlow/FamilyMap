@@ -53,7 +53,6 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
         getMapAsync(this);
         Log.i(TAG, "called getMapAsync inside onCreate");
     }
@@ -102,6 +101,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
         String text = marker.getTitle() + "\n" + marker.getSnippet();
         eventDetailsView.setText(text);
+        marker.showInfoWindow();
     }
 
     public LatLng getEventLatLng(Event e) {
@@ -168,14 +168,5 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         options.width(width);
         map.addPolyline(options);
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-//        Event e = ((EventActivity)getActivity()).getCurrentEvent();
-//        moveToCurrentEvent(e);
-    }
-
-
 
 }

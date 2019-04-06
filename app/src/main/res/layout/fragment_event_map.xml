@@ -9,12 +9,22 @@
     tools:context=".ui.EventMapFragment"
     >
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_margin="0dp"
+        android:gravity="center"
+        android:text="event info"
+        android:layout_weight="1"
+        android:textSize="34dp" />
+
+
     <com.google.android.gms.maps.MapView
         android:id="@+id/event_mapview"
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:layout_weight="5"
-        android:layout_margin="20dp"
+        android:layout_weight="8"
+        android:layout_margin="15dp"
         />
 
     <TextView
@@ -23,7 +33,7 @@
         android:layout_height="0px"
         android:layout_gravity="center_horizontal|left"
         android:layout_margin="10dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:padding="10dp"
         android:text="Hello World!"
         android:textSize="24sp"
