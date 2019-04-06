@@ -92,12 +92,16 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         addAllEventMarkers();
         setMarkerListener();
 //        drawLifeStories();
+        Event e = ((EventActivity)getActivity()).getCurrentEvent();
+        moveToCurrentEvent(e);
     }
 
     public void moveToCurrentEvent(Event e) {
-        float ZOOM_LEVEL = 3.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
+        float ZOOM = 14.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
         Marker marker = eventsToMarkers.get(e);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM_LEVEL));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
+        String text = marker.getTitle() + "\n" + marker.getSnippet();
+        eventDetailsView.setText(text);
     }
 
     public LatLng getEventLatLng(Event e) {
@@ -168,8 +172,8 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     @Override
     public void onStart() {
         super.onStart();
-        Event e = ((EventActivity)getActivity()).getCurrentEvent();
-        moveToCurrentEvent(e);
+//        Event e = ((EventActivity)getActivity()).getCurrentEvent();
+//        moveToCurrentEvent(e);
     }
 
 
