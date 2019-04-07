@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.PersonNode;
-import dev.lukel.familymap.model.RelativeUtils;
+import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.net.Encoder;
 
 public class PersonActivity extends AppCompatActivity {
@@ -74,7 +73,7 @@ public class PersonActivity extends AppCompatActivity {
         public void bind(Person p) {
             person = p;
             name.setText(p.getFirstName() + " " + p.getLastName());
-            details.setText(RelativeUtils.getRelationshipType(root, p));
+            details.setText(FamilyUtils.getRelationshipType(root, p));
         }
         @Override
         public void onClick(View v) {

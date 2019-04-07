@@ -13,14 +13,19 @@ import lombok.Data;
 @Data
 public class EventMarkerColors {
 
-//    private static final String PINK = "#990099";
-    private static final String MAGENTA = "#FF00FF";
-    private static final String CYAN = "#00CCCC";
-    private static final String NAVY_BLUE = "#000066";
-    private static final String PURPLE = "#CC00CC";
-    private static final String GREEN = "#00CC33";
-    private static final String YELLOW = "#CCCC00";
-    private static final String GREY = "#999999";
+    public static final String MAGENTA = "#FF00FF";
+    public static final String CYAN = "#00CCCC";
+    public static final String NAVY_BLUE = "#000066";
+    public static final String PURPLE = "#CC00CC";
+    public static final String GREEN = "#00CC33";
+    public static final String YELLOW = "#CCCC00";
+    public static final String GREY = "#999999";
+    public static final int MAGENTA_INT = Color.parseColor(MAGENTA);
+    public static final int CYAN_INT = Color.parseColor(CYAN);
+    public static final int NAVY_BLUE_INT = Color.parseColor(NAVY_BLUE);
+    public static final int PURPLE_INT = Color.parseColor(PURPLE);
+    public static final int GREEN_INT = Color.parseColor(GREEN);
+    public static final int YELLOW_INT = Color.parseColor(YELLOW);
     public static final int GREY_INT = Color.parseColor(GREY);
 
     private int index;

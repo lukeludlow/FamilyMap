@@ -1,16 +1,11 @@
 package dev.lukel.familymap.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,15 +15,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
+import dev.lukel.familymap.model.FamilyUtils;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker;
@@ -45,6 +45,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     private EventMarkerColors eventMarkerColors;
     private Map<Event, Marker> eventsToMarkers;
     private Map<Marker, Event> markersToEvents;
+    private List<Polyline> allPolylines;
 
     public static EventMapFragment newInstance() {
         return new EventMapFragment();
@@ -81,6 +82,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         eventMarkerColors = new EventMarkerColors();
         eventsToMarkers = new HashMap<>();
         markersToEvents = new HashMap<>();
+        allPolylines = new ArrayList<>();
         // add a marker, move camera
         double TMCB_LAT = 40.249678;
         double TMCB_LON = -111.650749;
@@ -102,6 +104,10 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         String text = marker.getTitle() + "\n" + marker.getSnippet();
         eventDetailsView.setText(text);
         marker.showInfoWindow();
+        eraseAllPolylines();
+        drawSpouseLine(marker);
+        drawLifeStoryLine(marker);
+        drawAncestryLines(marker, NORMAL_WIDTH);
     }
 
     public LatLng getEventLatLng(Event e) {
@@ -145,28 +151,133 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
                 Log.i(TAG, "onMarkerClick. " + marker.getTitle());
                 String text = marker.getTitle() + "\n" + marker.getSnippet();
                 eventDetailsView.setText(text);
+                eraseAllPolylines();
+                drawSpouseLine(marker);
+                drawLifeStoryLine(marker);
+                drawAncestryLines(marker, NORMAL_WIDTH);
                 return false;
             }
         });
     }
 
-    void drawLifeStories() {
-        for (Marker m1 : markersToEvents.keySet()) {
-            for (Marker m2 : markersToEvents.keySet()) {
-                if (m1 != m2 && m1.getTag().toString().equals(m2.getTag().toString())) {
-                    int eventColor = eventMarkerColors.getEventTypeColorInt(markersToEvents.get(m1).getEventType());
-                    drawLine(m1.getPosition(), m2.getPosition(), eventColor, SMALL_WIDTH);
-                }
-            }
+    void drawLine(Marker m1, Marker m2, int color, float width) {
+        PolylineOptions options = new PolylineOptions();
+        options.add(m1.getPosition(), m2.getPosition());
+        options.color(color);
+        options.width(width);
+        Polyline line = map.addPolyline(options);
+        allPolylines.add(line);
+    }
+
+    void drawSpouseLine(Marker marker) {
+        // marker's tag is personID of that event
+        Person spouse = FamilyUtils.getSpouse(marker.getTag().toString());
+        if (spouse == null) {
+            return;
+        }
+        List<Event> events = FamilyUtils.getChronologicalEvents(spouse);
+        if (events == null || events.isEmpty()) {
+             return;
+        }
+        // get first event (usually birth, but not necessarily bc birth can be filtered out)
+        Marker spouseMarker = eventsToMarkers.get(events.get(0));
+        drawLine(marker, spouseMarker, EventMarkerColors.MAGENTA_INT, NORMAL_WIDTH);
+    }
+
+    void drawLifeStoryLine(Marker marker) {
+        Person p = FamilyUtils.getPersonFromID(marker.getTag().toString());
+        List<Event> events = FamilyUtils.getChronologicalEvents(p);
+        // draw lines in order regardless of the originally selected marker
+        if (events.size() < 2) {
+            return;
+        }
+        Iterator<Event> iterator = events.iterator();
+        Marker current = eventsToMarkers.get(iterator.next());
+        Marker next = eventsToMarkers.get(iterator.next());
+        drawLine(current, next, EventMarkerColors.CYAN_INT, NORMAL_WIDTH);
+        while (iterator.hasNext()) {
+            current = next;
+            next = eventsToMarkers.get(iterator.next());
+            drawLine(current, next, EventMarkerColors.CYAN_INT, NORMAL_WIDTH);
         }
     }
 
-    void drawLine(LatLng point1, LatLng point2, int color, float width) {
-        PolylineOptions options = new PolylineOptions();
-        options.add(point1, point2);
-        options.color(color);
-        options.width(width);
-        map.addPolyline(options);
+    // when drawAncestryLines is first called, call it with lineWidth 10.0f or something
+    // each recursive call, width gets smaller by 2.0f. minimum width is 2.0f.
+    void drawAncestryLines(Marker marker, float lineWidth) {
+        Log.i(TAG, "drawAncestryLines");
+        String personID = marker.getTag().toString();
+        Person mother = FamilyUtils.getMother(personID);
+        Person father = FamilyUtils.getFather(personID);
+        Marker motherMarker = null;
+        Marker fatherMarker = null;
+        if (mother != null) {
+            Log.i(TAG, "found mother");
+            List<Event> motherEvents = FamilyUtils.getChronologicalEvents(mother);
+            if (motherEvents == null || motherEvents.isEmpty()) {
+                return;
+            }
+            motherMarker = eventsToMarkers.get(motherEvents.get(0));
+            Log.i(TAG, "found mother events and marker");
+            Log.i(TAG, "drawing mother line...");
+            drawLine(marker, motherMarker, EventMarkerColors.NAVY_BLUE_INT, lineWidth);
+        }
+        if (father != null) {
+            Log.i(TAG, "found father");
+            List<Event> fatherEvents = FamilyUtils.getChronologicalEvents(father);
+            if (fatherEvents == null || fatherEvents.isEmpty()) {
+                return;
+            }
+            fatherMarker = eventsToMarkers.get(fatherEvents.get(0));
+            Log.i(TAG, "found father events and marker");
+            Log.i(TAG, "drawing father line...");
+            drawLine(marker, fatherMarker, EventMarkerColors.NAVY_BLUE_INT, lineWidth);
+        }
+        if (motherMarker != null) {
+            Log.i(TAG, "drawAncestryLines recursive call on motherMarker");
+            drawAncestryLines(motherMarker, shrinkLineWidth(lineWidth));
+        }
+        if (fatherMarker != null) {
+            Log.i(TAG, "drawAncestryLines recursive call on fatherMarker");
+            drawAncestryLines(fatherMarker, shrinkLineWidth(lineWidth));
+        }
     }
+
+    // width decreases by 2.0f every iteration
+    // absolute min width is 2.0f
+    float shrinkLineWidth(float width) {
+        float newWidth;
+        if (width <= 4.0f) {
+            newWidth = 2.0f;
+        } else {
+            newWidth = width - 2.0f;
+        }
+        return newWidth;
+    }
+
+    void eraseAllPolylines() {
+        Log.i(TAG, "erase all polylines");
+        for (Polyline line : allPolylines) {
+            line.remove();
+        }
+        allPolylines.clear();
+    }
+
+//    void drawArrow(Marker m1, Marker m2) {
+//        LatLng origin = m1.getPosition();
+//        LatLng destination = m2.getPosition();
+//        Double rotationDegrees = Math.toDegrees(Math.atan2(origin.latitude - destination.latitude, origin.longitude - destination.longitude));
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(rotationDegrees.floatValue());
+//        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_play_arrow_white_24dp);
+//        Bitmap original = BitmapDescriptorFactory.from
+//        Bitmap arrowBitmap = Bitmap.createBitmap(bitmapDescriptor, 0, 0, 5, 5, matrix, true);
+//        Bitmap bm = ImageLoader.getInstance()
+//        MarkerOptions options = new MarkerOptions()
+//                .position(origin)
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_play_arrow_white_24dp));
+//        Marker arrowMarker = map.addMarker()
+//    }
+
 
 }
