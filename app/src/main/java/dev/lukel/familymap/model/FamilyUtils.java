@@ -55,6 +55,11 @@ public class FamilyUtils {
         return null;
     }
 
+    public static List<Event> sortEventsChronological(List<Event> events) {
+        Collections.sort(events, new YearComparator());
+        return events;
+    }
+
     public static List<Event> getChronologicalEvents(Person p) {
         PersonNode node = DataSingleton.getFamilyTree().getPersonToNodeMap().get(p);
         List<Event> orderedEvents = new ArrayList<>(node.getEvents().values());

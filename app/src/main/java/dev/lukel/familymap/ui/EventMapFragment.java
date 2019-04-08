@@ -1,5 +1,6 @@
 package dev.lukel.familymap.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.FamilyUtils;
+import dev.lukel.familymap.net.Encoder;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker;
@@ -46,6 +48,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     private Map<Event, Marker> eventsToMarkers;
     private Map<Marker, Event> markersToEvents;
     private List<Polyline> allPolylines;
+    private Event currentEvent;
 
     public static EventMapFragment newInstance() {
         return new EventMapFragment();
@@ -66,9 +69,20 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         mapView.onCreate(bundle);
         mapView.getMapAsync(this);
         eventDetailsView = v.findViewById(R.id.event_map_details);
+        eventDetailsView.setOnClickListener(detailsClickListener);
         Log.i(TAG, "finish onCreateView");
         return v;
     }
+
+    private final View.OnClickListener detailsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Person newPerson = FamilyUtils.getPersonFromID(currentEvent.getPersonID());
+            Intent intent = new Intent(getActivity(), PersonActivity.class);
+            intent.putExtra("person", Encoder.serialize(newPerson));
+            startActivity(intent);
+        }
+    };
 
     @Override
     public void onResume() {
@@ -98,6 +112,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     }
 
     public void moveToCurrentEvent(Event e) {
+        this.currentEvent = e;
         float ZOOM = 14.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
         Marker marker = eventsToMarkers.get(e);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
@@ -148,6 +163,8 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                // set current event of map fragment so we can use it in other places
+                currentEvent = markersToEvents.get(marker);
                 Log.i(TAG, "onMarkerClick. " + marker.getTitle());
                 String text = marker.getTitle() + "\n" + marker.getSnippet();
                 eventDetailsView.setText(text);
@@ -263,6 +280,8 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         allPolylines.clear();
     }
 
+    // TODO draw directional arrows on life story lines
+    // i was close but got stuck
 //    void drawArrow(Marker m1, Marker m2) {
 //        LatLng origin = m1.getPosition();
 //        LatLng destination = m2.getPosition();
