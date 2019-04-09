@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class FamilyUtils {
 
@@ -80,6 +81,15 @@ public class FamilyUtils {
             }
             return i;
         }
+    }
+
+    public static int getBirthDate(Person p) {
+        PersonNode node = DataSingleton.getFamilyTree().getPersonToNodeMap().get(p);
+        Map<String, Event> eventMap = node.getEvents();
+        if (eventMap.containsKey("birth")) {
+            return eventMap.get("birth").getYear();
+        }
+        return -1;
     }
 
 }
