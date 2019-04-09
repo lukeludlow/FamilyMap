@@ -41,25 +41,20 @@ import com.joanzapata.iconify.fonts.FontAwesomeModule;
 public class SearchActivity extends AppCompatActivity {
 
     private final String TAG = "SEARCH_ACTIVITY";
-    private RecyclerView personRecyclerView;
-    private PersonAdapter personAdapter;
     private EditText searchText;
-    private RecyclerView eventRecyclerView;
-    private EventAdapter eventAdapter;
+    private SearchAdapter searchAdapter;
+    private RecyclerView searchRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Iconify.with(new FontAwesomeModule());
-        personRecyclerView = findViewById(R.id.search_person_recycler_view);
-        personRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eventRecyclerView = findViewById(R.id.search_event_recycler_view);
-        eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        searchRecycler = findViewById(R.id.search_recycler_view);
+        searchRecycler.setLayoutManager(new LinearLayoutManager(this));
         searchText = findViewById(R.id.search_edit_text);
         searchText.addTextChangedListener(textWatcher);
-        updatePersonRecycler();
-        updateEventsRecycler();
+        updateSearchRecycler();
     }
 
     private class PersonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -100,33 +95,6 @@ public class SearchActivity extends AppCompatActivity {
             genderIcon = new IconDrawable(SearchActivity.this, FontAwesomeIcons.fa_genderless).colorRes(R.color.colorPrimary).sizeDp(24);
         }
         image.setImageDrawable(genderIcon);
-    }
-
-    private class PersonAdapter extends RecyclerView.Adapter<PersonViewHolder> {
-        List<Person> people;
-        public PersonAdapter(List<Person> p) {
-            people = p;
-        }
-        @NonNull
-        @Override
-        public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = getLayoutInflater();
-            return new PersonViewHolder(inflater, parent);
-        }
-        @Override
-        public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
-            Person p = people.get(position);
-            holder.bind(p);
-        }
-        @Override
-        public int getItemCount() {
-            return people.size();
-        }
-    }
-
-    private void updatePersonRecycler() {
-        personAdapter = new PersonAdapter(searchPeople());
-        personRecyclerView.setAdapter(personAdapter);
     }
 
     private List<Person> searchPeople() {
@@ -179,7 +147,7 @@ public class SearchActivity extends AppCompatActivity {
                 found.add(e);
             }
         }
-        return found;
+        return FamilyUtils.sortEventsChronological(found);
     }
 
     private class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -209,49 +177,73 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    private class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
-        List<Event> events;
-        public EventAdapter(List<Event> originalEvents) {
-            events = FamilyUtils.sortEventsChronological(originalEvents);
-        }
-        @Override @NonNull
-        public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = getLayoutInflater();
-            return new EventViewHolder(inflater, parent);
+    private class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        List<Object> foundItems;
+        final int PERSON_TYPE = 0;
+        final int EVENT_TYPE = 1;
+        public SearchAdapter() {
+            foundItems = new ArrayList<>();
+            foundItems.addAll(searchPeople());
+            foundItems.addAll(searchEvents());
         }
         @Override
-        public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-            Event event = events.get(position);
-            holder.bind(event);
+        public int getItemViewType(int position) {
+            if (foundItems.get(position).getClass() == Person.class) {
+                return PERSON_TYPE;
+            } else if (foundItems.get(position).getClass() == Event.class) {
+                return EVENT_TYPE;
+            }
+            return -1; // error
+        }
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = getLayoutInflater();
+            switch (viewType) {
+                case PERSON_TYPE:
+                    return new PersonViewHolder(inflater, parent);
+                case EVENT_TYPE:
+                    return new EventViewHolder(inflater, parent);
+            }
+            return null;
+        }
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            switch (holder.getItemViewType()) {
+                case PERSON_TYPE:
+                    PersonViewHolder personViewHolder = (PersonViewHolder) holder;
+                    Person p = (Person) foundItems.get(position);
+                    personViewHolder.bind(p);
+                    break;
+                case EVENT_TYPE:
+                    EventViewHolder eventViewHolder = (EventViewHolder) holder;
+                    Event e = (Event) foundItems.get(position);
+                    eventViewHolder.bind(e);
+                    break;
+            }
         }
         @Override
         public int getItemCount() {
-            return events.size();
+            return foundItems.size();
         }
     }
 
-    private void updateEventsRecycler() {
-        eventAdapter = new EventAdapter(searchEvents());
-        eventRecyclerView.setAdapter(eventAdapter);
+    private void updateSearchRecycler() {
+        searchAdapter = new SearchAdapter();
+        searchRecycler.setAdapter(searchAdapter);
     }
-
 
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            //
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.i(TAG, "onTextChanged");
-            updatePersonRecycler();
-            updateEventsRecycler();
+            Log.d(TAG, "onTextChanged");
+            updateSearchRecycler();
         }
         @Override
         public void afterTextChanged(Editable s) {
-            Log.i(TAG, "afterTextChanged: " + s.toString());
-            updatePersonRecycler();
-            updateEventsRecycler();
+            Log.d(TAG, "afterTextChanged: " + s.toString());
+            updateSearchRecycler();
         }
     };
 

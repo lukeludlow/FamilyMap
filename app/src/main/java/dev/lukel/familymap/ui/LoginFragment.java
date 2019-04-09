@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
@@ -155,9 +154,13 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
     }
 
     @Override
-    public void registerComplete(RegisterResponse r) {
+    public void registerComplete(RegisterResponse response) {
+        if (response == null) {
+            Toast.makeText(getActivity(), "register failed", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Toast.makeText(getActivity(), "register complete!", Toast.LENGTH_SHORT).show();
-        loginComplete(new LoginResponse(r.getAuthToken(), r.getUserName(), r.getPersonID()));
+        loginComplete(new LoginResponse(response.getAuthToken(), response.getUserName(), response.getPersonID()));
     }
 
     private final TextWatcher textWatcher = new TextWatcher() {
