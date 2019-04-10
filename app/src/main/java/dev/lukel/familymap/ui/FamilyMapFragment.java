@@ -35,7 +35,7 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultM
 
 public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
-    private static final String TAG = "FamilyMapFragment";
+    private static final String TAG = "FAMILY_MAP_FRAGMENT";
     private static final float SMALL_WIDTH = 2f;
     private static final float NORMAL_WIDTH = 10f;
     private static final float BIG_WIDTH = 20f;
@@ -52,6 +52,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         getMapAsync(this);
@@ -60,6 +61,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
+        Log.i(TAG, "onCreateView");
         super.onCreateView(layoutInflater, viewGroup, bundle);
         View v = layoutInflater.inflate(R.layout.fragment_family_map, viewGroup, false);
         mapView = v.findViewById(R.id.mapview);

@@ -1,18 +1,28 @@
 package dev.lukel.familymap.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -33,29 +43,153 @@ public class PersonActivity extends AppCompatActivity {
     private RecyclerView eventRecyclerView;
     private PersonAdapter personAdapter;
     private EventAdapter eventsAdapter;
-    private TextView firstnameText;
-    private TextView lastnameText;
-    private TextView genderText;
+    private TextView personNameText;
+    private TextView personDetailsText;
+    private ImageView genderImage;
     private Person root;
+
+    private ExpandableListView expandableListView;
+    ExpandableListAdapter expandableListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
-        firstnameText = findViewById(R.id.person_text_firstname);
-        lastnameText = findViewById(R.id.person_text_lastname);
-        genderText = findViewById(R.id.person_text_gender);
+        personNameText = findViewById(R.id.person_name);
+        personDetailsText = findViewById(R.id.person_details);
+        genderImage = findViewById(R.id.person_gender_image);
         familyRecyclerView = findViewById(R.id.person_family_recycler_view);
         familyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventRecyclerView = findViewById(R.id.person_life_events_recycler_view);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         String bundlePerson = getIntent().getExtras().get("person").toString();
         root = Encoder.deserialize(bundlePerson, Person.class);
-        firstnameText.setText(root.getFirstName());
-        lastnameText.setText(root.getLastName());
-        genderText.setText(root.getGender());
+        personNameText.setText(root.getFirstName() + " " + root.getLastName());
+        personDetailsText.setText("born " + FamilyUtils.getBirthDate(root));
+        setGenderIcon(genderImage, root);
         updateFamilyRecycler(root);
         updateEventsRecycler(root);
+        //
+        Log.i(TAG, "setting up expandable list view...");
+        expandableListView = findViewById(R.id.person_family_expandable_list);
+        PersonNode rootNode = DataSingleton.getFamilyTree().getPersonToNodeMap().get(root);
+        List<Person> p = new ArrayList<>(rootNode.getRelatives());
+        List<Event> e = new ArrayList<>(rootNode.getEvents().values());
+        e = FamilyUtils.sortEventsChronological(e);
+        expandableListAdapter = new ExpandableListAdapter(this, p, e);
+        expandableListView.setAdapter(expandableListAdapter);
+        Log.i(TAG, "done");
+
+    }
+
+    private class ExpandableListAdapter extends BaseExpandableListAdapter {
+        private Context context;
+        private List<String> groups;
+        private List<Person> people;
+        private List<Event> events;
+        public ExpandableListAdapter(Context context, List<Person> people, List<Event> events) {
+            this.context = context;
+            groups = Arrays.asList("family", "history");
+            this.people = people;
+            this.events = events;
+        }
+        @Override
+        public Object getChild(int listPosition, int expandedListPosition) {
+            Log.i(TAG, "expandable list view getChild");
+            if (listPosition == 0) {
+                return people.get(expandedListPosition);
+            } else if (listPosition == 1) {
+                return events.get(expandedListPosition);
+            }
+            return null;
+        }
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+        @Override
+        public long getChildId(int listPosition, int expandedListPosition) {
+            return expandedListPosition;
+        }
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            Log.i(TAG, "expandable list view getGroupView");
+            String title = "title";
+            if (groupPosition == 0) {
+                title = "family members";
+            } else if (groupPosition == 1) {
+                title = "life events";
+            }
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.expandable_list_group, null);
+            }
+            TextView listTitleTextView = convertView.findViewById(R.id.expandable_list_title);
+            listTitleTextView.setTypeface(null, Typeface.BOLD);
+            listTitleTextView.setText(title);
+            return convertView;
+        }
+        @Override
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            Log.i(TAG, "expandable list view getChildView");
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.list_item_search, null);
+            }
+            TextView titleText = convertView.findViewById(R.id.list_item_search_title);
+            TextView detailsText = convertView.findViewById(R.id.list_item_search_details);
+            ImageView imageView = convertView.findViewById(R.id.list_item_search_image);
+            if (groupPosition == 0) {
+                Person p = people.get(childPosition);
+                String nameString = p.getFirstName() + " " + p.getLastName();
+                String detailsString = "born " + FamilyUtils.getBirthDate(p);
+                titleText.setText(nameString);
+                detailsText.setText(detailsString);
+                setGenderIcon(imageView, p);
+            } else if (groupPosition == 1) {
+                Event event = events.get(childPosition);
+                String eventTitleString = event.getEventType() + ": " + event.getCity() + ", " + event.getCountry() + " (" + event.getYear() + ")";
+                Person p = FamilyUtils.getPersonFromID(event.getPersonID());
+                String detailsString = p.getFirstName() + " " + p.getLastName();
+                titleText.setText(eventTitleString);
+                detailsText.setText(detailsString);
+                setEventIcon(imageView, event);
+            }
+            return convertView;
+        }
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+        public int getGroupCount() {
+            Log.i(TAG, "expandable list view getGroupCount");
+            return groups.size();
+        }
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            Log.i(TAG, "expandable list view getChildrenCount");
+            if (groupPosition == 0) {
+                return people.size();
+            } else if (groupPosition == 1) {
+                return events.size();
+            }
+            return 0;
+        }
+        @Override
+        public Object getGroup(int groupPosition) {
+            Log.i(TAG, "expandable list view getGroup");
+            if (groupPosition == 0) {
+                return people;
+            } else if (groupPosition == 1) {
+                return events;
+            }
+            return null;
+        }
     }
 
     private class PersonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -180,7 +314,23 @@ public class PersonActivity extends AppCompatActivity {
         eventRecyclerView.setAdapter(eventsAdapter);
     }
 
+    public void setGenderIcon(ImageView image, Person p) {
+        Drawable genderIcon;
+        if (p.getGender().equals("m")) {
+            genderIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_mars).colorRes(R.color.male_icon).sizeDp(48);
+        } else if (p.getGender().equals("f")) {
+            genderIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_venus).colorRes(R.color.female_icon).sizeDp(48);
+        } else {
+            genderIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_genderless).colorRes(R.color.colorPrimary).sizeDp(48);
+        }
+        image.setImageDrawable(genderIcon);
+    }
 
+    public void setEventIcon(ImageView image, Event e) {
+        Drawable eventIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_map_marker).colorRes(R.color.event_icon).sizeDp(48);
+        Drawable eventIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_map_marker).  colorRes(R.color.event_icon).sizeDp(48);
+        image.setImageDrawable(eventIcon);
+    }
 
 
 

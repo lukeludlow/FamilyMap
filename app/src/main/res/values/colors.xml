@@ -14,5 +14,6 @@
 
     <color name="male_icon">#55B1DF</color>
     <color name="female_icon">#ECA4D0</color>
+    <color name="event_icon">#464A56</color>
 
 </resources>

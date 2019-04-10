@@ -56,6 +56,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         getMapAsync(this);
         Log.i(TAG, "called getMapAsync inside onCreate");
@@ -63,6 +64,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
+        Log.i(TAG, "onCreateView");
         super.onCreateView(layoutInflater, viewGroup, bundle);
         View v = layoutInflater.inflate(R.layout.fragment_event_map, viewGroup, false);
         mapView = v.findViewById(R.id.event_mapview);
