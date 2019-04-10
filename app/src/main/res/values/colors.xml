@@ -11,6 +11,7 @@
     <color name="primaryTextColor">#000000</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <color name="male_icon">#55B1DF</color>
     <color name="female_icon">#ECA4D0</color>

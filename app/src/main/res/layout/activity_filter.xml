@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.FilterActivity">
+
+    <TextView
+        android:layout_width=""
+        android:layout_height="" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:text="filter events based upon:"
+        android:textSize="24sp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:text="lineage"
+        android:textSize="24sp" />
+
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="mother's side"
+            android:textSize="20sp" />
+
+        <Switch
+            android:checked="true"
+        android:theme="@style/FilterSwitch"
+            />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="father's side"
+            android:textSize="20sp" />
+
+        <Switch android:theme="@style/FilterSwitch" />
+
+    </GridLayout>
+
+
+</LinearLayout>

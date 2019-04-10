@@ -328,7 +328,6 @@ public class PersonActivity extends AppCompatActivity {
 
     public void setEventIcon(ImageView image, Event e) {
         Drawable eventIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_map_marker).colorRes(R.color.event_icon).sizeDp(48);
-        Drawable eventIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_map_marker).  colorRes(R.color.event_icon).sizeDp(48);
         image.setImageDrawable(eventIcon);
     }
 

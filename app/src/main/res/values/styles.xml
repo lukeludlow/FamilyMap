@@ -33,6 +33,19 @@
         <item name="android:shadowRadius">10</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#FFFFFF</item>
-
     </style>
+
+    <style name="FilterSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">@color/colorPrimary</item>
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:scaleX">2</item>
+        <item name="android:scaleY">2</item>
+        <item name="android:switchMinWidth">56dp</item>
+        <item name="android:thumb">@drawable/thumb</item>
+        <item name="android:track">@drawable/track</item>
+    </style>
+
 </resources>
