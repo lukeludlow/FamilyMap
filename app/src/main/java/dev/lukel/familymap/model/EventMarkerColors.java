@@ -1,4 +1,4 @@
-package dev.lukel.familymap.ui;
+package dev.lukel.familymap.model;
 
 import android.graphics.Color;
 
@@ -70,6 +70,15 @@ public class EventMarkerColors {
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(hexColor), hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
+    public void resetColors() {
+        eventTypeColors = new HashMap<>();
+        eventTypeColorsInt = new HashMap<>();
+        index = 0;
+        colors = new String[]{
+                MAGENTA, NAVY_BLUE, CYAN, PURPLE, GREEN, YELLOW, GREY
+        };
     }
 
 }

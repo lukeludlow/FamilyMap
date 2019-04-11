@@ -59,18 +59,11 @@ public class PersonActivity extends AppCompatActivity {
         personNameText = findViewById(R.id.person_name);
         personDetailsText = findViewById(R.id.person_details);
         genderImage = findViewById(R.id.person_gender_image);
-        familyRecyclerView = findViewById(R.id.person_family_recycler_view);
-        familyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eventRecyclerView = findViewById(R.id.person_life_events_recycler_view);
-        eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         String bundlePerson = getIntent().getExtras().get("person").toString();
         root = Encoder.deserialize(bundlePerson, Person.class);
         personNameText.setText(root.getFirstName() + " " + root.getLastName());
         personDetailsText.setText("born " + FamilyUtils.getBirthDate(root));
         setGenderIcon(genderImage, root);
-        updateFamilyRecycler(root);
-        updateEventsRecycler(root);
-        //
         Log.i(TAG, "setting up expandable list view...");
         expandableListView = findViewById(R.id.person_family_expandable_list);
         PersonNode rootNode = DataSingleton.getFamilyTree().getPersonToNodeMap().get(root);
@@ -80,7 +73,11 @@ public class PersonActivity extends AppCompatActivity {
         expandableListAdapter = new ExpandableListAdapter(this, p, e);
         expandableListView.setAdapter(expandableListAdapter);
         Log.i(TAG, "done");
-
+        Log.i(TAG, "expanding all children...");
+        int count = expandableListAdapter.getGroupCount();
+        for (int i = 0; i < count; i++) {
+            expandableListView.expandGroup(i);
+        }
     }
 
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -130,7 +127,6 @@ public class PersonActivity extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.expandable_list_group, null);
             }
             TextView listTitleTextView = convertView.findViewById(R.id.expandable_list_title);
-            listTitleTextView.setTypeface(null, Typeface.BOLD);
             listTitleTextView.setText(title);
             return convertView;
         }
@@ -146,18 +142,19 @@ public class PersonActivity extends AppCompatActivity {
             ImageView imageView = convertView.findViewById(R.id.list_item_search_image);
             if (groupPosition == 0) {
                 Person p = people.get(childPosition);
-                String nameString = p.getFirstName() + " " + p.getLastName();
-                String detailsString = "born " + FamilyUtils.getBirthDate(p);
-                titleText.setText(nameString);
-                detailsText.setText(detailsString);
+                titleText.setText(p.getFirstName() + " " + p.getLastName());
+                detailsText.setText(FamilyUtils.getRelationshipType(root, p));
+                titleText.setTextSize(18);
+                detailsText.setTextSize(14);
                 setGenderIcon(imageView, p);
             } else if (groupPosition == 1) {
                 Event event = events.get(childPosition);
-                String eventTitleString = event.getEventType() + ": " + event.getCity() + ", " + event.getCountry() + " (" + event.getYear() + ")";
-                Person p = FamilyUtils.getPersonFromID(event.getPersonID());
-                String detailsString = p.getFirstName() + " " + p.getLastName();
+                String eventTitleString = event.getEventType() + " (" + event.getYear() + ")";
+                String detailsString = event.getCity() + ", " + event.getCountry();
                 titleText.setText(eventTitleString);
                 detailsText.setText(detailsString);
+                titleText.setTextSize(18);
+                detailsText.setTextSize(14);
                 setEventIcon(imageView, event);
             }
             return convertView;

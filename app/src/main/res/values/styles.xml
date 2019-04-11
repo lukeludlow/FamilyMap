@@ -46,6 +46,7 @@
         <item name="android:switchMinWidth">56dp</item>
         <item name="android:thumb">@drawable/thumb</item>
         <item name="android:track">@drawable/track</item>
+        <item name="android:checked">true</item>
     </style>
 
 </resources>

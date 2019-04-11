@@ -1,14 +1,8 @@
 package dev.lukel.familymap.model;
 
-import android.content.res.Resources;
-
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.Map;
-
-import dev.lukel.familymap.net.response.LoginResponse;
-import dev.lukel.familymap.net.response.RegisterResponse;
-import dev.lukel.familymap.ui.EventMarkerColors;
 
 public final class DataSingleton {
 
@@ -16,10 +10,6 @@ public final class DataSingleton {
     private static DataSingleton instance = new DataSingleton();
 
     private DataSingleton() {}
-
-    public static DataSingleton getInstance() {
-        return instance;
-    }
 
     private Person[] people;
     private Event[] events;
@@ -31,94 +21,31 @@ public final class DataSingleton {
     private EventMarkerColors eventMarkerColors;
     private Map<Event, Marker> eventsToMarkers;
     private Map<Marker, Event> markersToEvents;
+    private Settings settings;
 
-    public static void setEventMarkerColors(EventMarkerColors colors) {
-        instance.eventMarkerColors = colors;
-    }
-    public static void setEventsToMarkers(Map<Event, Marker> map) {
-        instance.eventsToMarkers = map;
-    }
-    public static void setMarkersToEvents(Map<Marker, Event> map) {
-        instance.markersToEvents = map;
-    }
-    public static EventMarkerColors getEventMarkerColors() {
-        return instance.eventMarkerColors;
-    }
-    public static Map<Event, Marker> getEventsToMarkers() {
-        return instance.eventsToMarkers;
-    }
-    public static Map<Marker, Event> getMarkersToEvents() {
-        return instance.markersToEvents;
-    }
-
-    public static void setFamilyTree(FamilyTree tree) {
-        instance.familyTree = tree;
-    }
-
-    public static FamilyTree getFamilyTree() {
-        return instance.familyTree;
-    }
-
-    public static void setUsername(String s) {
-        instance.username = s;
-    }
-
-    public static String getUsername() {
-        return instance.username;
-    }
-
-    public static void setUserPersonID(String id) {
-        instance.userPersonID = id;
-    }
-
-    public static String getUserPersonID() {
-        return instance.userPersonID;
-    }
-
-    public static void setAuthtoken(String s) {
-        instance.authtoken = s;
-    }
-
-    public static String getAuthtoken() {
-        return instance.authtoken;
-    }
-
-    public static Person findPerson(String id) {
-        for (Person p : instance.people) {
-            if (p.getPersonID().equals(id)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public static void setUser(String username) {
-
-    }
-
-    public static void setPeople(Person[] people) {
-        instance.people = people;
-    }
-
-    public static Person[] getPeople() {
-        return instance.people;
-    }
-
-    public static void setEvents(Event[] events) {
-        instance.events = events;
-    }
-
-    public static Event[] getEvents() {
-        return instance.events;
-    }
-
-    public static void setUser(Person user) {
-        instance.user = user;
-    }
-
-    public static Person getUser() {
-        return instance.user;
-    }
-
+    public Settings getSettings() { return instance.settings; }
+    public static void setSettings(Settings x) { instance.settings = x; }
+    public static void setEventMarkerColors(EventMarkerColors colors) { instance.eventMarkerColors = colors; }
+    public static void setEventsToMarkers(Map<Event, Marker> map) { instance.eventsToMarkers = map; }
+    public static void setMarkersToEvents(Map<Marker, Event> map) { instance.markersToEvents = map; }
+    public static EventMarkerColors getEventMarkerColors() { return instance.eventMarkerColors; }
+    public static Map<Event, Marker> getEventsToMarkers() { return instance.eventsToMarkers; }
+    public static Map<Marker, Event> getMarkersToEvents() { return instance.markersToEvents; }
+    public static void setFamilyTree(FamilyTree tree) { instance.familyTree = tree; }
+    public static FamilyTree getFamilyTree() { return instance.familyTree; }
+    public static void setUsername(String s) { instance.username = s; }
+    public static String getUsername() { return instance.username; }
+    public static void setUserPersonID(String id) { instance.userPersonID = id; }
+    public static String getUserPersonID() { return instance.userPersonID; }
+    public static void setAuthtoken(String s) { instance.authtoken = s; }
+    public static String getAuthtoken() { return instance.authtoken; }
+    public static void setUser(String username) { }
+    public static void setPeople(Person[] people) { instance.people = people; }
+    public static Person[] getPeople() { return instance.people; }
+    public static void setEvents(Event[] events) { instance.events = events; }
+    public static Event[] getEvents() { return instance.events; }
+    public static void setUser(Person user) { instance.user = user; }
+    public static Person getUser() { return instance.user; }
+    public static DataSingleton getInstance() { return instance; }
 
 }

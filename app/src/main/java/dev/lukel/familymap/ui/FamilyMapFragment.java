@@ -28,6 +28,7 @@ import java.util.Map;
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
+import dev.lukel.familymap.model.EventMarkerColors;
 import dev.lukel.familymap.model.Person;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
