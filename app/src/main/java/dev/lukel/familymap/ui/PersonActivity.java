@@ -47,6 +47,8 @@ public class PersonActivity extends AppCompatActivity {
     private TextView personDetailsText;
     private ImageView genderImage;
     private Person root;
+    private List<Person> familyMembers;
+    private List<Event> lifeEvents;
 
     private ExpandableListView expandableListView;
     ExpandableListAdapter expandableListAdapter;
@@ -78,6 +80,21 @@ public class PersonActivity extends AppCompatActivity {
         for (int i = 0; i < count; i++) {
             expandableListView.expandGroup(i);
         }
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (groupPosition == 0) {
+                    Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                    intent.putExtra("person", Encoder.serialize(familyMembers.get(childPosition)));
+                    startActivity(intent);
+                } else if (groupPosition == 1) {
+                    Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+                    intent.putExtra("event", Encoder.serialize(lifeEvents.get(childPosition)));
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
     }
 
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -85,11 +102,14 @@ public class PersonActivity extends AppCompatActivity {
         private List<String> groups;
         private List<Person> people;
         private List<Event> events;
+        public List<Person> getPeople() { return people; }
         public ExpandableListAdapter(Context context, List<Person> people, List<Event> events) {
             this.context = context;
             groups = Arrays.asList("family", "history");
             this.people = people;
             this.events = events;
+            familyMembers = people;
+            lifeEvents = events;
         }
         @Override
         public Object getChild(int listPosition, int expandedListPosition) {
@@ -135,11 +155,11 @@ public class PersonActivity extends AppCompatActivity {
             Log.i(TAG, "expandable list view getChildView");
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.list_item_search, null);
+                convertView = inflater.inflate(R.layout.expandable_list_item, null);
             }
-            TextView titleText = convertView.findViewById(R.id.list_item_search_title);
-            TextView detailsText = convertView.findViewById(R.id.list_item_search_details);
-            ImageView imageView = convertView.findViewById(R.id.list_item_search_image);
+            TextView titleText = convertView.findViewById(R.id.expandable_list_item_title);
+            TextView detailsText = convertView.findViewById(R.id.expandable_list_item_details);
+            ImageView imageView = convertView.findViewById(R.id.expandable_list_item_image);
             if (groupPosition == 0) {
                 Person p = people.get(childPosition);
                 titleText.setText(p.getFirstName() + " " + p.getLastName());
@@ -150,6 +170,7 @@ public class PersonActivity extends AppCompatActivity {
             } else if (groupPosition == 1) {
                 Event event = events.get(childPosition);
                 String eventTitleString = event.getEventType() + " (" + event.getYear() + ")";
+                eventTitleString = eventTitleString.substring(0,1).toUpperCase() + eventTitleString.substring(1);
                 String detailsString = event.getCity() + ", " + event.getCountry();
                 titleText.setText(eventTitleString);
                 detailsText.setText(detailsString);

@@ -7,15 +7,9 @@
     android:orientation="vertical"
     tools:context=".ui.PersonActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_margin="15dp"
-        android:gravity="center"
-        android:text="person details"
-        android:textSize="32dp" />
-
     <LinearLayout
+        android:paddingTop="30dp"
+        android:paddingBottom="10dp"
         android:layout_margin="15dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -43,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:textAlignment="gravity"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:text="person name"
                 />
 
@@ -53,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:textAlignment="gravity"
-                android:textSize="14sp"
+                android:textSize="20sp"
                 android:paddingLeft="2dp"
                 android:text="person details"
                 />
@@ -70,6 +64,8 @@
         android:divider="@android:color/darker_gray"
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
         android:dividerHeight="0dp"
+        android:groupIndicator="@drawable/expandable_indicator"
+        android:layout_margin="10dp"
         >
 
 

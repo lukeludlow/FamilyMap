@@ -1,0 +1,30 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_expanded="true">
+        <layer-list>
+            <item
+                android:left="0dp"
+                android:right="20dp"
+                android:top="0dp"
+                android:bottom="0dp"
+                android:height="20dp"
+                android:width="20dp"
+                android:gravity="center"
+                android:drawable="@drawable/ic_arrow_down_black_24dp">
+            </item>
+        </layer-list>
+    </item>
+    <item android:state_expanded="false">
+        <layer-list>
+            <item
+                android:left="0dp"
+                android:right="20dp"
+                android:top="0dp"
+                android:bottom="0dp"
+                android:height="20dp"
+                android:width="20dp"
+                android:gravity="center"
+                android:drawable="@drawable/ic_arrow_right_black_24dp">
+            </item>
+        </layer-list>
+    </item>
+</selector>
