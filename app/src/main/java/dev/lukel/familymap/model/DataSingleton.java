@@ -23,7 +23,7 @@ public final class DataSingleton {
     private Map<Marker, Event> markersToEvents;
     private Settings settings;
 
-    public Settings getSettings() { return instance.settings; }
+    public static Settings getSettings() { return instance.settings; }
     public static void setSettings(Settings x) { instance.settings = x; }
     public static void setEventMarkerColors(EventMarkerColors colors) { instance.eventMarkerColors = colors; }
     public static void setEventsToMarkers(Map<Event, Marker> map) { instance.eventsToMarkers = map; }

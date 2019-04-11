@@ -29,8 +29,9 @@ public class EventActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         Fragment eventMap = fm.findFragmentById(R.id.fragment_event_map);
         if (eventMap == null) {
-            Log.i(TAG, "fragment eventMap == null, creating new FamilyMapFragment");
+            Log.i(TAG, "fragment eventMap == null, creating new MapFragment");
             eventMap = new EventMapFragment();
+            ((EventMapFragment) eventMap).setCurrentEvent(currentEvent);
             Log.i(TAG, "begin transaction...");
             fm.beginTransaction().add(R.id.fragment_event_map, eventMap).commit();
 //            if (currentEvent != null) {

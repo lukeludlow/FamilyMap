@@ -29,6 +29,7 @@
             android:textSize="20sp" />
 
         <Switch
+            android:id="@+id/switch_mother_side"
             android:checked="true"
             android:layout_columnWeight="1"
             />
@@ -40,6 +41,7 @@
             android:textSize="20sp" />
 
         <Switch
+            android:id="@+id/switch_father_side"
             android:checked="true"
             android:layout_columnWeight="1"
             />
@@ -69,6 +71,7 @@
             android:textSize="20sp" />
 
         <Switch
+            android:id="@+id/switch_male_events"
             android:checked="true"
             android:layout_columnWeight="1"
             />
@@ -80,6 +83,7 @@
             android:textSize="20sp" />
 
         <Switch
+            android:id="@+id/switch_female_events"
             android:checked="true"
             android:layout_columnWeight="1"
             />
@@ -95,6 +99,7 @@
         android:textSize="24sp" />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/event_type_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"

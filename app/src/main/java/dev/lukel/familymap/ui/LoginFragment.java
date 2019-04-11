@@ -134,10 +134,14 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
     }
 
     public void swapMapFragment() {
-        FamilyMapFragment familyMapFragment = new FamilyMapFragment();
+        EventMapFragment mapFragment = new EventMapFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container_login, familyMapFragment);
+        transaction.replace(R.id.fragment_container_login, mapFragment);
         transaction.commit();
+//        FamilyMapFragment familyMapFragment = new FamilyMapFragment();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_container_login, familyMapFragment);
+//        transaction.commit();
     }
 
     @Override

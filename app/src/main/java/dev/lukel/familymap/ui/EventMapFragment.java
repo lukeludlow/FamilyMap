@@ -51,6 +51,10 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     private List<Polyline> allPolylines;
     private Event currentEvent;
 
+    public EventMapFragment() {
+        currentEvent = null;
+    }
+
     public static EventMapFragment newInstance() {
         return new EventMapFragment();
     }
@@ -59,7 +63,7 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        getMapAsync(this);
+//        getMapAsync(this);
         Log.i(TAG, "called getMapAsync inside onCreate");
     }
 
@@ -108,16 +112,37 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         map.addMarker(new MarkerOptions().position(tmcb).title("TMCB").snippet("current location. 2019."));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(tmcb, ZOOM_LEVEL));
         addAllEventMarkers();
-        setMarkerListener();
+//        setMarkerListener();
 //        drawLifeStories();
-        Event e = ((EventActivity)getActivity()).getCurrentEvent();
-        moveToCurrentEvent(e);
+//        Event e = ((EventActivity)getActivity()).getCurrentEvent();
+        moveToCurrentEvent();
+        setMarkerListener();
+        Log.i(TAG, "finish onMapReady");
     }
 
-    public void moveToCurrentEvent(Event e) {
-        this.currentEvent = e;
+    public Event createDummyEvent() {
+        Log.i(TAG, "creating dummy event from current location (tmcb)...");
+        Event dummy = new Event();
+        dummy.setDescendant(DataSingleton.getUsername());
+        dummy.setPersonID("dummy_id");
+        dummy.setLatitude(40.249678);
+        dummy.setLongitude(-111.650749);
+        dummy.setCountry("United States");
+        dummy.setCity("Provo");
+        dummy.setEventType("location");
+        dummy.setYear(2019);
+        return dummy;
+    }
+
+    public void moveToCurrentEvent() {
+        Log.i(TAG, "moveToCurrentEvent");
+        if (currentEvent == null) {
+            currentEvent = createDummyEvent();
+            addDummyMarker(currentEvent);
+            return;
+        }
         float ZOOM = 14.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
-        Marker marker = eventsToMarkers.get(e);
+        Marker marker = this.eventsToMarkers.get(currentEvent);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
         String text = marker.getTitle() + "\n" + marker.getSnippet();
         eventDetailsView.setText(text);
@@ -133,12 +158,14 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     }
 
     public void addAllEventMarkers() {
+        Log.i(TAG, "addAllEventMarkers");
         for (Event e : DataSingleton.getEvents()) {
             addMarker(e);
         }
     }
 
     public Marker addMarker(Event e) {
+//        Log.i(TAG, "addMarker");
         LatLng pos = getEventLatLng(e);
         MarkerOptions options = new MarkerOptions().position(pos).title("").icon(defaultMarker(HUE_CYAN));
         Marker marker = map.addMarker(options);
@@ -147,8 +174,22 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
         marker.setTitle(person.getFirstName() + " " + person.getLastName() + "'s " + e.getEventType());
         marker.setSnippet(e.getCity() + ", " + e.getCountry() + ". " + e.getYear() + ".");
         marker.setTag(e.getPersonID());
-        eventsToMarkers.put(e, marker);
-        markersToEvents.put(marker, e);
+        this.eventsToMarkers.put(e, marker);
+        this.markersToEvents.put(marker, e);
+        return marker;
+    }
+
+    public Marker addDummyMarker(Event dummy) {
+        Log.i(TAG, "addDummyMarker");
+        LatLng pos = getEventLatLng(dummy);
+        MarkerOptions options = new MarkerOptions().position(pos).title("").icon(defaultMarker(HUE_CYAN));
+        Marker marker = map.addMarker(options);
+        marker.setIcon(eventMarkerColors.getEventTypeColor(dummy.getEventType()));
+        marker.setTitle("current location");
+        marker.setSnippet(dummy.getCity() + ", " + dummy.getCountry() + ". " + dummy.getYear() + ".");
+        marker.setTag(dummy.getPersonID());
+        this.eventsToMarkers.put(dummy, marker);
+        this.markersToEvents.put(marker, dummy);
         return marker;
     }
 
@@ -167,7 +208,8 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
             @Override
             public boolean onMarkerClick(Marker marker) {
                 // set current event of map fragment so we can use it in other places
-                currentEvent = markersToEvents.get(marker);
+                setCurrentEvent(getMarkersToEvents().get(marker));
+//                currentEvent = markersToEvents.get(marker);
                 Log.i(TAG, "onMarkerClick. " + marker.getTitle());
                 String text = marker.getTitle() + "\n" + marker.getSnippet();
                 eventDetailsView.setText(text);
@@ -191,6 +233,9 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
 
     void drawSpouseLine(Marker marker) {
         // marker's tag is personID of that event
+        if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
+            return;
+        }
         Person spouse = FamilyUtils.getSpouse(marker.getTag().toString());
         if (spouse == null) {
             return;
@@ -205,6 +250,10 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     }
 
     void drawLifeStoryLine(Marker marker) {
+        Log.i(TAG, "drawLifeStoryLine");
+        if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
+            return;
+        }
         Person p = FamilyUtils.getPersonFromID(marker.getTag().toString());
         List<Event> events = FamilyUtils.getChronologicalEvents(p);
         // draw lines in order regardless of the originally selected marker
@@ -226,6 +275,9 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
     // each recursive call, width gets smaller by 2.0f. minimum width is 2.0f.
     void drawAncestryLines(Marker marker, float lineWidth) {
         Log.i(TAG, "drawAncestryLines");
+        if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
+            return;
+        }
         String personID = marker.getTag().toString();
         Person mother = FamilyUtils.getMother(personID);
         Person father = FamilyUtils.getFather(personID);
@@ -281,6 +333,14 @@ public class EventMapFragment extends SupportMapFragment implements OnMapReadyCa
             line.remove();
         }
         allPolylines.clear();
+    }
+
+    public void setCurrentEvent(Event e) {
+        currentEvent = e;
+    }
+
+    public Map<Marker, Event> getMarkersToEvents() {
+        return markersToEvents;
     }
 
     // TODO draw directional arrows on life story lines
