@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
         <item name="android:titleTextStyle">@color/white</item>
         <!--<item name="android:windowTitleStyle">@style/WindowTitle_custom</item>-->
     </style>
@@ -36,7 +36,7 @@
     </style>
 
     <style name="FilterSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
-        <item name="android:colorControlActivated">@color/colorPrimary</item>
+        <item name="android:colorControlActivated">@color/primaryColor</item>
         <item name="android:layout_margin">20dp</item>
         <item name="android:paddingRight">20dp</item>
         <item name="android:layout_width">wrap_content</item>

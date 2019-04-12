@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-
-    <color name="primaryColor">#b2ebf2</color>
-    <color name="primaryLightColor">#e5ffff</color>
-    <color name="primaryDarkColor">#81b9bf</color>
+    <!-- light blue -->
+    <color name="primaryColor">#29b6f6</color>
+    <color name="primaryLightColor">#73e8ff</color>
+    <color name="primaryDarkColor">#0086c3</color>
     <color name="primaryTextColor">#000000</color>
+
+    <!-- teal-ish blue -->
+    <!--<color name="primaryColor">#26c6da</color>-->
+    <!--<color name="primaryLightColor">#6ff9ff</color>-->
+    <!--<color name="primaryDarkColor">#0095a8</color>-->
+    <!--<color name="primaryTextColor">#000000</color>-->
+
+    <!-- green-ish -->
+    <!--<color name="colorPrimary">#008577</color>-->
+    <!--<color name="colorPrimaryDark">#00574B</color>-->
+    <!--<color name="colorAccent">#D81B60</color>-->
+
+    <!--<color name="primaryColor">#b2ebf2</color>-->
+    <!--<color name="primaryLightColor">#e5ffff</color>-->
+    <!--<color name="primaryDarkColor">#81b9bf</color>-->
+    <!--<color name="primaryTextColor">#000000</color>-->
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
     <color name="male_icon">#55B1DF</color>
     <color name="female_icon">#ECA4D0</color>
-    <color name="event_icon">#81848F</color>
+    <color name="event_icon">#ff8080</color>
 
 </resources>

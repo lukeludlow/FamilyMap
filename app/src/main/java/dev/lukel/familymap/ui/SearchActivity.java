@@ -93,7 +93,7 @@ public class SearchActivity extends AppCompatActivity {
         } else if (p.getGender().equals("f")) {
             genderIcon = new IconDrawable(SearchActivity.this, FontAwesomeIcons.fa_venus).colorRes(R.color.female_icon).sizeDp(24);
         } else {
-            genderIcon = new IconDrawable(SearchActivity.this, FontAwesomeIcons.fa_genderless).colorRes(R.color.colorPrimary).sizeDp(24);
+            genderIcon = new IconDrawable(SearchActivity.this, FontAwesomeIcons.fa_genderless).colorRes(R.color.event_icon).sizeDp(24);
         }
         image.setImageDrawable(genderIcon);
     }

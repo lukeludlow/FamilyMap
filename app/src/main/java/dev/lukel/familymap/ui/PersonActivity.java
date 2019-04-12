@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -339,13 +340,16 @@ public class PersonActivity extends AppCompatActivity {
         } else if (p.getGender().equals("f")) {
             genderIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_venus).colorRes(R.color.female_icon).sizeDp(48);
         } else {
-            genderIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_genderless).colorRes(R.color.colorPrimary).sizeDp(48);
+            genderIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_genderless).colorRes(R.color.event_icon).sizeDp(48);
         }
         image.setImageDrawable(genderIcon);
     }
 
     public void setEventIcon(ImageView image, Event e) {
         Drawable eventIcon = new IconDrawable(PersonActivity.this, FontAwesomeIcons.fa_map_marker).colorRes(R.color.event_icon).sizeDp(48);
+        float alphaFactor = 0.7f;
+        int alphaInt = (int) (alphaFactor * 255.0f);
+        eventIcon.setAlpha(alphaInt);
         image.setImageDrawable(eventIcon);
     }
 
