@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,6 +125,7 @@ public class FilterActivity extends AppCompatActivity {
         List<String> eventTypes;
         public EventTypeAdapter() {
             eventTypes = findAllEventTypes();
+            Collections.sort(eventTypes);
         }
         private List<String> findAllEventTypes() {
             Set<String> types = new HashSet<>();

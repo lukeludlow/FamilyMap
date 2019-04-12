@@ -35,14 +35,12 @@ import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.PersonNode;
 import dev.lukel.familymap.model.FamilyUtils;
+import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.Encoder;
 
 public class PersonActivity extends AppCompatActivity {
 
     private final String TAG = "PERSON_ACTIVITY";
-    private RecyclerView familyRecyclerView;
-    private RecyclerView eventRecyclerView;
-    private PersonAdapter personAdapter;
     private EventAdapter eventsAdapter;
     private TextView personNameText;
     private TextView personDetailsText;
@@ -73,6 +71,7 @@ public class PersonActivity extends AppCompatActivity {
         List<Person> p = new ArrayList<>(rootNode.getRelatives());
         List<Event> e = new ArrayList<>(rootNode.getEvents().values());
         e = FamilyUtils.sortEventsChronological(e);
+        e = Settings.filterEventList(e);
         expandableListAdapter = new ExpandableListAdapter(this, p, e);
         expandableListView.setAdapter(expandableListAdapter);
         Log.i(TAG, "done");
@@ -103,7 +102,6 @@ public class PersonActivity extends AppCompatActivity {
         private List<String> groups;
         private List<Person> people;
         private List<Event> events;
-        public List<Person> getPeople() { return people; }
         public ExpandableListAdapter(Context context, List<Person> people, List<Event> events) {
             this.context = context;
             groups = Arrays.asList("family", "history");
@@ -251,12 +249,6 @@ public class PersonActivity extends AppCompatActivity {
         }
     }
 
-    private void updateFamilyRecycler(Person root) {
-        PersonNode rootNode = DataSingleton.getFamilyTree().getPersonToNodeMap().get(root);
-        personAdapter = new PersonAdapter(new ArrayList<>(rootNode.getRelatives()));
-        familyRecyclerView.setAdapter(personAdapter);
-    }
-
     private class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Event event;
         private ImageView image;
@@ -319,12 +311,6 @@ public class PersonActivity extends AppCompatActivity {
         public int getItemCount() {
             return orderedEvents.size();
         }
-    }
-
-    private void updateEventsRecycler(Person root) {
-        PersonNode rootNode = DataSingleton.getFamilyTree().getPersonToNodeMap().get(root);
-        eventsAdapter = new EventAdapter(rootNode.getEvents());
-        eventRecyclerView.setAdapter(eventsAdapter);
     }
 
     public void setGenderIcon(ImageView image, Person p) {

@@ -30,6 +30,7 @@ import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.model.Person;
+import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.Encoder;
 
 import com.joanzapata.iconify.IconDrawable;
@@ -135,7 +136,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         List<Event> found = new ArrayList<>();
         String s = searchText.getText().toString().toLowerCase();
-        for (Event e : DataSingleton.getEvents()) {
+        for (Event e : Settings.getFilteredEvents()) {
             // TODO i want to search events by person name too but i don't think the spec wants that
 //            Person p = FamilyUtils.getPersonById(e.getPersonID());
 //            String personDetailsText = p.getFirstName() + " " + p.getLastName();
