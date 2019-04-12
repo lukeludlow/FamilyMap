@@ -1,10 +1,8 @@
 package dev.lukel.familymap.ui;
 
-import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,14 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +22,8 @@ import java.util.Set;
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
-import dev.lukel.familymap.model.Person;
-import dev.lukel.familymap.model.PersonNode;
+import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.model.Settings;
-import dev.lukel.familymap.net.Encoder;
 
 public class FilterActivity extends AppCompatActivity {
 
@@ -42,6 +34,7 @@ public class FilterActivity extends AppCompatActivity {
     private Switch maleSwitch;
     private RecyclerView eventTypeRecycler;
     private EventTypeAdapter eventTypeAdapter;
+    Map<String, Boolean> enabledEventTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +74,7 @@ public class FilterActivity extends AppCompatActivity {
         }
         public void bind(String type) {
             eventTypeSwitch.setText(type);
+            eventTypeSwitch.setChecked(enabledEventTypes.get(type));
             eventTypeSwitch.setOnCheckedChangeListener(switchListener);
         }
         @Override
@@ -115,7 +109,13 @@ public class FilterActivity extends AppCompatActivity {
                 DataSingleton.getSettings().setFemaleEvents(isChecked);
                 break;
             default:
-                Log.e(TAG, "unknown settings attribute");
+                Log.i(TAG, "checking event type...");
+                if (enabledEventTypes.containsKey(attribute)) {
+                    Log.i(TAG, "setting event type " + attribute + " to " + isChecked);
+                    enabledEventTypes.put(attribute, isChecked);
+                } else {
+                    Log.e(TAG, "unknown event type attribute");
+                }
                 break;
         }
     }
@@ -149,8 +149,32 @@ public class FilterActivity extends AppCompatActivity {
         }
     }
 
+
+    private void syncEnabledEventTypes() {
+        enabledEventTypes = DataSingleton.getSettings().getEnabledEventTypes();
+        if (enabledEventTypes == null) {
+            Log.i(TAG, "initialize, enabling all event types");
+            enabledEventTypes = enableAllEventTypes();
+        } else {
+            Log.i(TAG, "setting data singleton's enabled event types...");
+            DataSingleton.getSettings().setEnabledEventTypes(enabledEventTypes);
+        }
+    }
+
+    public Map<String, Boolean> enableAllEventTypes() {
+        Map<String, Boolean> map = new HashMap<>();
+        for (Event e : DataSingleton.getEvents()) {
+            if (!map.containsKey(e.getEventType())) {
+                map.put(e.getEventType(), true);
+            }
+        }
+        DataSingleton.getSettings().setEnabledEventTypes(map);
+        return DataSingleton.getSettings().getEnabledEventTypes();
+    }
+
     private void updateEventTypeRecycler() {
         Log.i(TAG, "updating event type recycler...");
+        syncEnabledEventTypes();
         eventTypeAdapter = new EventTypeAdapter();
         eventTypeRecycler.setAdapter(eventTypeAdapter);
     }

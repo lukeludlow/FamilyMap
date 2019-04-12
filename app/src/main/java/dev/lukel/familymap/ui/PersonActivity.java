@@ -114,7 +114,6 @@ public class PersonActivity extends AppCompatActivity {
         }
         @Override
         public Object getChild(int listPosition, int expandedListPosition) {
-            Log.i(TAG, "expandable list view getChild");
             if (listPosition == 0) {
                 return people.get(expandedListPosition);
             } else if (listPosition == 1) {
@@ -136,7 +135,6 @@ public class PersonActivity extends AppCompatActivity {
         }
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            Log.i(TAG, "expandable list view getGroupView");
             String title = "title";
             if (groupPosition == 0) {
                 title = "family members";
@@ -153,7 +151,6 @@ public class PersonActivity extends AppCompatActivity {
         }
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            Log.i(TAG, "expandable list view getChildView");
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.expandable_list_item, null);
@@ -186,12 +183,10 @@ public class PersonActivity extends AppCompatActivity {
             return true;
         }
         public int getGroupCount() {
-            Log.i(TAG, "expandable list view getGroupCount");
             return groups.size();
         }
         @Override
         public int getChildrenCount(int groupPosition) {
-            Log.i(TAG, "expandable list view getChildrenCount");
             if (groupPosition == 0) {
                 return people.size();
             } else if (groupPosition == 1) {
@@ -201,7 +196,6 @@ public class PersonActivity extends AppCompatActivity {
         }
         @Override
         public Object getGroup(int groupPosition) {
-            Log.i(TAG, "expandable list view getGroup");
             if (groupPosition == 0) {
                 return people;
             } else if (groupPosition == 1) {

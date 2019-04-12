@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import dev.lukel.familymap.R;
@@ -138,7 +137,7 @@ public class SearchActivity extends AppCompatActivity {
         String s = searchText.getText().toString().toLowerCase();
         for (Event e : DataSingleton.getEvents()) {
             // TODO i want to search events by person name too but i don't think the spec wants that
-//            Person p = FamilyUtils.getPersonFromID(e.getPersonID());
+//            Person p = FamilyUtils.getPersonById(e.getPersonID());
 //            String personDetailsText = p.getFirstName() + " " + p.getLastName();
 //            if (personDetailsText.toLowerCase().contains(s)) {
 //                found.add(e);
@@ -165,7 +164,7 @@ public class SearchActivity extends AppCompatActivity {
         public void bind(Event e) {
             event = e;
             String titleText = event.getEventType() + ": " + event.getCity() + ", " + event.getCountry() + " (" + event.getYear() + ")";
-            Person p = FamilyUtils.getPersonFromID(event.getPersonID());
+            Person p = FamilyUtils.getPersonById(event.getPersonID());
             String detailsText = p.getFirstName() + " " + p.getLastName();
             setFoundText(title, titleText);
             setFoundText(details, detailsText);

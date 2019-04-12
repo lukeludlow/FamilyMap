@@ -20,7 +20,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <activity android:name=".ui.FilterActivity"></activity>
+        <activity
+            android:name=".ui.FilterActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.EventActivity"
             android:parentActivityName=".ui.MainActivity" />

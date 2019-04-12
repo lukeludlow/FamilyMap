@@ -31,6 +31,7 @@ import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.EventMarkerColors;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.FamilyUtils;
+import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.Encoder;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
@@ -50,6 +51,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private Map<Marker, Event> markersToEvents;
     private List<Polyline> allPolylines;
     private Event currentEvent;
+    private List<Event> events;
 
     public FamilyMapFragment() {
         currentEvent = null;
@@ -86,7 +88,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private final View.OnClickListener detailsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Person newPerson = FamilyUtils.getPersonFromID(currentEvent.getPersonID());
+            Person newPerson = FamilyUtils.getPersonById(currentEvent.getPersonID());
             Intent intent = new Intent(getActivity(), PersonActivity.class);
             intent.putExtra("person", Encoder.serialize(newPerson));
             startActivity(intent);
@@ -95,13 +97,26 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     @Override
     public void onResume() {
+        Log.i(TAG, "map fragment onResume");
         super.onResume();
         mapView.onResume();
+        if (map != null) {
+            Log.i(TAG, "onResume re-calling onMapReady so we can properly reset event markers");
+            onMapReady(map);
+        }
+    }
+
+    public void getFilteredMapEvents() {
+        Log.i(TAG, "getting filtered map events...");
+        events = Settings.getFilteredEvents();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i(TAG, "begin onMapReady");
         map = googleMap;
+        map.clear();
+        getFilteredMapEvents();
         eventMarkerColors = new EventMarkerColors();
         eventsToMarkers = new HashMap<>();
         markersToEvents = new HashMap<>();
@@ -133,7 +148,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     public void moveToCurrentEvent() {
         Log.i(TAG, "moveToCurrentEvent");
-        if (currentEvent == null) {
+        if (currentEvent == null || !events.contains(currentEvent)) {
             currentEvent = createDummyEvent();
             addDummyMarker(currentEvent);
         }
@@ -155,12 +170,16 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     public void addAllEventMarkers() {
         Log.i(TAG, "addAllEventMarkers");
-        for (Event e : DataSingleton.getEvents()) {
+        if (currentEvent != null && events.contains(currentEvent)) {
+            addMarker(currentEvent);
+        }
+        for (Event e : events) {
             addMarker(e);
         }
     }
 
     public Marker addMarker(Event e) {
+        Log.i(TAG, "addMarker");
         LatLng pos = getEventLatLng(e);
         MarkerOptions options = new MarkerOptions().position(pos).title("").icon(defaultMarker(HUE_CYAN));
         Marker marker = map.addMarker(options);
@@ -219,6 +238,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     }
 
     void drawLine(Marker m1, Marker m2, int color, float width) {
+        if (m1 == null || m2 == null) {
+            return;
+        }
         PolylineOptions options = new PolylineOptions();
         options.add(m1.getPosition(), m2.getPosition());
         options.color(color);
@@ -250,7 +272,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
             return;
         }
-        Person p = FamilyUtils.getPersonFromID(marker.getTag().toString());
+        Person p = FamilyUtils.getPersonById(marker.getTag().toString());
         if (p == null) {
             return;
         }
@@ -283,33 +305,25 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         Marker motherMarker = null;
         Marker fatherMarker = null;
         if (mother != null) {
-            Log.i(TAG, "found mother");
             List<Event> motherEvents = FamilyUtils.getChronologicalEvents(mother);
             if (motherEvents == null || motherEvents.isEmpty()) {
                 return;
             }
             motherMarker = eventsToMarkers.get(motherEvents.get(0));
-            Log.i(TAG, "found mother events and marker");
-            Log.i(TAG, "drawing mother line...");
             drawLine(marker, motherMarker, EventMarkerColors.NAVY_BLUE_INT, lineWidth);
         }
         if (father != null) {
-            Log.i(TAG, "found father");
             List<Event> fatherEvents = FamilyUtils.getChronologicalEvents(father);
             if (fatherEvents == null || fatherEvents.isEmpty()) {
                 return;
             }
             fatherMarker = eventsToMarkers.get(fatherEvents.get(0));
-            Log.i(TAG, "found father events and marker");
-            Log.i(TAG, "drawing father line...");
             drawLine(marker, fatherMarker, EventMarkerColors.NAVY_BLUE_INT, lineWidth);
         }
         if (motherMarker != null) {
-            Log.i(TAG, "drawAncestryLines recursive call on motherMarker");
             drawAncestryLines(motherMarker, shrinkLineWidth(lineWidth));
         }
         if (fatherMarker != null) {
-            Log.i(TAG, "drawAncestryLines recursive call on fatherMarker");
             drawAncestryLines(fatherMarker, shrinkLineWidth(lineWidth));
         }
     }

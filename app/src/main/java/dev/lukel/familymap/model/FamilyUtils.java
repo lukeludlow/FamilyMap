@@ -26,28 +26,28 @@ public class FamilyUtils {
     }
 
     public static Person getSpouse(String personID) {
-        Person person = getPersonFromID(personID);
+        Person person = getPersonById(personID);
         if (person == null || "".equals(person.getSpouse())) {
             return null;
         }
-        return getPersonFromID(person.getSpouse());
+        return getPersonById(person.getSpouse());
     }
     public static Person getMother(String personID) {
-        Person person = getPersonFromID(personID);
+        Person person = getPersonById(personID);
         if (person == null || "".equals(person.getMother())) {
             return null;
         }
-        return getPersonFromID(person.getMother());
+        return getPersonById(person.getMother());
     }
     public static Person getFather(String personID) {
-        Person person = getPersonFromID(personID);
+        Person person = getPersonById(personID);
         if (person == null || "".equals(person.getFather())) {
             return null;
         }
-        return getPersonFromID(person.getFather());
+        return getPersonById(person.getFather());
     }
 
-    public static Person getPersonFromID(String personID) {
+    public static Person getPersonById(String personID) {
         for (Person p : DataSingleton.getFamilyTree().getAllPeople()) {
             if (p.getPersonID().equals(personID)) {
                 return p;
@@ -90,6 +90,53 @@ public class FamilyUtils {
             return eventMap.get("birth").getYear();
         }
         return -1;
+    }
+
+    public static String getGenderById(String personId) {
+        Person p = getPersonById(personId);
+        if (p == null) {
+            return "person not found";
+        }
+        return p.getGender();
+    }
+
+    public static boolean isMale(String personId) {
+        String gender = getGenderById(personId);
+        return "m".equals(gender);
+    }
+
+    public static boolean isFemale(String personId) {
+        String gender = getGenderById(personId);
+        return "f".equals(gender);
+    }
+
+    public static boolean isOnMotherSide(String personId) {
+        Person mother = getPersonById(DataSingleton.getUser().getMother());
+        return isOnFamilySide(mother, personId);
+    }
+    public static boolean isOnFatherSide(String personId) {
+        Person father = getPersonById(DataSingleton.getUser().getFather());
+        return isOnFamilySide(father, personId);
+    }
+    private static boolean isOnFamilySide(Person current, String personId) {
+        if (current == null) {
+            return false;
+        }
+        if (current.getPersonID().equals(personId)) {
+            return true;
+        }
+        boolean found = false;
+        if (!"".equals(current.getMother())) {
+            if (isOnFamilySide(getPersonById(current.getMother()), personId)) {
+                found = true;
+            }
+        }
+        if (!"".equals(current.getFather())) {
+            if (isOnFamilySide(getPersonById(current.getFather()), personId)) {
+                found = true;
+            }
+        }
+        return found;
     }
 
 }
