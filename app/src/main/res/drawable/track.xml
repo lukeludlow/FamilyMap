@@ -1,4 +1,19 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true"  android:drawable="@drawable/color_thumb" />
-    <item                               android:drawable="@drawable/gray_track" />
-</selector>
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:dither="true"
+    android:shape="rectangle"
+    android:useLevel="false"
+    android:visible="true">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/primaryDarkColor"
+        android:startColor="@color/primaryLightColor"/>
+    <corners android:radius="5dp" />
+    <stroke
+        android:width="30dp"
+        android:color="@android:color/transparent">
+    </stroke>
+    <size
+        android:width="30dp"
+        android:height="30dp" />
+</shape>

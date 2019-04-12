@@ -169,8 +169,10 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         marker.setTitle(person.getFirstName() + " " + person.getLastName() + "'s " + e.getEventType());
         marker.setSnippet(e.getCity() + ", " + e.getCountry() + ". " + e.getYear() + ".");
         marker.setTag(e.getPersonID());
-        this.eventsToMarkers.put(e, marker);
-        this.markersToEvents.put(marker, e);
+        eventsToMarkers.put(e, marker);
+        markersToEvents.put(marker, e);
+        DataSingleton.setEventsToMarkers(eventsToMarkers);
+        DataSingleton.setMarkersToEvents(markersToEvents);
         return marker;
     }
 
@@ -183,8 +185,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         marker.setTitle("Current Location");
         marker.setSnippet(dummy.getCity() + ", " + dummy.getCountry() + ". " + dummy.getYear() + ".");
         marker.setTag(dummy.getPersonID());
-        this.eventsToMarkers.put(dummy, marker);
-        this.markersToEvents.put(marker, dummy);
+        eventsToMarkers.put(dummy, marker);
+        markersToEvents.put(marker, dummy);
         return marker;
     }
 

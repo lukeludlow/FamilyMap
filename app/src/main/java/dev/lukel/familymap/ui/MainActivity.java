@@ -62,11 +62,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search:
-                Intent intent = new Intent(this, SearchActivity.class);
-                startActivity(intent);
+                Intent searchIntent = new Intent(this, SearchActivity.class);
+                startActivity(searchIntent);
                 return true;
             case R.id.filter:
-                Toast.makeText(this, "filter", Toast.LENGTH_SHORT).show();
+                Intent filterIntent = new Intent(this, FilterActivity.class);
+                startActivity(filterIntent);
                 return true;
             case R.id.settings:
                 Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();

@@ -12,40 +12,40 @@
         android:layout_marginTop="10dp"
         android:gravity="left"
         android:text="lineage"
+        android:textColor="@color/primaryTextColor"
         android:textSize="24sp" />
 
-    <GridLayout
-        android:layout_width="match_parent"
+    <Switch
+        android:layout_margin="0dp"
+        android:paddingLeft="20dp"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:id="@+id/switch_mother_side"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:columnCount="2">
+        android:checked="true"
+        android:fontFamily="sans-serif"
+        android:switchMinWidth="0dp"
+        android:text="mother's side"
+        android:textAppearance="@android:style/TextAppearance.Material"
+        android:textSize="20sp" />
 
-        <TextView
-            android:layout_columnWeight="1"
-            android:layout_gravity="left"
-            android:text="mother's side"
-            android:textSize="20sp" />
 
-        <Switch
-            android:id="@+id/switch_mother_side"
-            android:checked="true"
-            android:layout_columnWeight="1"
-            />
+    <Switch
+        android:layout_margin="0dp"
+        android:paddingLeft="20dp"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:id="@+id/switch_father_side"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:fontFamily="sans-serif"
+        android:switchMinWidth="0dp"
+        android:text="father's side"
+        android:textAppearance="@android:style/TextAppearance.Material"
+        android:textSize="20sp" />
 
-        <TextView
-            android:layout_columnWeight="1"
-            android:layout_gravity="left"
-            android:text="father's side"
-            android:textSize="20sp" />
-
-        <Switch
-            android:id="@+id/switch_father_side"
-            android:checked="true"
-            android:layout_columnWeight="1"
-            />
-    </GridLayout>
 
 
     <TextView
@@ -56,39 +56,37 @@
         android:text="gender"
         android:textSize="24sp" />
 
-    <GridLayout
-        android:layout_width="match_parent"
+
+    <Switch
+        android:layout_margin="0dp"
+        android:paddingLeft="20dp"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:id="@+id/switch_male_events"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:columnCount="2">
+        android:checked="true"
+        android:fontFamily="sans-serif"
+        android:switchMinWidth="0dp"
+        android:text="male events"
+        android:textAppearance="@android:style/TextAppearance.Material"
+        android:textSize="20sp" />
 
-        <TextView
-            android:layout_columnWeight="1"
-            android:layout_gravity="left"
-            android:text="male"
-            android:textSize="20sp" />
 
-        <Switch
-            android:id="@+id/switch_male_events"
-            android:checked="true"
-            android:layout_columnWeight="1"
-            />
-
-        <TextView
-            android:layout_columnWeight="1"
-            android:layout_gravity="left"
-            android:text="female"
-            android:textSize="20sp" />
-
-        <Switch
-            android:id="@+id/switch_female_events"
-            android:checked="true"
-            android:layout_columnWeight="1"
-            />
-    </GridLayout>
-
+    <Switch
+        android:layout_margin="0dp"
+        android:paddingLeft="20dp"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:id="@+id/switch_female_events"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:fontFamily="sans-serif"
+        android:switchMinWidth="0dp"
+        android:text="female events"
+        android:textAppearance="@android:style/TextAppearance.Material"
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="match_parent"
