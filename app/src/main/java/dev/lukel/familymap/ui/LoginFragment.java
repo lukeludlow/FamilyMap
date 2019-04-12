@@ -134,7 +134,7 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
     }
 
     public void swapMapFragment() {
-        EventMapFragment mapFragment = new EventMapFragment();
+        FamilyMapFragment mapFragment = new FamilyMapFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container_login, mapFragment);
         transaction.commit();

@@ -1,7 +1,6 @@
 package dev.lukel.familymap.ui;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,16 +26,16 @@ public class EventActivity extends AppCompatActivity {
             currentEvent = Encoder.deserialize(bundleEvent, Event.class);
         }
         FragmentManager fm = getSupportFragmentManager();
-        Fragment eventMap = fm.findFragmentById(R.id.fragment_event_map);
+        Fragment eventMap = fm.findFragmentById(R.id.fragment_family_map);
         if (eventMap == null) {
             Log.i(TAG, "fragment eventMap == null, creating new MapFragment");
-            eventMap = new EventMapFragment();
-            ((EventMapFragment) eventMap).setCurrentEvent(currentEvent);
+            eventMap = new FamilyMapFragment();
+            ((FamilyMapFragment) eventMap).setCurrentEvent(currentEvent);
             Log.i(TAG, "begin transaction...");
-            fm.beginTransaction().add(R.id.fragment_event_map, eventMap).commit();
+            fm.beginTransaction().add(R.id.fragment_family_map, eventMap).commit();
 //            if (currentEvent != null) {
 //                Log.i(TAG, "call moveToCurrentEvent on eventMap fragment");
-//                ((EventMapFragment) eventMap).moveToCurrentEvent(currentEvent);
+//                ((FamilyMapFragment) eventMap).moveToCurrentEvent(currentEvent);
 //            }
         }
         Log.i(TAG, "event activity finish onCreate");

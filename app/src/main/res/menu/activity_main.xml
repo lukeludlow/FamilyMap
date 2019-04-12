@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
+    <group
+        android:id="@+id/main_menu_group" >
     <item
         android:id="@+id/search"
         android:icon="@drawable/ic_search_white_32dp"
@@ -21,4 +23,6 @@
         android:title="settings"
         app:showAsAction="ifRoom|withText"
         />
+</group>
+
 </menu>
