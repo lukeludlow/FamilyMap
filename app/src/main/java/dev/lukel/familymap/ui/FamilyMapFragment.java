@@ -27,7 +27,6 @@ import com.joanzapata.iconify.fonts.MaterialCommunityIcons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +47,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private static final String TAG = "FAMILY_MAP_FRAGMENT";
     private static final float SMALL_WIDTH = 2f;
     private static final float NORMAL_WIDTH = 10f;
+    private static final float ANCESTOR_START_WIDTH = 11f;
     private static final float BIG_WIDTH = 20f;
     private GoogleMap map;
     private MapView mapView;
@@ -206,6 +206,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         marker.setTag(e.getPersonID());
         if (marker.getTitle().equals("Luke Ludlow's created FamilyMap")) {
             marker.setTitle("Luke Ludlow created FamilyMap");
+            marker.setZIndex(1.0f);
         }
         eventsToMarkers.put(e, marker);
         markersToEvents.put(marker, e);
@@ -273,6 +274,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     }
 
     void drawSpouseLine(Marker marker) {
+        if (!DataSingleton.getSettings().isShowSpouseLines()) {
+            return;
+        }
         // marker's tag is personID of that event
         if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
             return;
@@ -287,7 +291,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         }
         // get first event (usually birth, but not necessarily bc birth can be filtered out)
         Marker spouseMarker = eventsToMarkers.get(events.get(0));
-        drawLine(marker, spouseMarker, EventMarkerColors.MAGENTA_INT, NORMAL_WIDTH);
+        int lineColor = DataSingleton.getSettings().getSpouseLineColor();
+        drawLine(marker, spouseMarker, lineColor, NORMAL_WIDTH);
     }
 
     void drawLifeStoryLine(Marker marker) {
@@ -321,6 +326,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     // when drawAncestryLines is first called, call it with lineWidth 10.0f or something
     // each recursive call, width gets smaller by 2.0f. minimum width is 2.0f.
     void drawAncestryLines(Marker marker, float lineWidth) {
+        if (!DataSingleton.getSettings().isShowAncestorLines()) {
+            return;
+        }
         Log.i(TAG, "drawAncestryLines");
         if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
             return;
@@ -330,13 +338,14 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         Person father = FamilyUtils.getFather(personID);
         Marker motherMarker = null;
         Marker fatherMarker = null;
+        int lineColor = DataSingleton.getSettings().getAncestorLineColor();
         if (mother != null) {
             List<Event> motherEvents = FamilyUtils.getChronologicalEvents(mother);
             if (motherEvents == null || motherEvents.isEmpty()) {
                 return;
             }
             motherMarker = eventsToMarkers.get(motherEvents.get(0));
-            drawLine(marker, motherMarker, EventMarkerColors.BLUE_INT, lineWidth);
+            drawLine(marker, motherMarker, lineColor, lineWidth);
         }
         if (father != null) {
             List<Event> fatherEvents = FamilyUtils.getChronologicalEvents(father);
@@ -344,7 +353,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
                 return;
             }
             fatherMarker = eventsToMarkers.get(fatherEvents.get(0));
-            drawLine(marker, fatherMarker, EventMarkerColors.BLUE_INT, lineWidth);
+            drawLine(marker, fatherMarker, lineColor, lineWidth);
         }
         if (motherMarker != null) {
             drawAncestryLines(motherMarker, shrinkLineWidth(lineWidth));
@@ -354,14 +363,14 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         }
     }
 
-    // width decreases by 2.0f every iteration
+    // width decreases by 3.0f every iteration
     // absolute min width is 2.0f
     float shrinkLineWidth(float width) {
         float newWidth;
-        if (width <= 4.0f) {
+        if (width <= 5.0f) {
             newWidth = 2.0f;
         } else {
-            newWidth = width - 2.0f;
+            newWidth = width - 3.0f;
         }
         return newWidth;
     }

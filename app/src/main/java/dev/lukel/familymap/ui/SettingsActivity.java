@@ -1,7 +1,5 @@
 package dev.lukel.familymap.ui;
 
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +10,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +18,6 @@ import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.EventMarkerColors;
 import dev.lukel.familymap.model.Settings;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
 // TODO the other color line crap
@@ -35,6 +30,10 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner mapTypeSpinner;
     private Spinner lifeStorySpinner;
     private Switch lifeStorySwitch;
+    private Spinner ancestorSpinner;
+    private Switch ancestorSwitch;
+    private Spinner spouseLinesSpinner;
+    private Switch spouseLinesSwitch;
     private List<String> lineColors;
     private Button logoutButton;
 
@@ -69,13 +68,6 @@ public class SettingsActivity extends AppCompatActivity {
             Log.i(TAG, "logging out...");
             finish();
             MainActivity.getInstance().restart();
-//            Intent mainIntent = new Intent(SettingsActivity.this, MainActivity.class);
-//            MagicRestartActivity.doRestart(SettingsActivity.this);
-//            Intent mainIntent = new Intent(SettingsActivity.this, MainActivity.class);
-//            Log.i(TAG, "calling process phoenix triggerRebirth");
-//            ProcessPhoenix.triggerRebirth(SettingsActivity.this, mainIntent);
-//            mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(mainIntent);
         }
     };
 
@@ -88,6 +80,16 @@ public class SettingsActivity extends AppCompatActivity {
         lifeStorySpinner.setAdapter(lineAdapter);
         lifeStorySwitch = findViewById(R.id.life_story_switch);
         lifeStorySwitch.setOnCheckedChangeListener(switchListener);
+        ancestorSpinner = findViewById(R.id.ancestor_spinner);
+        ancestorSpinner.setOnItemSelectedListener(colorListener);
+        ancestorSpinner.setAdapter(lineAdapter);
+        ancestorSwitch = findViewById(R.id.ancestor_switch);
+        ancestorSwitch.setOnCheckedChangeListener(switchListener);
+        spouseLinesSpinner = findViewById(R.id.spouse_lines_spinner);
+        spouseLinesSpinner.setOnItemSelectedListener(colorListener);
+        spouseLinesSpinner.setAdapter(lineAdapter);
+        spouseLinesSwitch= findViewById(R.id.spouse_lines_switch);
+        spouseLinesSwitch.setOnCheckedChangeListener(switchListener);
     }
 
     private AdapterView.OnItemSelectedListener mapTypeListener = new AdapterView.OnItemSelectedListener() {
@@ -122,9 +124,9 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i(TAG, "setting show life story lines to " + isChecked);
                 DataSingleton.getSettings().setShowLifeStory(isChecked);
                 break;
-            case "showFamilyTreeLines":
-                Log.i(TAG, "setting show family tree lines to " + isChecked);
-                DataSingleton.getSettings().setShowFamilyTreeLines(isChecked);
+            case "showAncestorLines":
+                Log.i(TAG, "setting show ancestor lines to " + isChecked);
+                DataSingleton.getSettings().setShowAncestorLines(isChecked);
                 break;
             case "showSpouseLines":
                 Log.i(TAG, "setting show spouse lines to " + isChecked);
@@ -142,9 +144,9 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.i(TAG, "setting life story line color to " + color);
                 DataSingleton.getSettings().setLifeStoryColor(colorInt);
                 break;
-            case "familyTreeLinesColor":
+            case "ancestorLinesColor":
                 Log.i(TAG, "setting family tree line color to " + color);
-                DataSingleton.getSettings().setFamilyTreeLineColor(colorInt);
+                DataSingleton.getSettings().setAncestorLineColor(colorInt);
                 break;
             case "spouseLinesColor":
                 Log.i(TAG, "setting spouse line color to " + color);
@@ -159,6 +161,8 @@ public class SettingsActivity extends AppCompatActivity {
         Log.i(TAG, "syncing switches with current settings...");
         Settings settings = DataSingleton.getSettings();
         lifeStorySwitch.setChecked(settings.isShowLifeStory());
+        ancestorSwitch.setChecked(settings.isShowAncestorLines());
+        spouseLinesSwitch.setChecked(settings.isShowSpouseLines());
     }
 
     private void syncLineColorSettings() {
@@ -169,6 +173,14 @@ public class SettingsActivity extends AppCompatActivity {
         String colorName = colors.getColorIntToName().get(currentLifeStoryColor);
         int position = lineColors.indexOf(colorName);
         lifeStorySpinner.setSelection(position);
+        int currentAncestorLineColor = settings.getAncestorLineColor();
+        colorName = colors.getColorIntToName().get(currentAncestorLineColor);
+        position = lineColors.indexOf(colorName);
+        ancestorSpinner.setSelection(position);
+        int currentSpouseColor = settings.getSpouseLineColor();
+        colorName = colors.getColorIntToName().get(currentSpouseColor);
+        position = lineColors.indexOf(colorName);
+        spouseLinesSpinner.setSelection(position);
     }
 
 

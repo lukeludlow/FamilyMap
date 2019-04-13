@@ -72,6 +72,74 @@
     </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textSize="24dp"
+            android:text="ancestor lines" />
+        <Switch
+            android:layout_margin="0dp"
+            android:id="@+id/ancestor_switch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:fontFamily="sans-serif"
+            android:switchMinWidth="0dp"
+            android:textSize="20sp"
+            android:scaleX="1.1"
+            android:scaleY="1.1"
+            android:tag="showAncestorLines"
+            />
+        <Spinner
+            android:id="@+id/ancestor_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:spinnerMode="dropdown"
+            android:tag="ancestorLinesColor"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textSize="24dp"
+            android:text="spouse lines" />
+        <Switch
+            android:layout_margin="0dp"
+            android:id="@+id/spouse_lines_switch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:fontFamily="sans-serif"
+            android:switchMinWidth="0dp"
+            android:textSize="20sp"
+            android:scaleX="1.1"
+            android:scaleY="1.1"
+            android:tag="showSpouseLines"
+            />
+        <Spinner
+            android:id="@+id/spouse_lines_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:spinnerMode="dropdown"
+            android:tag="spouseLinesColor"
+            />
+    </LinearLayout>
+
     <Button
         android:id="@+id/resync_button"
         android:layout_width="match_parent"

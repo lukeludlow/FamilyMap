@@ -45,6 +45,15 @@ public class EventMarkerColors {
                 MAGENTA, BLUE, CYAN, PURPLE, GREEN, YELLOW, GREY
         };
         buildColorNameIntMaps();
+        initCommonEventTypes();
+    }
+
+    private void initCommonEventTypes() {
+        getEventTypeColor("wedding"); // magenta
+        getEventTypeColor("death"); // blue
+        getEventTypeColor("birth"); //cyan
+        getEventTypeColor("location"); // purple
+        getEventTypeColor("created FamilyMap"); // green
     }
 
     private void buildColorNameIntMaps(){
