@@ -127,6 +127,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         Log.i(TAG, "begin onMapReady");
         map = googleMap;
         map.clear();
+        map.setMapType(DataSingleton.getSettings().getMapType());
         getFilteredMapEvents();
         eventMarkerColors = new EventMarkerColors();
         eventsToMarkers = new HashMap<>();
@@ -163,7 +164,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
             currentEvent = createDummyEvent();
             addDummyMarker(currentEvent);
         }
-        float ZOOM = 3.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
+        float ZOOM = 4.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
         Marker marker = this.eventsToMarkers.get(currentEvent);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
         String text = marker.getTitle() + "\n" + marker.getSnippet();

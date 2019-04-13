@@ -11,6 +11,8 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +47,13 @@ public class SettingsActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(logoutListener);
         initMapTypeSpinner();
         initLifeStoryOptions();
+        syncMapTypeSettings();
         syncCheckedSettings();
         syncLineColorSettings();
+    }
+
+    private void syncMapTypeSettings() {
+        mapTypeSpinner.setSelection(DataSingleton.getSettings().getMapType()-1);
     }
 
     private void initMapTypeSpinner() {
@@ -54,9 +61,9 @@ public class SettingsActivity extends AppCompatActivity {
         mapTypeSpinner.setOnItemSelectedListener(mapTypeListener);
         List<String> mapTypeCategories = new ArrayList<>();
         mapTypeCategories.add("default");
-        mapTypeCategories.add("hybrid");
         mapTypeCategories.add("satellite");
         mapTypeCategories.add("terrain");
+        mapTypeCategories.add("hybrid");
         ArrayAdapter<String> mapTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mapTypeCategories);
         mapTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mapTypeSpinner.setAdapter(mapTypeAdapter);
@@ -95,7 +102,26 @@ public class SettingsActivity extends AppCompatActivity {
     private AdapterView.OnItemSelectedListener mapTypeListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            String item = parent.getItemAtPosition(position).toString();
+            switch (position) {
+                case 0:
+                    Log.i(TAG, "setting map type to MAP_TYPE_NORMAL");
+                    DataSingleton.getSettings().setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    break;
+                case 1:
+                    Log.i(TAG, "setting map type to MAP_TYPE_SATELLITE");
+                    DataSingleton.getSettings().setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    break;
+                case 2:
+                    Log.i(TAG, "setting map type to MAP_TYPE_TERRAIN");
+                    DataSingleton.getSettings().setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                    break;
+                case 3:
+                    Log.i(TAG, "setting MAP_TYPE_HYBRID");
+                    DataSingleton.getSettings().setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    break;
+                default:
+                    break;
+            }
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }

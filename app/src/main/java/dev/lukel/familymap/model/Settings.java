@@ -2,6 +2,8 @@ package dev.lukel.familymap.model;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +30,11 @@ public class Settings {
     private int ancestorLineColor;
     private EventMarkerColors eventColors;
     // map types:
-    // 0 = normal (default)
-    // 1 = hybrid
-    // 2 = satellite
-    // 3 = terrain
+    // 0 = MAP_TYPE_NONE
+    // 1 = MAP_TYPE_NORMAL (default)
+    // 2 = MAP_TYPE_SATELLITE
+    // 3 = MAP_TYPE_TERRAIN
+    // 4 = MAP_TYPE_HYBRID
     private int mapType;
 
     public Settings() {
@@ -47,7 +50,7 @@ public class Settings {
         spouseLineColor = EventMarkerColors.MAGENTA_INT;
         ancestorLineColor = EventMarkerColors.PURPLE_INT;
         eventColors = new EventMarkerColors();
-        mapType = 0;
+        mapType = GoogleMap.MAP_TYPE_NORMAL;
     }
 
     public static List<Event> getFilteredEvents() {
