@@ -126,6 +126,10 @@ public class FilterActivity extends AppCompatActivity {
         public EventTypeAdapter() {
             eventTypes = findAllEventTypes();
             Collections.sort(eventTypes);
+            if (eventTypes.contains("created FamilyMap")) {
+                int position = eventTypes.indexOf("created FamilyMap");
+                Collections.swap(eventTypes, position, eventTypes.size() - 1);
+            }
         }
         private List<String> findAllEventTypes() {
             Set<String> types = new HashSet<>();

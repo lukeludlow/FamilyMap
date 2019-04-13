@@ -1,11 +1,13 @@
 package dev.lukel.familymap.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,6 +20,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
+import com.joanzapata.iconify.fonts.IoniconsIcons;
+import com.joanzapata.iconify.fonts.MaterialCommunityIcons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +51,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private static final float BIG_WIDTH = 20f;
     private GoogleMap map;
     private MapView mapView;
-    private TextView eventDetailsView;
+    private TextView eventDetailsText;
+    private ImageView eventDetailsImage;
     private EventMarkerColors eventMarkerColors;
     private Map<Event, Marker> eventsToMarkers;
     private Map<Marker, Event> markersToEvents;
@@ -79,8 +86,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         mapView = v.findViewById(R.id.map_view);
         mapView.onCreate(bundle);
         mapView.getMapAsync(this);
-        eventDetailsView = v.findViewById(R.id.map_details);
-        eventDetailsView.setOnClickListener(detailsClickListener);
+        eventDetailsText = v.findViewById(R.id.map_details);
+        eventDetailsText.setOnClickListener(detailsClickListener);
+        eventDetailsImage = v.findViewById(R.id.map_details_icon);
         Log.i(TAG, "finish onCreateView");
         return v;
     }
@@ -88,6 +96,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     private final View.OnClickListener detailsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (currentEvent == null || "".equals(currentEvent.getEventType()) || "location".equals(currentEvent.getEventType())) {
+                return;
+            }
             Person newPerson = FamilyUtils.getPersonById(currentEvent.getPersonID());
             Intent intent = new Intent(getActivity(), PersonActivity.class);
             intent.putExtra("person", Encoder.serialize(newPerson));
@@ -156,7 +167,11 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         Marker marker = this.eventsToMarkers.get(currentEvent);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
         String text = marker.getTitle() + "\n" + marker.getSnippet();
-        eventDetailsView.setText(text);
+        eventDetailsText.setText(text);
+        if (marker.getTitle().equals("Luke Ludlow's created FamilyMap")) {
+            eventDetailsText.setText("Luke Ludlow created FamilyMap");
+        }
+        setEventTypeIcon(eventDetailsImage, currentEvent);
         marker.showInfoWindow();
         eraseAllPolylines();
         drawSpouseLine(marker);
@@ -176,6 +191,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         for (Event e : events) {
             addMarker(e);
         }
+        addDummyMarker(createDummyEvent());
     }
 
     public Marker addMarker(Event e) {
@@ -188,6 +204,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         marker.setTitle(person.getFirstName() + " " + person.getLastName() + "'s " + e.getEventType());
         marker.setSnippet(e.getCity() + ", " + e.getCountry() + ". " + e.getYear() + ".");
         marker.setTag(e.getPersonID());
+        if (marker.getTitle().equals("Luke Ludlow's created FamilyMap")) {
+            marker.setTitle("Luke Ludlow created FamilyMap");
+        }
         eventsToMarkers.put(e, marker);
         markersToEvents.put(marker, e);
         DataSingleton.setEventsToMarkers(eventsToMarkers);
@@ -227,7 +246,11 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
                 setCurrentEvent(getMarkersToEvents().get(marker));
                 Log.i(TAG, "onMarkerClick. " + marker.getTitle());
                 String text = marker.getTitle() + "\n" + marker.getSnippet();
-                eventDetailsView.setText(text);
+                eventDetailsText.setText(text);
+                if (marker.getTitle().equals("Luke Ludlow's created FamilyMap")) {
+                    eventDetailsText.setText("Luke Ludlow created FamilyMap" + "\n" + "Salt Lake City, United States. 2019.");
+                }
+                setEventTypeIcon(eventDetailsImage, currentEvent);
                 eraseAllPolylines();
                 drawSpouseLine(marker);
                 drawLifeStoryLine(marker);
@@ -354,6 +377,30 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     public Map<Marker, Event> getMarkersToEvents() {
         return markersToEvents;
+    }
+
+    public void setEventTypeIcon(ImageView image, Event e) {
+        Drawable eventTypeIcon = null;
+        float alphaFactor = 1.0f;
+        if (e.getEventType().equals("birth")) {
+            eventTypeIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_birthday_cake).colorRes(R.color.birthday_icon).sizeDp(48);
+            alphaFactor = 0.9f;
+        } else if (e.getEventType().equals("wedding")) {
+            eventTypeIcon = new IconDrawable(getActivity(), MaterialCommunityIcons.mdi_heart).colorRes(R.color.heart_icon).sizeDp(48);
+            alphaFactor = 1.0f;
+        } else if (e.getEventType().equals("death")) {
+            eventTypeIcon = new IconDrawable(getActivity(), IoniconsIcons.ion_ios_pulse).colorRes(R.color.dead_icon).sizeDp(48);
+            alphaFactor = 1.0f;
+        } else if (e.getEventType().equals("created FamilyMap")) {
+            eventTypeIcon = new IconDrawable(getActivity(), IoniconsIcons.ion_code).colorRes(R.color.primaryColor).sizeDp(48);
+            alphaFactor = 1.0f;
+        } else {
+            eventTypeIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_map_marker).colorRes(R.color.event_icon).sizeDp(48);
+            alphaFactor = 0.8f;
+        }
+        int alphaInt = (int) (alphaFactor * 255.0f);
+        eventTypeIcon.setAlpha(alphaInt);
+        image.setImageDrawable(eventTypeIcon);
     }
 
     // TODO draw directional arrows on life story lines

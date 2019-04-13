@@ -17,23 +17,39 @@
         android:layout_margin="15dp"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_weight="2"
+        >
+
+       <ImageView
+           android:id="@+id/map_details_icon"
+           android:layout_width="70dp"
+           android:layout_height="match_parent"
+           android:paddingLeft="10dp"
+           android:layout_gravity="center"
+           />
+
     <TextView
         android:id="@+id/map_details"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_gravity="center_horizontal|left"
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|center_horizontal|left"
         android:layout_margin="10dp"
-        android:layout_weight="2"
-        android:padding="10dp"
         android:text="Hello World!"
         android:textSize="24sp"
         android:maxLines="2"
         android:scrollHorizontally="false"
         android:ellipsize="none"
+        android:gravity="center_vertical|left"
         android:autoSizeTextType="uniform"
         android:autoSizeMinTextSize="14dp"
         android:autoSizeMaxTextSize="24dp"
-        android:autoSizeStepGranularity="2dp"
+        android:autoSizeStepGranularity="1dp"
         />
+
+    </LinearLayout>
+
 
 </LinearLayout>
