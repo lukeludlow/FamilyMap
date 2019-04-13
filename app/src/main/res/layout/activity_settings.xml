@@ -73,12 +73,14 @@
 
 
     <Button
+        android:id="@+id/resync_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="re-sync data with server"
         />
 
     <Button
+        android:id="@+id/logout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="logout"

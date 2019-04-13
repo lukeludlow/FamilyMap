@@ -291,6 +291,9 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
     }
 
     void drawLifeStoryLine(Marker marker) {
+        if (!DataSingleton.getSettings().isShowLifeStory()) {
+            return;
+        }
         Log.i(TAG, "drawLifeStoryLine");
         if (marker.getTag() == null || "".equals(marker.getTag().toString())) {
             return;
@@ -299,19 +302,19 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         if (p == null) {
             return;
         }
-        List<Event> events = FamilyUtils.getChronologicalEvents(p);
+        List<Event> lifeStoryEvents = FamilyUtils.getChronologicalEvents(p);
         // draw lines in order regardless of the originally selected marker
-        if (events.size() < 2) {
+        if (lifeStoryEvents.size() < 2) {
             return;
         }
-        Iterator<Event> iterator = events.iterator();
-        Marker current = eventsToMarkers.get(iterator.next());
-        Marker next = eventsToMarkers.get(iterator.next());
-        drawLine(current, next, EventMarkerColors.CYAN_INT, NORMAL_WIDTH);
-        while (iterator.hasNext()) {
-            current = next;
-            next = eventsToMarkers.get(iterator.next());
-            drawLine(current, next, EventMarkerColors.CYAN_INT, NORMAL_WIDTH);
+        Marker current = null;
+        Marker next = null;
+        int lifeStoryColor = 0;
+        for (int i = 0; i < lifeStoryEvents.size() - 1; i++) {
+            current = eventsToMarkers.get(lifeStoryEvents.get(i));
+            next = eventsToMarkers.get(lifeStoryEvents.get(i + 1));
+            lifeStoryColor = DataSingleton.getSettings().getLifeStoryColor();
+            drawLine(current, next, lifeStoryColor, NORMAL_WIDTH);
         }
     }
 

@@ -1,11 +1,14 @@
 package dev.lukel.familymap.ui;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -19,6 +22,13 @@ import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.EventMarkerColors;
 import dev.lukel.familymap.model.Settings;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+
+// TODO the other color line crap
+// TODO logout
+// TODO resync
+
 public class SettingsActivity extends AppCompatActivity {
 
     private final String TAG = "SETTINGS_ACTIVITY";
@@ -26,11 +36,14 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner lifeStorySpinner;
     private Switch lifeStorySwitch;
     private List<String> lineColors;
+    private Button logoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(logoutListener);
         initMapTypeSpinner();
         initLifeStoryOptions();
         syncCheckedSettings();
@@ -50,6 +63,22 @@ public class SettingsActivity extends AppCompatActivity {
         mapTypeSpinner.setAdapter(mapTypeAdapter);
     }
 
+    private View.OnClickListener logoutListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i(TAG, "logging out...");
+            finish();
+            MainActivity.getInstance().restart();
+//            Intent mainIntent = new Intent(SettingsActivity.this, MainActivity.class);
+//            MagicRestartActivity.doRestart(SettingsActivity.this);
+//            Intent mainIntent = new Intent(SettingsActivity.this, MainActivity.class);
+//            Log.i(TAG, "calling process phoenix triggerRebirth");
+//            ProcessPhoenix.triggerRebirth(SettingsActivity.this, mainIntent);
+//            mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(mainIntent);
+        }
+    };
+
     private void initLifeStoryOptions() {
         lifeStorySpinner = findViewById(R.id.life_story_spinner);
         lifeStorySpinner.setOnItemSelectedListener(colorListener);
@@ -65,7 +94,6 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String item = parent.getItemAtPosition(position).toString();
-            Toast.makeText(SettingsActivity.this, item, Toast.LENGTH_SHORT).show();
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) { }
@@ -75,7 +103,6 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String s = parent.getTag().toString() + " " + parent.getItemAtPosition(position).toString();
-            Toast.makeText(SettingsActivity.this, s, Toast.LENGTH_SHORT).show();
             setSettingsLineColor(parent.getTag().toString(), parent.getItemAtPosition(position).toString());
         }
         @Override

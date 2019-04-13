@@ -17,10 +17,10 @@ public class EventMarkerColors {
 
     public static final String MAGENTA = "#FF00FF";
     public static final String CYAN = "#00CCCC";
-    public static final String BLUE = "#000066";
-    public static final String PURPLE = "#CC00CC";
+    public static final String BLUE = "#304FFE";
+    public static final String PURPLE = "#AA00FF";
     public static final String GREEN = "#00CC33";
-    public static final String YELLOW = "#CCCC00";
+    public static final String YELLOW = "#FEFF00";
     public static final String GREY = "#999999";
     public static final int MAGENTA_INT = Color.parseColor(MAGENTA);
     public static final int CYAN_INT = Color.parseColor(CYAN);

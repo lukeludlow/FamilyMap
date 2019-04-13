@@ -20,6 +20,7 @@ import dev.lukel.familymap.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static MainActivity instance;
     private final String TAG = "MAIN_ACTIVITY";
     private Menu menu;
     private boolean menuVisible;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
         Iconify.with(new FontAwesomeModule())
                 .with(new IoniconsModule())
                 .with(new MaterialCommunityModule());
@@ -85,5 +87,21 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+    }
+
+    public void restart() {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment login = new LoginFragment();
+        fm.beginTransaction().replace(R.id.fragment_container_login, login).commitAllowingStateLoss();
+        this.menuVisible = false;
+        setMenuVisible(false);
+    }
+
+    public static MainActivity getInstance() { return instance; }
 
 }
