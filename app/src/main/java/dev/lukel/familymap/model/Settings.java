@@ -22,10 +22,10 @@ public class Settings {
     // settings
     private boolean showLifeStory;
     private boolean showSpouseLines;
-    private boolean showAncestry;
+    private boolean showFamilyTreeLines;
     private int lifeStoryColor;
-    private int spouseColor;
-    private int ancestryColor;
+    private int spouseLineColor;
+    private int familyTreeLineColor;
     private EventMarkerColors eventColors;
     // map types:
     // 0 = normal (default)
@@ -42,7 +42,7 @@ public class Settings {
         enabledEventTypes = null;
         showLifeStory = true;
         showSpouseLines = true;
-        showAncestry = true;
+        showFamilyTreeLines = true;
         // life story color
         // spouse color
         // ancestry color
@@ -98,6 +98,8 @@ public class Settings {
         }
         return validEvent;
     }
+
+
 
 
 }

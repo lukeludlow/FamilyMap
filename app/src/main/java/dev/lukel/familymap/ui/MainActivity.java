@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(filterIntent);
                 return true;
             case R.id.settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

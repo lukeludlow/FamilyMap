@@ -333,7 +333,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
                 return;
             }
             motherMarker = eventsToMarkers.get(motherEvents.get(0));
-            drawLine(marker, motherMarker, EventMarkerColors.NAVY_BLUE_INT, lineWidth);
+            drawLine(marker, motherMarker, EventMarkerColors.BLUE_INT, lineWidth);
         }
         if (father != null) {
             List<Event> fatherEvents = FamilyUtils.getChronologicalEvents(father);
@@ -341,7 +341,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
                 return;
             }
             fatherMarker = eventsToMarkers.get(fatherEvents.get(0));
-            drawLine(marker, fatherMarker, EventMarkerColors.NAVY_BLUE_INT, lineWidth);
+            drawLine(marker, fatherMarker, EventMarkerColors.BLUE_INT, lineWidth);
         }
         if (motherMarker != null) {
             drawAncestryLines(motherMarker, shrinkLineWidth(lineWidth));
