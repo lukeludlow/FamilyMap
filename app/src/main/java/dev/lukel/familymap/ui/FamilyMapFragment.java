@@ -286,12 +286,13 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         if (spouse == null) {
             return;
         }
-        List<Event> events = FamilyUtils.getChronologicalEvents(spouse);
-        if (events == null || events.isEmpty()) {
+        List<Event> spouseEvents = FamilyUtils.getChronologicalEvents(spouse);
+        spouseEvents = Settings.filterEventList(spouseEvents);
+        if (spouseEvents == null || spouseEvents.isEmpty()) {
              return;
         }
         // get first event (usually birth, but not necessarily bc birth can be filtered out)
-        Marker spouseMarker = eventsToMarkers.get(events.get(0));
+        Marker spouseMarker = eventsToMarkers.get(spouseEvents.get(0));
         int lineColor = DataSingleton.getSettings().getSpouseLineColor();
         drawLine(marker, spouseMarker, lineColor, NORMAL_WIDTH);
     }
@@ -309,6 +310,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
             return;
         }
         List<Event> lifeStoryEvents = FamilyUtils.getChronologicalEvents(p);
+        lifeStoryEvents = Settings.filterEventList(lifeStoryEvents);
         // draw lines in order regardless of the originally selected marker
         if (lifeStoryEvents.size() < 2) {
             return;
@@ -342,6 +344,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         int lineColor = DataSingleton.getSettings().getAncestorLineColor();
         if (mother != null) {
             List<Event> motherEvents = FamilyUtils.getChronologicalEvents(mother);
+            motherEvents = Settings.filterEventList(motherEvents);
             if (motherEvents == null || motherEvents.isEmpty()) {
                 return;
             }
@@ -350,6 +353,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         }
         if (father != null) {
             List<Event> fatherEvents = FamilyUtils.getChronologicalEvents(father);
+            fatherEvents = Settings.filterEventList(fatherEvents);
             if (fatherEvents == null || fatherEvents.isEmpty()) {
                 return;
             }

@@ -1,5 +1,6 @@
 package dev.lukel.familymap.ui;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -97,11 +98,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void restart() {
+        Log.i(TAG, "restarting main activity login fragment");
         FragmentManager fm = getSupportFragmentManager();
         Fragment login = new LoginFragment();
         fm.beginTransaction().replace(R.id.fragment_container_login, login).commitAllowingStateLoss();
         this.menuVisible = false;
         setMenuVisible(false);
+    }
+
+    public void restartMapFragment() {
+        Log.i(TAG, "restarting main activity map fragment");
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment mapFragment = new FamilyMapFragment();
+        fm.beginTransaction().replace(R.id.fragment_container_login, mapFragment).commitAllowingStateLoss();
     }
 
     public static MainActivity getInstance() { return instance; }

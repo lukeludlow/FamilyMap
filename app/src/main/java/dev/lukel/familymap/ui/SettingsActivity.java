@@ -1,5 +1,6 @@
 package dev.lukel.familymap.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -20,13 +22,14 @@ import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.EventMarkerColors;
 import dev.lukel.familymap.model.Settings;
+import dev.lukel.familymap.net.SyncDataTask;
 
 
 // TODO the other color line crap
 // TODO logout
 // TODO resync
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements SyncDataTask.SyncDataAsyncListener {
 
     private final String TAG = "SETTINGS_ACTIVITY";
     private Spinner mapTypeSpinner;
@@ -38,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch spouseLinesSwitch;
     private List<String> lineColors;
     private Button logoutButton;
+    private Button resyncButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         logoutButton = findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(logoutListener);
+        resyncButton = findViewById(R.id.resync_button);
+        resyncButton.setOnClickListener(resyncListener);
         initMapTypeSpinner();
         initLifeStoryOptions();
         syncMapTypeSettings();
@@ -77,6 +83,31 @@ public class SettingsActivity extends AppCompatActivity {
             MainActivity.getInstance().restart();
         }
     };
+
+    private View.OnClickListener resyncListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i(TAG, "re-syncing data with server...");
+            startSyncDataTask(DataSingleton.getAuthtoken());
+        }
+    };
+
+    private void startSyncDataTask(String authtoken) {
+        new SyncDataTask(SettingsActivity.this).execute(authtoken);
+    }
+
+    @Override
+    public void syncDataComplete(String result) {
+        if (result.equals("error! sync data task failed")) {
+            Toast.makeText(SettingsActivity.this, "error! unable to sync data with server", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(SettingsActivity.this, "success", Toast.LENGTH_SHORT).show();
+        Intent mainIntent = new Intent(SettingsActivity.this, MainActivity.class);
+        startActivity(mainIntent);
+        finish();
+        MainActivity.getInstance().restartMapFragment();
+    }
 
     private void initLifeStoryOptions() {
         lifeStorySpinner = findViewById(R.id.life_story_spinner);

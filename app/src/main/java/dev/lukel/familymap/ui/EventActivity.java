@@ -33,10 +33,6 @@ public class EventActivity extends AppCompatActivity {
             ((FamilyMapFragment) eventMap).setCurrentEvent(currentEvent);
             Log.i(TAG, "begin transaction...");
             fm.beginTransaction().add(R.id.fragment_family_map, eventMap).commit();
-//            if (currentEvent != null) {
-//                Log.i(TAG, "call moveToCurrentEvent on eventMap fragment");
-//                ((FamilyMapFragment) eventMap).moveToCurrentEvent(currentEvent);
-//            }
         }
         Log.i(TAG, "event activity finish onCreate");
     }

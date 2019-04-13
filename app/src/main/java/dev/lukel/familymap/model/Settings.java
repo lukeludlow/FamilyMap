@@ -102,7 +102,9 @@ public class Settings {
         return validEvent;
     }
 
+    public void clearCachedData() {
 
+    }
 
 
 }
