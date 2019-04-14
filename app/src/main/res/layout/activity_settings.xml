@@ -167,6 +167,7 @@
     <LinearLayout
         android:layout_marginTop="100dp"
         android:paddingTop="120dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
@@ -176,24 +177,24 @@
             android:layout_margin="10dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_width="125dp"
-            android:layout_height="60dp"
+            android:layout_width="110dp"
+            android:layout_height="55dp"
             android:id="@+id/resync_button"
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
-            android:enabled="false"
+            android:enabled="true"
             android:text="sync data" />
 
         <Button
             android:layout_margin="10dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_width="125dp"
-            android:layout_height="60dp"
+            android:layout_width="110dp"
+            android:layout_height="55dp"
             android:id="@+id/logout_button"
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
-            android:enabled="false"
+            android:enabled="true"
             android:text="logout" />
     </LinearLayout>
 

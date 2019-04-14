@@ -10,12 +10,14 @@
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:columnCount="2">
 
         <TextView
             android:layout_columnSpan="2"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="15dp"
+            android:layout_margin="0dp"
+            android:layout_marginBottom="20dp"
             android:text="login i guess"
             android:textColor="@color/primaryTextColor"
             android:textSize="32dp" />
@@ -120,24 +122,32 @@
     </GridLayout>
 
     <LinearLayout
+        android:paddingTop="100dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
+        android:layout_height="260dp"
+        android:layout_margin="0dp"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_login"
-            style="@style/LoginButton"
-            android:background="@drawable/buttonshape"
-            android:enabled="false"
-            android:text="login" />
 
         <Button
             android:id="@+id/button_register"
             style="@style/LoginButton"
             android:background="@drawable/buttonshape"
             android:enabled="false"
+            android:layout_width="125dp"
+            android:layout_height="60dp"
             android:text="register" />
+
+        <Button
+            android:id="@+id/button_login"
+            style="@style/LoginButton"
+            android:background="@drawable/buttonshape"
+            android:enabled="false"
+            android:layout_width="125dp"
+            android:layout_height="60dp"
+            android:text="login" />
+
     </LinearLayout>
 
 </LinearLayout>

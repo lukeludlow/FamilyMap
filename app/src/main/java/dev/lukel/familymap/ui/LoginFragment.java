@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import dev.lukel.familymap.R;
@@ -129,7 +131,12 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
 
     @Override
     public void syncDataComplete(String result) {
-        Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP|Gravity.CENTER_VERTICAL, 0, 225);
+        ViewGroup group = (ViewGroup) toast.getView();
+        TextView messageText = (TextView) group.getChildAt(0);
+        messageText.setTextSize(20);
+        toast.show();
         swapMapFragment();
     }
 

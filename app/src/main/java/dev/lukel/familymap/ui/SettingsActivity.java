@@ -24,11 +24,6 @@ import dev.lukel.familymap.model.EventMarkerColors;
 import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.SyncDataTask;
 
-
-// TODO the other color line crap
-// TODO logout
-// TODO resync
-
 public class SettingsActivity extends AppCompatActivity implements SyncDataTask.SyncDataAsyncListener {
 
     private final String TAG = "SETTINGS_ACTIVITY";
