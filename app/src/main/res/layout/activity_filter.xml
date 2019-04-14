@@ -5,23 +5,43 @@
     android:orientation="vertical"
     >
 
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="0dp"
+        android:text="filter events"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="38sp" />
+
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
         android:gravity="left"
         android:text="lineage"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="24sp" />
-
+        android:textSize="28sp" />
     <Switch
         android:layout_margin="0dp"
-        android:paddingLeft="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:scaleX="1.1"
         android:scaleY="1.1"
         android:id="@+id/switch_mother_side"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:checked="true"
         android:fontFamily="sans-serif"
@@ -33,11 +53,14 @@
 
     <Switch
         android:layout_margin="0dp"
-        android:paddingLeft="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:scaleX="1.1"
         android:scaleY="1.1"
         android:id="@+id/switch_father_side"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:checked="true"
         android:fontFamily="sans-serif"
@@ -49,21 +72,24 @@
 
 
     <TextView
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:gravity="left"
-        android:text="gender"
-        android:textSize="24sp" />
-
+        android:text=" gender"
+        android:textSize="28sp" />
 
     <Switch
         android:layout_margin="0dp"
-        android:paddingLeft="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:scaleX="1.1"
         android:scaleY="1.1"
         android:id="@+id/switch_male_events"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:checked="true"
         android:fontFamily="sans-serif"
@@ -72,14 +98,16 @@
         android:textAppearance="@android:style/TextAppearance.Material"
         android:textSize="20sp" />
 
-
     <Switch
         android:layout_margin="0dp"
-        android:paddingLeft="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
         android:scaleX="1.1"
         android:scaleY="1.1"
         android:id="@+id/switch_female_events"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:checked="true"
         android:fontFamily="sans-serif"
@@ -88,13 +116,23 @@
         android:textAppearance="@android:style/TextAppearance.Material"
         android:textSize="20sp" />
 
-    <TextView
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+
+    <TextView
+        android:layout_marginLeft="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="left"
         android:text="event types"
-        android:textSize="24sp" />
+        android:textSize="28sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/event_type_recycler"
@@ -105,5 +143,6 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    </LinearLayout>
 
 </LinearLayout>

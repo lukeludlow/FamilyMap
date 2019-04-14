@@ -14,14 +14,27 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_margin="15dp"
-        android:text="login i guess"
+        android:paddingTop="15dp"
+        android:paddingBottom="0dp"
+        android:text="map settings"
         android:textColor="@color/primaryTextColor"
-        android:textSize="32dp" />
+        android:textSize="38dp" />
+
+   <LinearLayout
+       android:layout_margin="20dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical">
+
+
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="35dp"
-    android:orientation="horizontal">
+    android:layout_height="55dp"
+    android:orientation="horizontal"
+    android:paddingTop="2dp"
+    android:paddingBottom="0dp"
+    >
     <TextView
         android:layout_weight="1"
         android:layout_width="0dp"
@@ -31,15 +44,19 @@
     <Spinner
         android:id="@+id/spinner_map_type"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:paddingBottom="15dp"
+        />
 </LinearLayout>
 
 
     <LinearLayout
+        android:paddingTop="5dp"
+        android:paddingBottom="0dp"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
             android:layout_weight="3"
@@ -65,7 +82,7 @@
             android:id="@+id/life_story_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:spinnerMode="dropdown"
             android:tag="lifeStoryColor"
             />
@@ -73,8 +90,10 @@
 
 
     <LinearLayout
+        android:paddingTop="5dp"
+        android:paddingBottom="0dp"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
             android:layout_weight="3"
@@ -100,15 +119,17 @@
             android:id="@+id/ancestor_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:spinnerMode="dropdown"
             android:tag="ancestorLinesColor"
             />
     </LinearLayout>
 
     <LinearLayout
+        android:paddingTop="5dp"
+        android:paddingBottom="0dp"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="55dp"
         android:orientation="horizontal">
         <TextView
             android:layout_weight="3"
@@ -134,26 +155,46 @@
             android:id="@+id/spouse_lines_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:spinnerMode="dropdown"
             android:tag="spouseLinesColor"
             />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/resync_button"
+
+   </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="100dp"
+        android:paddingTop="120dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="re-sync data with server"
-        />
+        android:layout_margin="0dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="logout"
-        />
+        <Button
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="125dp"
+            android:layout_height="60dp"
+            android:id="@+id/resync_button"
+            style="@style/LoginButton"
+            android:background="@drawable/buttonshape"
+            android:enabled="false"
+            android:text="sync data" />
 
-
+        <Button
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="125dp"
+            android:layout_height="60dp"
+            android:id="@+id/logout_button"
+            style="@style/LoginButton"
+            android:background="@drawable/buttonshape"
+            android:enabled="false"
+            android:text="logout" />
+    </LinearLayout>
 
 </LinearLayout>

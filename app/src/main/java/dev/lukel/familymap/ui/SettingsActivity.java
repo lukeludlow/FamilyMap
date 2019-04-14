@@ -70,8 +70,7 @@ public class SettingsActivity extends AppCompatActivity implements SyncDataTask.
         mapTypeCategories.add("satellite");
         mapTypeCategories.add("terrain");
         mapTypeCategories.add("hybrid");
-        ArrayAdapter<String> mapTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mapTypeCategories);
-        mapTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> mapTypeAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.dropdown_text, mapTypeCategories);
         mapTypeSpinner.setAdapter(mapTypeAdapter);
     }
 
@@ -113,8 +112,7 @@ public class SettingsActivity extends AppCompatActivity implements SyncDataTask.
         lifeStorySpinner = findViewById(R.id.life_story_spinner);
         lifeStorySpinner.setOnItemSelectedListener(colorListener);
         lineColors = DataSingleton.getEventMarkerColors().getAllColorNames();
-        ArrayAdapter<String> lineAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, lineColors);
-        lineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> lineAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.dropdown_text, lineColors);
         lifeStorySpinner.setAdapter(lineAdapter);
         lifeStorySwitch = findViewById(R.id.life_story_switch);
         lifeStorySwitch.setOnCheckedChangeListener(switchListener);
