@@ -2,8 +2,8 @@ package dev.lukel.familymap.net;
 
 import android.os.AsyncTask;
 
-import dev.lukel.familymap.net.request.LoginRequest;
-import dev.lukel.familymap.net.response.LoginResponse;
+import dev.lukel.familymap.net.message.LoginRequest;
+import dev.lukel.familymap.net.message.LoginResponse;
 
 public class LoginTask extends AsyncTask<LoginRequest, Void, LoginResponse> {
 

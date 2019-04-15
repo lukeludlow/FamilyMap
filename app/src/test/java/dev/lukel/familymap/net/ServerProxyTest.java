@@ -2,23 +2,47 @@ package dev.lukel.familymap.net;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 
-import dev.lukel.familymap.net.request.EventsRequest;
-import dev.lukel.familymap.net.request.LoginRequest;
-import dev.lukel.familymap.net.request.PeopleRequest;
-import dev.lukel.familymap.net.request.RegisterRequest;
-import dev.lukel.familymap.net.response.EventsResponse;
-import dev.lukel.familymap.net.response.LoginResponse;
-import dev.lukel.familymap.net.response.PeopleResponse;
-import dev.lukel.familymap.net.response.RegisterResponse;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+
+import dev.lukel.familymap.net.message.EventsRequest;
+import dev.lukel.familymap.net.message.LoginRequest;
+import dev.lukel.familymap.net.message.PeopleRequest;
+import dev.lukel.familymap.net.message.RegisterRequest;
+import dev.lukel.familymap.net.message.EventsResponse;
+import dev.lukel.familymap.net.message.LoginResponse;
+import dev.lukel.familymap.net.message.PeopleResponse;
+import dev.lukel.familymap.net.message.RegisterResponse;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ServerProxyTest {
+
+    Process serverProcess;
+
+    @Test
+    void startServer() throws Exception {
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command("java", "-jar", "out/artifacts/fm_server_jar/fm_server.jar", "8080");
+        pb.directory(new File("/Users/luke/code/fm_server/"));
+        Process serverProcess = pb.start();
+        Thread.sleep(10000);
+        serverProcess.destroy();
+        // to check whether server is running properly, do
+        // ps -A | grep fm_server
+        // Thread.sleep(10000) to let server run for 10 seconds
+        // if process isn't killed properly, do
+        // pkill -9 -f fm_server
+    }
+
+
+
+
+
 
     @Test
     void testLogin() throws Exception {

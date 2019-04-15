@@ -18,16 +18,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
+import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.net.LoginTask;
 import dev.lukel.familymap.net.RegisterTask;
 import dev.lukel.familymap.net.SyncDataTask;
-import dev.lukel.familymap.net.request.ClientLoginRequest;
-import dev.lukel.familymap.net.request.LoginRequest;
-import dev.lukel.familymap.net.request.RegisterRequest;
-import dev.lukel.familymap.net.response.LoginResponse;
-import dev.lukel.familymap.net.response.RegisterResponse;
+import dev.lukel.familymap.net.message.ClientLoginRequest;
+import dev.lukel.familymap.net.message.LoginRequest;
+import dev.lukel.familymap.net.message.RegisterRequest;
+import dev.lukel.familymap.net.message.LoginResponse;
+import dev.lukel.familymap.net.message.RegisterResponse;
 
 public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyncListener, LoginTask.LoginAsyncListener, RegisterTask.RegisterAsyncListener {
 
@@ -137,6 +141,16 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
         TextView messageText = (TextView) group.getChildAt(0);
         messageText.setTextSize(20);
         toast.show();
+
+        // lowercase event types
+        List<Event> lowerCaseEvents = new ArrayList<>();
+        for (Event e : DataSingleton.getEvents()) {
+            e.setEventType(e.getEventType().toLowerCase());
+            lowerCaseEvents.add(e);
+        }
+        Event[] eventArray = lowerCaseEvents.toArray(new Event[lowerCaseEvents.size()]);
+        DataSingleton.setEvents(eventArray);
+
         swapMapFragment();
     }
 

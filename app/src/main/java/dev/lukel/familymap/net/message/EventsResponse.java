@@ -1,4 +1,4 @@
-package dev.lukel.familymap.net.response;
+package dev.lukel.familymap.net.message;
 
 import dev.lukel.familymap.model.Event;
 import lombok.AllArgsConstructor;

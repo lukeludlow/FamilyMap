@@ -2,8 +2,8 @@ package dev.lukel.familymap.net;
 
 import android.os.AsyncTask;
 
-import dev.lukel.familymap.net.request.RegisterRequest;
-import dev.lukel.familymap.net.response.RegisterResponse;
+import dev.lukel.familymap.net.message.RegisterRequest;
+import dev.lukel.familymap.net.message.RegisterResponse;
 
 public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterResponse> {
 

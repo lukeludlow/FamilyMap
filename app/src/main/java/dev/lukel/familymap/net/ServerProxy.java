@@ -8,14 +8,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import dev.lukel.familymap.net.request.EventsRequest;
-import dev.lukel.familymap.net.request.PeopleRequest;
-import dev.lukel.familymap.net.request.LoginRequest;
-import dev.lukel.familymap.net.request.RegisterRequest;
-import dev.lukel.familymap.net.response.EventsResponse;
-import dev.lukel.familymap.net.response.PeopleResponse;
-import dev.lukel.familymap.net.response.LoginResponse;
-import dev.lukel.familymap.net.response.RegisterResponse;
+import dev.lukel.familymap.net.message.EventsRequest;
+import dev.lukel.familymap.net.message.PeopleRequest;
+import dev.lukel.familymap.net.message.LoginRequest;
+import dev.lukel.familymap.net.message.RegisterRequest;
+import dev.lukel.familymap.net.message.EventsResponse;
+import dev.lukel.familymap.net.message.PeopleResponse;
+import dev.lukel.familymap.net.message.LoginResponse;
+import dev.lukel.familymap.net.message.RegisterResponse;
 import lombok.Data;
 
 @Data
@@ -25,7 +25,6 @@ public class ServerProxy {
 
     private String host;
     private String port;
-//    private LoginResponse loginResponse; // used by async task on post execute
     private NetException error;
 
     public ServerProxy(String host, String port) {
@@ -33,7 +32,6 @@ public class ServerProxy {
         this.port = port;
     }
 
-    // TODO handle exceptions properly
     public LoginResponse login(LoginRequest request) throws NetException {
         try {
             URL url = new URL("http://" + host + ":" + port + "/user/login");

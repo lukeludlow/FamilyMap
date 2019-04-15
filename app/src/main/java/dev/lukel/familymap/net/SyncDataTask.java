@@ -5,10 +5,10 @@ import android.os.AsyncTask;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.FamilyTree;
 import dev.lukel.familymap.model.Person;
-import dev.lukel.familymap.net.request.EventsRequest;
-import dev.lukel.familymap.net.request.PeopleRequest;
-import dev.lukel.familymap.net.response.EventsResponse;
-import dev.lukel.familymap.net.response.PeopleResponse;
+import dev.lukel.familymap.net.message.EventsRequest;
+import dev.lukel.familymap.net.message.PeopleRequest;
+import dev.lukel.familymap.net.message.EventsResponse;
+import dev.lukel.familymap.net.message.PeopleResponse;
 
 public class SyncDataTask extends AsyncTask<String, Integer, String> {
 
