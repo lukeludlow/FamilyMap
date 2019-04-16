@@ -44,9 +44,9 @@
         android:ellipsize="none"
         android:gravity="center_vertical|left"
         android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="14dp"
-        android:autoSizeMaxTextSize="24dp"
-        android:autoSizeStepGranularity="1dp"
+        android:autoSizeMinTextSize="14sp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeStepGranularity="1sp"
         />
 
     </LinearLayout>
