@@ -48,8 +48,6 @@ public class ServerProxy {
                 throw new NetException("login failed: http response code not ok");
             }
             response = Encoder.deserialize(readResponseBody(httpConnection), LoginResponse.class);
-            System.out.println("response:");
-            System.out.println(response.toString());
             return response;
         } catch (IOException e) {
             throw new NetException("login failed. " + e.getMessage());
@@ -68,12 +66,10 @@ public class ServerProxy {
             requestBody.write(loginInfo.getBytes());
             requestBody.close();
             if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new NetException("login failed: http response code not ok");
+                throw new NetException("register failed: http response code not ok");
             }
             RegisterResponse response;
             response = Encoder.deserialize(readResponseBody(httpConnection), RegisterResponse.class);
-            System.out.println("response:");
-            System.out.println(response.toString());
             return response;
         } catch (IOException e) {
             throw new NetException("register failed. " + e.getMessage());
