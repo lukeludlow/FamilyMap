@@ -10,8 +10,7 @@ public final class DataSingleton {
     private static DataSingleton instance = new DataSingleton();
 
     private DataSingleton() {
-        eventMarkerColors = new EventMarkerColors();
-        settings = new Settings();
+
     }
 
     private Person[] people;

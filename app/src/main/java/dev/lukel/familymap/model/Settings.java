@@ -21,7 +21,7 @@ public class Settings {
     private boolean maleEvents;
     private boolean femaleEvents;
     private Map<String, Boolean> enabledEventTypes;
-    // settings
+    // map settings
     private boolean showLifeStory;
     private boolean showSpouseLines;
     private boolean showAncestorLines;
@@ -106,5 +106,23 @@ public class Settings {
 
     }
 
+    // this hidden constructor is used for unit testing,
+    // because an android activity must initialize event color bitmap stuff
+    Settings(String dontCreateMarkerColors) {
+        // string parameter isn't actually used, just need it to specify which constructor to call
+        motherSide = true;
+        fatherSide = true;
+        maleEvents = true;
+        femaleEvents = true;
+        enabledEventTypes = null;
+        showLifeStory = true;
+        showSpouseLines = true;
+        showAncestorLines = true;
+        lifeStoryColor = EventMarkerColors.CYAN_INT;
+        spouseLineColor = EventMarkerColors.MAGENTA_INT;
+        ancestorLineColor = EventMarkerColors.PURPLE_INT;
+        // don't create event marker colors
+        mapType = GoogleMap.MAP_TYPE_NORMAL;
+    }
 
 }

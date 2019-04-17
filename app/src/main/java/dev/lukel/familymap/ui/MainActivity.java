@@ -19,6 +19,9 @@ import com.joanzapata.iconify.fonts.IoniconsModule;
 import com.joanzapata.iconify.fonts.MaterialCommunityModule;
 
 import dev.lukel.familymap.R;
+import dev.lukel.familymap.model.DataSingleton;
+import dev.lukel.familymap.model.EventMarkerColors;
+import dev.lukel.familymap.model.Settings;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         instance = this;
         MapsInitializer.initialize(getApplicationContext());
+        if (DataSingleton.getEventMarkerColors() == null) {
+            DataSingleton.setEventMarkerColors(new EventMarkerColors());
+        }
+        if (DataSingleton.getSettings() == null) {
+            DataSingleton.setSettings(new Settings());
+        }
         Iconify.with(new FontAwesomeModule())
                 .with(new IoniconsModule())
                 .with(new MaterialCommunityModule());

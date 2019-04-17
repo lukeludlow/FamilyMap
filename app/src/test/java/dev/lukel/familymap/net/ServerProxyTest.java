@@ -29,21 +29,18 @@ class ServerProxyTest {
 
     @BeforeAll
     void init() throws Exception {
-        System.out.println("init server");
         startServer();
     }
 
     @AfterAll()
     void destroy() throws Exception {
-        System.out.println("kill server");
-        Thread.sleep(1000);
         killServer();
     }
 
     @BeforeEach
     void setUp() throws Exception {
         if (!serverProcess.isAlive()) {
-            System.out.println("BeforeEach setup is restarting the server...");
+            System.out.println("BeforeEach setup is restarting server...");
             startServer();
         }
     }
@@ -54,6 +51,7 @@ class ServerProxyTest {
     // to check whether server is running properly, do
     // ps -A | grep fm_server
     private void startServer() throws Exception {
+        System.out.println("start server");
         ProcessBuilder pb = new ProcessBuilder();
         pb.command("java", "-jar", "out/artifacts/fm_server_jar/fm_server.jar", "8080");
         pb.directory(new File("/Users/luke/code/fm_server/"));
@@ -63,8 +61,11 @@ class ServerProxyTest {
 
     // if process isn't killed properly, do
     // pkill -9 -f fm_server
-    private void killServer() {
+    private void killServer() throws Exception {
+        System.out.println("killServer checking if process is alive...");
         if (serverProcess.isAlive()) {
+            System.out.println("kill server");
+            Thread.sleep(1000);
             serverProcess.destroy();
         }
     }
@@ -105,7 +106,7 @@ class ServerProxyTest {
 
     @Test
     @DisplayName("login fail (server is down)")
-    void testLoginFail2() {
+    void testLoginFail2() throws Exception {
         ServerProxy proxy = new ServerProxy("127.0.0.1", "8080");
         LoginRequest request = new LoginRequest("lukeludlow", "wrong_password");
         LoginResponse actual = null;
@@ -154,7 +155,7 @@ class ServerProxyTest {
 
     @Test
     @DisplayName("register fail (server is down)")
-    void testRegisterFail2() {
+    void testRegisterFail2() throws Exception {
         ServerProxy proxy = new ServerProxy("127.0.0.1", "8080");
         String randomUsername = UUID.randomUUID().toString();
         RegisterRequest request = new RegisterRequest(randomUsername, "password123", "t@test.com", "test", "ing", "m");

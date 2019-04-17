@@ -1,6 +1,7 @@
 package dev.lukel.familymap.model;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PersonNode{
+public class PersonNode {
 
     private Person person;
     private Person mom;
@@ -16,7 +17,7 @@ public class PersonNode{
     private Person spouse;
     private Person child;
     private Set<Person> relatives;
-    private HashMap<String, Event> events; // key val is the event's type name
+    private Map<String, Event> events; // key val is the event's type name
 
     public PersonNode(Person p) {
         this.person = p;

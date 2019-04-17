@@ -107,10 +107,11 @@ public class SearchActivity extends AppCompatActivity {
         List<Person> found = new ArrayList<>();
         String s = searchText.getText().toString().toLowerCase();
         for (Person p : DataSingleton.getPeople()) {
-            if (p.getFirstName().toLowerCase().contains(s) || p.getLastName().toLowerCase().contains(s)) {
-                Log.i(TAG, "search found a match: " + p.getFirstName());
-                found.add(p);
-            }
+            String personName = (p.getFirstName() + " " + p.getLastName()).toLowerCase();
+           if (personName.contains(s)) {
+               Log.i(TAG, "search found a match: " + p.getFirstName());
+               found.add(p);
+           }
         }
         return found;
     }
@@ -137,12 +138,6 @@ public class SearchActivity extends AppCompatActivity {
         List<Event> found = new ArrayList<>();
         String s = searchText.getText().toString().toLowerCase();
         for (Event e : Settings.getFilteredEvents()) {
-            // TODO i want to search events by person name too but i don't think the spec wants that
-//            Person p = FamilyUtils.getPersonById(e.getPersonID());
-//            String personDetailsText = p.getFirstName() + " " + p.getLastName();
-//            if (personDetailsText.toLowerCase().contains(s)) {
-//                found.add(e);
-//            }
             String titleText = e.getEventType() + ": " + e.getCity() + ", " + e.getCountry() + " (" + e.getYear() + ")";
             if (titleText.toLowerCase().contains(s)) {
                 found.add(e);

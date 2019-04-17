@@ -3,7 +3,6 @@ package dev.lukel.familymap.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import dev.lukel.familymap.model.User;
 
 @Data
 @NoArgsConstructor

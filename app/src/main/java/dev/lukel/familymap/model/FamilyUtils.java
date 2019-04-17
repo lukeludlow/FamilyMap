@@ -68,6 +68,11 @@ public class FamilyUtils {
         return orderedEvents;
     }
 
+    public static List<Event> getPersonEvents(Person p) {
+        PersonNode node = DataSingleton.getFamilyTree().getPersonToNodeMap().get(p);
+        return new ArrayList<>(node.getEvents().values());
+    }
+
     private static class YearComparator implements Comparator<Event> {
         @Override
         public int compare(Event a, Event b) {
@@ -92,7 +97,7 @@ public class FamilyUtils {
         return -1;
     }
 
-    public static String getGenderById(String personId) {
+    private static String getGenderById(String personId) {
         Person p = getPersonById(personId);
         if (p == null) {
             return "person not found";
@@ -137,6 +142,16 @@ public class FamilyUtils {
             }
         }
         return found;
+    }
+
+    public static String getRelationshipTypeById(String personId, String relativeId) {
+        Person p = getPersonById(personId);
+        Person relative = getPersonById(relativeId);
+        if (p != null && relative != null) {
+            return getRelationshipType(p, relative);
+        } else {
+            return "no relationship found";
+        }
     }
 
 }

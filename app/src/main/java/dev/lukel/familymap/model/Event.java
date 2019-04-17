@@ -1,7 +1,5 @@
 package dev.lukel.familymap.model;
 
-import android.location.Location;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

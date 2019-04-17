@@ -2,6 +2,8 @@ package dev.lukel.familymap.model;
 
 import android.text.TextUtils;
 
+import org.junit.platform.commons.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,11 +58,12 @@ public class FamilyTree {
             } else if (familyMember.getPersonID().equals(p.getSpouse())) {
                 node.setSpouse(familyMember);
                 node.getRelatives().add(familyMember);
-            } else if (!TextUtils.isEmpty(familyMember.getFather()) && !TextUtils.isEmpty(familyMember.getMother())) {
-                if (familyMember.getFather().equals(p.getPersonID()) || familyMember.getMother().equals(p.getPersonID())) {
-                    node.setChild(familyMember);
-                    node.getRelatives().add(familyMember);
-                }
+            } else if (StringUtils.isNotBlank(familyMember.getFather()) && familyMember.getFather().equals(p.getPersonID())) {
+                node.setChild(familyMember);
+                node.getRelatives().add(familyMember);
+            } else if (StringUtils.isNotBlank(familyMember.getMother()) && familyMember.getMother().equals(p.getPersonID())) {
+                node.setChild(familyMember);
+                node.getRelatives().add(familyMember);
             }
         }
         for (Event event : allEvents) {
