@@ -102,10 +102,6 @@ public class Settings {
         return validEvent;
     }
 
-    public void clearCachedData() {
-
-    }
-
     // this hidden constructor is used for unit testing,
     // because an android activity must initialize event color bitmap stuff
     Settings(String dontCreateMarkerColors) {

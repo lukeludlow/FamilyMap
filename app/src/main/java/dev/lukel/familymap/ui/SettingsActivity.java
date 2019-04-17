@@ -1,8 +1,8 @@
 package dev.lukel.familymap.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -69,21 +69,15 @@ public class SettingsActivity extends AppCompatActivity implements SyncDataTask.
         mapTypeSpinner.setAdapter(mapTypeAdapter);
     }
 
-    private View.OnClickListener logoutListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.i(TAG, "logging out...");
-            finish();
-            MainActivity.getInstance().restart();
-        }
+    private View.OnClickListener logoutListener = v -> {
+        Log.i(TAG, "logging out...");
+        finish();
+        MainActivity.getInstance().restart();
     };
 
-    private View.OnClickListener resyncListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.i(TAG, "re-syncing data with server...");
-            startSyncDataTask(DataSingleton.getAuthtoken());
-        }
+    private View.OnClickListener resyncListener = v -> {
+        Log.i(TAG, "re-syncing data with server...");
+        startSyncDataTask(DataSingleton.getAuthtoken());
     };
 
     private void startSyncDataTask(String authtoken) {
@@ -161,12 +155,7 @@ public class SettingsActivity extends AppCompatActivity implements SyncDataTask.
         public void onNothingSelected(AdapterView<?> parent) { }
     };
 
-    private final CompoundButton.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            setSettingsAttribute(buttonView.getTag().toString(), isChecked);
-        }
-    };
+    private final CompoundButton.OnCheckedChangeListener switchListener = (buttonView, isChecked) -> setSettingsAttribute(buttonView.getTag().toString(), isChecked);
 
     public void setSettingsAttribute(String attribute, boolean isChecked) {
         switch (attribute) {
@@ -232,7 +221,5 @@ public class SettingsActivity extends AppCompatActivity implements SyncDataTask.
         position = lineColors.indexOf(colorName);
         spouseLinesSpinner.setSelection(position);
     }
-
-
 
 }

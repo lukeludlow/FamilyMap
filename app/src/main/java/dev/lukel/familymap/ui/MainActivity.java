@@ -1,6 +1,5 @@
 package dev.lukel.familymap.ui;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.MapsInitializer;
 import com.joanzapata.iconify.Iconify;
@@ -29,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MAIN_ACTIVITY";
     private Menu menu;
     private boolean menuVisible;
+
+    public static MainActivity getInstance() { return instance; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +121,5 @@ public class MainActivity extends AppCompatActivity {
         Fragment mapFragment = new FamilyMapFragment();
         fm.beginTransaction().replace(R.id.fragment_container_login, mapFragment).commitAllowingStateLoss();
     }
-
-    public static MainActivity getInstance() { return instance; }
 
 }

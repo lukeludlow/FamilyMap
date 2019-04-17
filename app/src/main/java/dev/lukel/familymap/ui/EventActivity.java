@@ -1,9 +1,9 @@
 package dev.lukel.familymap.ui;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
 import dev.lukel.familymap.R;
@@ -35,10 +35,6 @@ public class EventActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.fragment_family_map, eventMap).commit();
         }
         Log.i(TAG, "event activity finish onCreate");
-    }
-
-    public Event getCurrentEvent() {
-        return currentEvent;
     }
 
 }

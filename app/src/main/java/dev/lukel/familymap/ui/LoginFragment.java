@@ -29,8 +29,8 @@ import dev.lukel.familymap.net.RegisterTask;
 import dev.lukel.familymap.net.SyncDataTask;
 import dev.lukel.familymap.net.message.ClientLoginRequest;
 import dev.lukel.familymap.net.message.LoginRequest;
-import dev.lukel.familymap.net.message.RegisterRequest;
 import dev.lukel.familymap.net.message.LoginResponse;
+import dev.lukel.familymap.net.message.RegisterRequest;
 import dev.lukel.familymap.net.message.RegisterResponse;
 
 public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyncListener, LoginTask.LoginAsyncListener, RegisterTask.RegisterAsyncListener {
@@ -66,58 +66,44 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
         registerButton = v.findViewById(R.id.button_register);
         checkEnableLoginButton();
         checkEnableRegisterButton();
-
         username.addTextChangedListener(textWatcher);
         password.addTextChangedListener(textWatcher);
         firstname.addTextChangedListener(textWatcher);
         lastname.addTextChangedListener(textWatcher);
         email.addTextChangedListener(textWatcher);
-
-        genderSelection.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton checkedRadioButton = group.findViewById(checkedId);
-                boolean isChecked = checkedRadioButton.isChecked();
-                switch (checkedId) {
-                    case R.id.button_male:
+        genderSelection.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton checkedRadioButton = group.findViewById(checkedId);
+            boolean isChecked = checkedRadioButton.isChecked();
+            switch (checkedId) {
+                case R.id.button_male:
+                    if (isChecked) {
+                        gender = "m";
+                        Log.i(TAG, "male");
+                    }
+                    checkEnableRegisterButton();
+                    break;
+                case R.id.button_female:
                         if (isChecked) {
                             gender = "m";
-                            Log.i(TAG, "male");
+                            Log.i(TAG, "female");
                         }
-                        checkEnableRegisterButton();
-                        break;
-                    case R.id.button_female:
-                            if (isChecked) {
-                                gender = "m";
-                                Log.i(TAG, "female");
-                            }
-                        checkEnableRegisterButton();
-                        break;
-                    default:
-                        Log.i(TAG, "gender huh?");
-                }
+                    checkEnableRegisterButton();
+                    break;
+                default:
+                    Log.i(TAG, "gender huh?");
             }
         });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
-                // 10.0.2.2 accesses localhost within the android vm
-                LoginRequest request = getClientLoginRequest().convertToLoginRequest();
-                startLoginTask(request);
-            }
+        loginButton.setOnClickListener(v1 -> {
+            Toast.makeText(getActivity(), "sending login request...", Toast.LENGTH_SHORT).show();
+            // 10.0.2.2 accesses localhost within the android vm
+            LoginRequest request = getClientLoginRequest().convertToLoginRequest();
+            startLoginTask(request);
         });
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
-                RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
-                startRegisterTask(request);
-            }
+        registerButton.setOnClickListener(v12 -> {
+            Toast.makeText(getActivity(), "sending register request...", Toast.LENGTH_SHORT).show();
+            RegisterRequest request = getClientLoginRequest().convertToRegisterRequest();
+            startRegisterTask(request);
         });
-
         return v;
     }
 
@@ -159,10 +145,6 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container_login, mapFragment);
         transaction.commit();
-//        FamilyMapFragment familyMapFragment = new FamilyMapFragment();
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container_login, familyMapFragment);
-//        transaction.commit();
     }
 
     @Override
@@ -190,13 +172,9 @@ public class LoginFragment extends Fragment implements SyncDataTask.SyncDataAsyn
 
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            //
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            //
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             checkEnableLoginButton();

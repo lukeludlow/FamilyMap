@@ -144,15 +144,5 @@ public class FamilyUtils {
         return found;
     }
 
-    public static String getRelationshipTypeById(String personId, String relativeId) {
-        Person p = getPersonById(personId);
-        Person relative = getPersonById(relativeId);
-        if (p != null && relative != null) {
-            return getRelationshipType(p, relative);
-        } else {
-            return "no relationship found";
-        }
-    }
-
 }
 

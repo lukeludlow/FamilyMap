@@ -9,9 +9,7 @@ public final class DataSingleton {
     // eager instantiation
     private static DataSingleton instance = new DataSingleton();
 
-    private DataSingleton() {
-
-    }
+    private DataSingleton() {}
 
     private Person[] people;
     private Event[] events;

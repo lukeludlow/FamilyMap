@@ -23,7 +23,6 @@ import java.util.Set;
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
-import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.model.Settings;
 
 public class FilterActivity extends AppCompatActivity {
@@ -68,7 +67,7 @@ public class FilterActivity extends AppCompatActivity {
 
     private class EventTypeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Switch eventTypeSwitch;
-        public EventTypeViewHolder(LayoutInflater inflater, ViewGroup parent) {
+        private EventTypeViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_filter, parent, false));
             itemView.setOnClickListener(this);
             eventTypeSwitch = itemView.findViewById(R.id.switch_event_type);
@@ -79,17 +78,11 @@ public class FilterActivity extends AppCompatActivity {
             eventTypeSwitch.setOnCheckedChangeListener(switchListener);
         }
         @Override
-        public void onClick(View v) {
-            //
-        }
+        public void onClick(View v) {}
     }
 
-    private final CompoundButton.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            setSettingsAttribute(buttonView.getText().toString(), isChecked);
-        }
-    };
+    private final CompoundButton.OnCheckedChangeListener
+            switchListener = (buttonView, isChecked) -> setSettingsAttribute(buttonView.getText().toString(), isChecked);
 
     public void setSettingsAttribute(String attribute, boolean isChecked) {
         switch (attribute) {

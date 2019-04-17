@@ -1,7 +1,5 @@
 package dev.lukel.familymap.model;
 
-import android.text.TextUtils;
-
 import org.junit.platform.commons.util.StringUtils;
 
 import java.util.ArrayList;

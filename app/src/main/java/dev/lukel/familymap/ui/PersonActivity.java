@@ -2,14 +2,9 @@ package dev.lukel.familymap.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,31 +19,26 @@ import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
+import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.PersonNode;
-import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.Encoder;
 
 public class PersonActivity extends AppCompatActivity {
 
     private final String TAG = "PERSON_ACTIVITY";
-    private EventAdapter eventsAdapter;
     private TextView personNameText;
     private TextView personDetailsText;
     private ImageView genderImage;
     private Person root;
     private List<Person> familyMembers;
     private List<Event> lifeEvents;
-
     private ExpandableListView expandableListView;
     ExpandableListAdapter expandableListAdapter;
 
@@ -68,11 +58,11 @@ public class PersonActivity extends AppCompatActivity {
         Log.i(TAG, "setting up expandable list view...");
         expandableListView = findViewById(R.id.person_family_expandable_list);
         PersonNode rootNode = DataSingleton.getFamilyTree().getPersonToNodeMap().get(root);
-        List<Person> p = new ArrayList<>(rootNode.getRelatives());
-        List<Event> e = new ArrayList<>(rootNode.getEvents().values());
-        e = FamilyUtils.sortEventsChronological(e);
-        e = Settings.filterEventList(e);
-        expandableListAdapter = new ExpandableListAdapter(this, p, e);
+        List<Person> family = new ArrayList<>(rootNode.getRelatives());
+        List<Event> lifeEvents = new ArrayList<>(rootNode.getEvents().values());
+        lifeEvents = FamilyUtils.sortEventsChronological(lifeEvents);
+        lifeEvents = Settings.filterEventList(lifeEvents);
+        expandableListAdapter = new ExpandableListAdapter(this, family, lifeEvents);
         expandableListView.setAdapter(expandableListAdapter);
         Log.i(TAG, "done");
         Log.i(TAG, "expanding all children...");
@@ -80,20 +70,17 @@ public class PersonActivity extends AppCompatActivity {
         for (int i = 0; i < count; i++) {
             expandableListView.expandGroup(i);
         }
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                if (groupPosition == 0) {
-                    Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-                    intent.putExtra("person", Encoder.serialize(familyMembers.get(childPosition)));
-                    startActivity(intent);
-                } else if (groupPosition == 1) {
-                    Intent intent = new Intent(PersonActivity.this, EventActivity.class);
-                    intent.putExtra("event", Encoder.serialize(lifeEvents.get(childPosition)));
-                    startActivity(intent);
-                }
-                return false;
+        expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
+            if (groupPosition == 0) {
+                Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                intent.putExtra("person", Encoder.serialize(familyMembers.get(childPosition)));
+                startActivity(intent);
+            } else if (groupPosition == 1) {
+                Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+                intent.putExtra("event", Encoder.serialize(PersonActivity.this.lifeEvents.get(childPosition)));
+                startActivity(intent);
             }
+            return false;
         });
     }
 
@@ -203,116 +190,6 @@ public class PersonActivity extends AppCompatActivity {
         }
     }
 
-    private class PersonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private PersonNode personNode;
-        private Person person;
-        private ImageView image;
-        private TextView name;
-        private TextView details;
-        public PersonViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_person, parent, false));
-            itemView.setOnClickListener(this);
-            name = itemView.findViewById(R.id.list_item_person_name);
-            details = itemView.findViewById(R.id.list_item_person_details);
-        }
-        public void bind(Person p) {
-            person = p;
-            name.setText(p.getFirstName() + " " + p.getLastName());
-            details.setText(FamilyUtils.getRelationshipType(root, p));
-        }
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-            intent.putExtra("person", Encoder.serialize(person));
-            startActivity(intent);
-        }
-    }
-
-    private class PersonAdapter extends RecyclerView.Adapter<PersonViewHolder> {
-        List<Person> people;
-        public PersonAdapter(List<Person> p) {
-            people = p;
-        }
-        @Override @NonNull
-        public PersonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = getLayoutInflater();
-            return new PersonViewHolder(inflater, parent);
-        }
-        @Override
-        public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
-            Person person = people.get(position);
-            holder.bind(person);
-        }
-        @Override
-        public int getItemCount() {
-            return people.size();
-        }
-    }
-
-    private class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        Event event;
-        private ImageView image;
-        private TextView title;
-        private TextView details;
-        public EventViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_event, parent, false));
-            itemView.setOnClickListener(this);
-            title = itemView.findViewById(R.id.list_item_event_title);
-            details = itemView.findViewById(R.id.list_item_event_details);
-        }
-        public void bind(Event e) {
-            event = e;
-            String titleText = event.getEventType() + " (" + event.getYear() + ")";
-            String detailsText = event.getCity() + ", " + event.getCountry();
-            title.setText(titleText);
-            details.setText(detailsText);
-        }
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(PersonActivity.this, EventActivity.class);
-            intent.putExtra("event", Encoder.serialize(event));
-            startActivity(intent);
-        }
-    }
-
-    private class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
-        Map<String, Event> eventMap;
-        List<Event> orderedEvents;
-        public EventAdapter(Map<String, Event> map) {
-            eventMap = map;
-            orderedEvents = new ArrayList<>(eventMap.values());
-            Collections.sort(orderedEvents, new YearComparator());
-        }
-        private class YearComparator implements Comparator<Event> {
-            @Override
-            public int compare(Event a, Event b) {
-                int i = 0;
-                if (a.getYear() < b.getYear()) {
-                    i = -1;
-                } else if (a.getYear() == b.getYear()) {
-                    i = 0;
-                } else if (a.getYear() > b.getYear()) {
-                    i = 1;
-                }
-                return i;
-            }
-        }
-        @Override @NonNull
-        public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = getLayoutInflater();
-            return new EventViewHolder(inflater, parent);
-        }
-        @Override
-        public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-            Event event = orderedEvents.get(position);
-            holder.bind(event);
-        }
-        @Override
-        public int getItemCount() {
-            return orderedEvents.size();
-        }
-    }
-
     public void setGenderIcon(ImageView image, Person p) {
         Drawable genderIcon;
         if (p.getGender().equals("m")) {
@@ -332,7 +209,5 @@ public class PersonActivity extends AppCompatActivity {
         eventIcon.setAlpha(alphaInt);
         image.setImageDrawable(eventIcon);
     }
-
-
 
 }

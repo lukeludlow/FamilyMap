@@ -22,11 +22,4 @@ public class Person {
         return getPersonID();
     }
 
-    public void setUserData(User u) {
-        this.descendant = u.getUserName();
-        this.firstName = u.getFirstName();
-        this.lastName = u.getLastName();
-        this.gender = u.getGender();
-    }
-
 }

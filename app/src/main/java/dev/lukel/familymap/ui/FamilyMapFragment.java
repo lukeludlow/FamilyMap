@@ -34,8 +34,8 @@ import dev.lukel.familymap.R;
 import dev.lukel.familymap.model.DataSingleton;
 import dev.lukel.familymap.model.Event;
 import dev.lukel.familymap.model.EventMarkerColors;
-import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.FamilyUtils;
+import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.Encoder;
 
@@ -45,10 +45,9 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultM
 public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
     private static final String TAG = "FAMILY_MAP_FRAGMENT";
-    private static final float SMALL_WIDTH = 2f;
+    private static final float BIG_WIDTH = 20f;
     private static final float NORMAL_WIDTH = 10f;
     private static final float ANCESTOR_START_WIDTH = 11f;
-    private static final float BIG_WIDTH = 20f;
     private GoogleMap map;
     private MapView mapView;
     private TextView eventDetailsText;
@@ -62,10 +61,6 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
 
     public FamilyMapFragment() {
         currentEvent = null;
-    }
-
-    public static FamilyMapFragment newInstance() {
-        return new FamilyMapFragment();
     }
 
     @Override
@@ -133,38 +128,33 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         eventsToMarkers = new HashMap<>();
         markersToEvents = new HashMap<>();
         allPolylines = new ArrayList<>();
-        // add a marker, move camera
-        double TMCB_LAT = 40.249678;
-        double TMCB_LON = -111.650749;
-        float ZOOM_LEVEL = 3.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
-        LatLng tmcb = new LatLng(TMCB_LAT, TMCB_LON);
         addAllEventMarkers();
         moveToCurrentEvent();
         setMarkerListener();
         Log.i(TAG, "finish onMapReady");
     }
 
-    public Event createDummyEvent() {
-        Log.i(TAG, "creating dummy event from current location (tmcb)...");
-        Event dummy = new Event();
-        dummy.setDescendant(DataSingleton.getUsername());
-        dummy.setPersonID("dummy_id");
-        dummy.setLatitude(40.249678);
-        dummy.setLongitude(-111.650749);
-        dummy.setCountry("United States");
-        dummy.setCity("Provo");
-        dummy.setEventType("location");
-        dummy.setYear(2019);
-        return dummy;
+    public Event createCurrentLocationMarker() {
+        Log.i(TAG, "creating currentLocation event from current location (tmcb)...");
+        Event currentLocation = new Event();
+        currentLocation.setDescendant(DataSingleton.getUsername());
+        currentLocation.setPersonID("dummy_id");
+        currentLocation.setLatitude(40.249678);
+        currentLocation.setLongitude(-111.650749);
+        currentLocation.setCountry("United States");
+        currentLocation.setCity("Provo");
+        currentLocation.setEventType("location");
+        currentLocation.setYear(2019);
+        return currentLocation;
     }
 
     public void moveToCurrentEvent() {
         Log.i(TAG, "moveToCurrentEvent");
         if (currentEvent == null || !events.contains(currentEvent)) {
-            currentEvent = createDummyEvent();
-            addDummyMarker(currentEvent);
+            currentEvent = createCurrentLocationMarker();
+            addCurrentLocationMarker(currentEvent);
         }
-        float ZOOM = 4.0f; // within range 2.0 and 21.0. 21.0 is max zoom in
+        float ZOOM = 4.0f; // within range 2.0 and 21.0.    21.0 is max zoom in
         Marker marker = this.eventsToMarkers.get(currentEvent);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), ZOOM));
         String text = marker.getTitle() + "\n" + marker.getSnippet();
@@ -180,10 +170,6 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         drawAncestryLines(marker, NORMAL_WIDTH);
     }
 
-    public LatLng getEventLatLng(Event e) {
-        return new LatLng(e.getLatitude(), e.getLongitude());
-    }
-
     public void addAllEventMarkers() {
         Log.i(TAG, "addAllEventMarkers");
         if (currentEvent != null && events.contains(currentEvent)) {
@@ -192,7 +178,7 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         for (Event e : events) {
             addMarker(e);
         }
-        addDummyMarker(createDummyEvent());
+        addCurrentLocationMarker(createCurrentLocationMarker());
     }
 
     public Marker addMarker(Event e) {
@@ -216,8 +202,8 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         return marker;
     }
 
-    public Marker addDummyMarker(Event dummy) {
-        Log.i(TAG, "addDummyMarker");
+    public Marker addCurrentLocationMarker(Event dummy) {
+        Log.i(TAG, "addCurrentLocationMarker");
         LatLng pos = getEventLatLng(dummy);
         MarkerOptions options = new MarkerOptions().position(pos).title("").icon(defaultMarker(HUE_CYAN));
         Marker marker = map.addMarker(options);
@@ -230,35 +216,22 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         return marker;
     }
 
-    public Person findEventPerson(Event e) {
-        String personID = e.getPersonID();
-        for (Person p : DataSingleton.getPeople()) {
-            if (p.getPersonID().equals(personID)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     void setMarkerListener() {
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                // set current event of map fragment so we can use it in other places
-                setCurrentEvent(getMarkersToEvents().get(marker));
-                Log.i(TAG, "onMarkerClick. " + marker.getTitle());
-                String text = marker.getTitle() + "\n" + marker.getSnippet();
-                eventDetailsText.setText(text);
-                if (marker.getTitle().equals("Luke Ludlow's created FamilyMap")) {
-                    eventDetailsText.setText("Luke Ludlow created FamilyMap" + "\n" + "Salt Lake City, United States. 2019.");
-                }
-                setEventTypeIcon(eventDetailsImage, currentEvent);
-                eraseAllPolylines();
-                drawSpouseLine(marker);
-                drawLifeStoryLine(marker);
-                drawAncestryLines(marker, NORMAL_WIDTH);
-                return false;
+        map.setOnMarkerClickListener( marker -> {
+            // set current event of map fragment so we can use it in other places
+            setCurrentEvent(getMarkersToEvents().get(marker));
+            Log.i(TAG, "onMarkerClick. " + marker.getTitle());
+            String text = marker.getTitle() + "\n" + marker.getSnippet();
+            eventDetailsText.setText(text);
+            if (marker.getTitle().equals("Luke Ludlow's created FamilyMap")) {
+                eventDetailsText.setText("Luke Ludlow created FamilyMap" + "\n" + "Salt Lake City, United States. 2019.");
             }
+            setEventTypeIcon(eventDetailsImage, currentEvent);
+            eraseAllPolylines();
+            drawSpouseLine(marker);
+            drawLifeStoryLine(marker);
+            drawAncestryLines(marker, NORMAL_WIDTH);
+            return false;
         });
     }
 
@@ -396,6 +369,20 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         return markersToEvents;
     }
 
+    public LatLng getEventLatLng(Event e) {
+        return new LatLng(e.getLatitude(), e.getLongitude());
+    }
+
+    public Person findEventPerson(Event e) {
+        String personID = e.getPersonID();
+        for (Person p : DataSingleton.getPeople()) {
+            if (p.getPersonID().equals(personID)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     public void setEventTypeIcon(ImageView image, Event e) {
         Drawable eventTypeIcon = null;
         float alphaFactor = 1.0f;
@@ -419,24 +406,5 @@ public class FamilyMapFragment extends SupportMapFragment implements OnMapReadyC
         eventTypeIcon.setAlpha(alphaInt);
         image.setImageDrawable(eventTypeIcon);
     }
-
-    // TODO draw directional arrows on life story lines
-    // i was close but got stuck
-//    void drawArrow(Marker m1, Marker m2) {
-//        LatLng origin = m1.getPosition();
-//        LatLng destination = m2.getPosition();
-//        Double rotationDegrees = Math.toDegrees(Math.atan2(origin.latitude - destination.latitude, origin.longitude - destination.longitude));
-//        Matrix matrix = new Matrix();
-//        matrix.postRotate(rotationDegrees.floatValue());
-//        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_play_arrow_white_24dp);
-//        Bitmap original = BitmapDescriptorFactory.from
-//        Bitmap arrowBitmap = Bitmap.createBitmap(bitmapDescriptor, 0, 0, 5, 5, matrix, true);
-//        Bitmap bm = ImageLoader.getInstance()
-//        MarkerOptions options = new MarkerOptions()
-//                .position(origin)
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_play_arrow_white_24dp));
-//        Marker arrowMarker = map.addMarker()
-//    }
-
 
 }

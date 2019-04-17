@@ -22,6 +22,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
+import com.joanzapata.iconify.fonts.FontAwesomeModule;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +37,6 @@ import dev.lukel.familymap.model.FamilyUtils;
 import dev.lukel.familymap.model.Person;
 import dev.lukel.familymap.model.Settings;
 import dev.lukel.familymap.net.Encoder;
-
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.Iconify;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
-import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 public class SearchActivity extends AppCompatActivity {
 
