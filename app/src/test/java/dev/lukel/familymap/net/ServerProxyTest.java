@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.File;
 import java.util.UUID;
 
@@ -22,6 +20,12 @@ import dev.lukel.familymap.net.message.PeopleResponse;
 import dev.lukel.familymap.net.message.RegisterRequest;
 import dev.lukel.familymap.net.message.RegisterResponse;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ServerProxyTest {
 
@@ -32,14 +36,18 @@ class ServerProxyTest {
         startServer();
     }
 
-    @AfterAll()
+    @AfterAll
     void destroy() throws Exception {
         killServer();
     }
 
     @BeforeEach
     void setUp() throws Exception {
-        if (!serverProcess.isAlive()) {
+        if (serverProcess == null) {
+            System.out.println("BeforeEach setup is restarting server...");
+            startServer();
+        }
+        else if (!serverProcess.isAlive()) {
             System.out.println("BeforeEach setup is restarting server...");
             startServer();
         }
@@ -62,11 +70,13 @@ class ServerProxyTest {
     // if process isn't killed properly, do
     // pkill -9 -f fm_server
     private void killServer() throws Exception {
-        System.out.println("killServer checking if process is alive...");
-        if (serverProcess.isAlive()) {
+        System.out.println("kill server checking if process is alive...");
+        if (serverProcess != null && serverProcess.isAlive()) {
             System.out.println("kill server");
             Thread.sleep(1000);
             serverProcess.destroy();
+            Thread.sleep(1000);
+            serverProcess = null;
         }
     }
 

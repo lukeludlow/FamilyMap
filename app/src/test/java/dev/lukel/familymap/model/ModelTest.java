@@ -47,19 +47,20 @@ class ModelTest {
     @BeforeAll
     void init() throws Exception {
         startServer();
-        getAllData();
+        syncData();
     }
 
-    @AfterAll()
+    @AfterAll
     void destroy() throws Exception {
         killServer();
     }
 
     @BeforeEach
     void setUp() throws Exception {
-        if (!serverProcess.isAlive()) {
+        if (serverProcess != null && !serverProcess.isAlive()) {
             startServer();
         }
+        syncData();
     }
 
     @AfterEach
@@ -204,7 +205,7 @@ class ModelTest {
 
     @Test
     @DisplayName("search people")
-    void testSearch() {
+    void testSearchPeople() {
         // simple case, find the user
         Person user = DataSingleton.getUser();
         String userPersonName = user.getFirstName() + " " + user.getLastName();
@@ -241,31 +242,64 @@ class ModelTest {
         assertTrue(found.contains(alfonsoLuke));
     }
 
-    // TODO testSearchEvents()
-
-    private void addPersonToDataSingleton(Person p) {
-        Person[] peopleArray = DataSingleton.getPeople();
-        List<Person> updatedPeople = new ArrayList<>(Arrays.asList(peopleArray));
-        updatedPeople.add(p);
-        DataSingleton.setPeople(updatedPeople.toArray(new Person[0]));
-        DataSingleton.setFamilyTree(new FamilyTree());
-    }
-
-    private void addEventToDataSingleton(Event e) {
-        Event[] eventArray = DataSingleton.getEvents();
-        List<Event> updatedEvents = new ArrayList<>(Arrays.asList(eventArray));
-        updatedEvents.add(e);
-        DataSingleton.setEvents(updatedEvents.toArray(new Event[0]));
-        DataSingleton.setFamilyTree(new FamilyTree());
+    @Test
+    @DisplayName("search events")
+    void testSearchEvents() {
+        // simple case
+        Person user = DataSingleton.getUser();
+        Event userBirth = FamilyUtils.getChronologicalEvents(user).get(0);
+        int userBirthdate = FamilyUtils.getBirthDate(user);
+        List<Event> found = searchEvents(Integer.toString(userBirthdate));
+        assertEquals(userBirth, found.get(0));
+        // search finds substrings
+        Event createdFamilyMap = new Event("lukeludlow", "101", "1",10.1,-10.1, "japan", "tokyo",
+                "created family map", 3019);
+        String simpleSubstring = "created family map";
+        String anotherSubstring = "tokyo, japan";
+        addEventToDataSingleton(createdFamilyMap);
+        found = searchEvents(simpleSubstring);
+        assertEquals(createdFamilyMap, found.get(0));
+        found = searchEvents(anotherSubstring);
+        assertEquals(createdFamilyMap, found.get(0));
+        // search events does all the same stuff that search people does, so i don't want to write more redundant test cases
     }
 
     @Test
-    @DisplayName("search people and events negative")
-    void testSearchNegative() {
+    @DisplayName("search people negative")
+    void testSearchPeopleNegative() {
         // search blank string should return empty array list
+        List<Person> found = searchPeople("");
+        assertEquals(0, found.size());
+        // superstring won't be found (searching xxlukexx will not find luke)
+        Person luke = new Person("lukeludlow", "xx", "luke", "ludlow",
+                "m", "father_id", "mother_id", "spouse_id");
+        addPersonToDataSingleton(luke);
+        found = searchPeople("xxlukexx");
+        assertEquals(0, found.size());
+        // non-alphanumeric characters are ignored
+        found = searchPeople("!@#$%^&*_13579");
+        assertEquals(0, found.size());
     }
 
-    private void getAllData() {
+    @Test
+    @DisplayName("search events negative")
+    void testSearchEventsNegative() {
+        // search blank string should return empty array list
+        List<Event> found = searchEvents("");
+        assertEquals(0, found.size());
+        // incorrectly formatted date will not be found
+        // e.g. searching "1999" or "(1999)" will find the event, but searching ")1999(" will not
+        Event createdFamilyMap = new Event("lukeludlow", "101", "1",10.1,-10.1, "japan", "tokyo",
+                "created family map", 1999);
+        addEventToDataSingleton(createdFamilyMap);
+        found = searchEvents(")1999(");
+        assertEquals(0, found.size());
+        // non-alphanumeric characters are ignored
+        found = searchEvents("!@#$%^&*_13579");
+        assertEquals(0, found.size());
+    }
+
+    private void syncData() {
         try {
             ServerProxy proxy = new ServerProxy("127.0.0.1", "8080");
             LoginRequest loginRequest = new LoginRequest("lukeludlow", "hunter2");
@@ -402,6 +436,22 @@ class ModelTest {
         return FamilyUtils.sortEventsChronological(found);
     }
 
+    private void addPersonToDataSingleton(Person p) {
+        Person[] peopleArray = DataSingleton.getPeople();
+        List<Person> updatedPeople = new ArrayList<>(Arrays.asList(peopleArray));
+        updatedPeople.add(p);
+        DataSingleton.setPeople(updatedPeople.toArray(new Person[0]));
+        DataSingleton.setFamilyTree(new FamilyTree());
+    }
+
+    private void addEventToDataSingleton(Event e) {
+        Event[] eventArray = DataSingleton.getEvents();
+        List<Event> updatedEvents = new ArrayList<>(Arrays.asList(eventArray));
+        updatedEvents.add(e);
+        DataSingleton.setEvents(updatedEvents.toArray(new Event[0]));
+        DataSingleton.setFamilyTree(new FamilyTree());
+    }
+
     // to check whether server is running properly, do
     // ps -A | grep fm_server
     private void startServer() throws Exception {
@@ -416,14 +466,14 @@ class ModelTest {
     // if process isn't killed properly, do
     // pkill -9 -f fm_server
     private void killServer() throws Exception {
-        System.out.println("killServer checking if process is alive...");
-        if (serverProcess.isAlive()) {
+        System.out.println("kill server checking if process is alive...");
+        if (serverProcess != null && serverProcess.isAlive()) {
             System.out.println("kill server");
             Thread.sleep(1000);
             serverProcess.destroy();
+            Thread.sleep(1000);
+            serverProcess = null;
         }
     }
-
-
 
 }
